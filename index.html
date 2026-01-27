@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Web | صفحة اختبار</title>
+    <style>
+        /* تنسيقات عامة */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+
+        /* الهيدر (القائمة) */
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem 0;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+
+        /* الجزء الرئيسي */
+        .hero {
+            background: linear-gradient(135deg, #3498db, #2ecc71);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        /* محتوى الصفحة */
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .btn {
+            display: inline-block;
+            background: #e74c3c;
+            color: white;
+            padding: 10px 25px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #c0392b;
+        }
+
+        /* الفوتر (أسفل الصفحة) */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #2c3e50;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <a href="#">الرئيسية</a>
+            <a href="#">عن الموقع</a>
+            <a href="#">تواصل معنا</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>مرحباً بك في Test Web</h1>
+        <p>هذه صفحة تجريبية تم إنشاؤها لعام 2026</p>
+    </section>
+
+    <div class="container">
+        <h2>عن الصفحة</h2>
+        <p>هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد هذا النص من مولد النص العربى، حيث يمكنك أن تولد مثل هذا النص أو العديد من النصوص الأخرى إضافة إلى زيادة عدد الحروف التى يولدها التطبيق.</p>
+        
+        <p>يمكنك استخدام هذه الصفحة كبداية لتطوير مشروعك الخاص أو تجربة أكواد CSS و JavaScript عليها.</p>
+        
+        <a href="#" class="btn" onclick="alert('تم الضغط على الزر!')">اضغط للتجربة</a>
+    </div>
+
+    <footer>
+        جميع الحقوق محفوظة &copy; 2026 - Test Web
+    </footer>
+
+</body>
+</html>
+
