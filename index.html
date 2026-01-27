@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AdVista Pro - اربح من مشاهدة الإعلانات</title>
     
     <!-- Google Identity Services -->
@@ -10,6 +10,29 @@
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Prevent zoom script -->
+    <script>
+        // منع التكبير والتصغير
+        document.addEventListener('touchstart', function(event) {
+            if (event.touches.length > 1) {
+                event.preventDefault();
+            }
+        }, { passive: false });
+
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, { passive: false });
+
+        document.addEventListener('gesturestart', function(e) {
+            e.preventDefault();
+        });
+    </script>
     
     <!-- Styles -->
     <style>
@@ -20,7 +43,6 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', 'Cairo', Tahoma, Geneva, Verdana, sans-serif;
             -webkit-tap-highlight-color: transparent;
-            -webkit-touch-callout: none;
         }
 
         :root {
@@ -41,17 +63,12 @@
             --transition: all 0.2s ease;
         }
 
-        html {
-            font-size: 16px;
-            -webkit-text-size-adjust: 100%;
-        }
-
         body {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             color: var(--dark);
             overflow-x: hidden;
-            -webkit-overflow-scrolling: touch;
+            touch-action: pan-y; /* السماح بالسحب العمودي فقط */
         }
 
         .container {
@@ -96,6 +113,8 @@
             justify-content: center;
             padding: 20px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow-y: auto; /* السماح بالتمرير */
+            -webkit-overflow-scrolling: touch;
         }
 
         .login-card {
@@ -108,6 +127,7 @@
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
             text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.2);
+            margin: 20px 0; /* مسافة للتمرير */
         }
 
         .logo {
@@ -222,7 +242,6 @@
             transition: var(--transition);
             font-size: 0.9rem;
             min-height: 44px;
-            min-width: 44px;
         }
 
         .copy-btn:hover {
@@ -233,6 +252,9 @@
         /* Main Page */
         .main-page {
             display: none;
+            overflow-y: auto; /* السماح بالتمرير */
+            -webkit-overflow-scrolling: touch;
+            min-height: 100vh;
         }
 
         /* Header */
@@ -467,10 +489,6 @@
             overflow: hidden;
         }
 
-        .ad-card.admin-ad {
-            border-color: var(--gold);
-        }
-
         .ad-card::before {
             content: '';
             position: absolute;
@@ -541,16 +559,6 @@
         .watch-btn:disabled {
             background: var(--gray);
             cursor: not-allowed;
-        }
-
-        .ad-limits {
-            margin-top: 8px;
-            padding: 8px;
-            background: var(--light);
-            border-radius: var(--radius);
-            font-size: 0.85rem;
-            color: var(--gray);
-            text-align: center;
         }
 
         /* Timer Container */
@@ -810,17 +818,6 @@
             cursor: not-allowed;
         }
 
-        /* Admin Panel */
-        .admin-panel {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
-            border-radius: var(--radius);
-            padding: 20px;
-            margin: 15px auto;
-            box-shadow: var(--shadow-lg);
-            display: none;
-        }
-
         /* Notification */
         .notification {
             position: fixed;
@@ -961,14 +958,13 @@
             }
         }
 
-        /* Prevent zoom on input focus in mobile */
-        @media screen and (max-width: 768px) {
-            input, select, textarea {
-                font-size: 16px !important;
-            }
+        /* منع التكبير في الحقول النصية */
+        input, textarea {
+            font-size: 16px !important;
+            max-height: 300px;
         }
 
-        /* Better touch targets */
+        /* تحسين اللمس */
         button, 
         input[type="submit"],
         input[type="button"],
@@ -976,21 +972,31 @@
         .nav-tab,
         .watch-btn {
             touch-action: manipulation;
+            cursor: pointer;
         }
 
-        /* Smooth scrolling */
+        /* تحسين التمرير */
+        .login-page,
+        .main-page,
+        .chat-messages {
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* منع التحديد */
         * {
-            scroll-behavior: smooth;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
 
-        /* Modal improvements for mobile */
-        .modal {
-            padding: 15px;
-        }
-
-        .modal-content {
-            max-width: 95%;
-            padding: 20px;
+        /* السماح بالتحديد في الحقول النصية */
+        input, textarea {
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
         }
     </style>
 </head>
@@ -1247,6 +1253,26 @@
                 </div>
             </section>
 
+            <!-- Referral Tab -->
+            <section class="ads-section" id="referralTab" style="display: none;">
+                <h2 class="section-title">
+                    <i class="fas fa-users"></i> دعوة الأصدقاء
+                </h2>
+                
+                <div class="referral-section">
+                    <h3 style="margin-bottom: 15px;">🎯 احصل على نقاط مجانية!</h3>
+                    <p>ادعُ أصدقاءك واحصل على <strong>20 نقطة</strong> لكل صديق يسجل عبر رابطك!</p>
+                    <p style="font-size: 0.9rem; margin-bottom: 15px;">صديقك يحصل على <strong>10 نقاط</strong> هدية عند التسجيل!</p>
+                    
+                    <div class="referral-code">
+                        <span id="tabReferralCode">جارٍ التحميل...</span>
+                        <button class="copy-btn" onclick="copyReferralCode()">
+                            <i class="fas fa-copy"></i> نسخ الكود
+                        </button>
+                    </div>
+                </div>
+            </section>
+
             <!-- Chat Tab -->
             <section class="chat-section" id="chatTab">
                 <h2 class="section-title">
@@ -1292,7 +1318,20 @@
 
     <!-- JavaScript -->
     <script>
-        // Constants
+        // منع التكبير/التصغير في الجافاسكريبت أيضاً
+        document.addEventListener('wheel', function(e) {
+            if (e.ctrlKey) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '0' || e.key === '=')) {
+                e.preventDefault();
+            }
+        });
+
+        // باقي الكود...
         const POINTS_PER_AD = 50;
         const WELCOME_POINTS = 100;
         const REFERRAL_POINTS_REFERRER = 20;
@@ -1301,13 +1340,11 @@
         const POINTS_PER_DOLLAR = 20000;
         const ADMIN_EMAIL = "bo2584668@gmail.com";
         
-        // Ad viewing limits
         const MAX_VIEWS_PER_DAY = 10;
         const MAX_VIEWS_PER_HOUR = 5;
         const COOLDOWN_AFTER_HOUR = 60 * 60 * 1000;
         const COOLDOWN_AFTER_DAY = 24 * 60 * 60 * 1000;
         
-        // Global variables
         let currentUser = null;
         let userData = null;
         let currentAdId = null;
@@ -1325,21 +1362,18 @@
 
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
-            // Check if there's a referral code in URL
             const urlParams = new URLSearchParams(window.location.search);
             const referralCode = urlParams.get('ref');
             if (referralCode) {
                 localStorage.setItem('pending_referral', referralCode);
             }
             
-            // Check if user is already logged in
             const savedUser = localStorage.getItem('advista_user');
             if (savedUser) {
                 try {
                     const user = JSON.parse(savedUser);
                     handleUserLogin(user);
                 } catch {
-                    // If parsing fails, clear storage
                     localStorage.clear();
                     hideLoading();
                 }
@@ -1347,20 +1381,9 @@
                 hideLoading();
             }
             
-            // Set up visibility change detection
             document.addEventListener('visibilitychange', handleVisibilityChange);
             window.addEventListener('blur', handleWindowBlur);
             window.addEventListener('focus', handleWindowFocus);
-            
-            // Prevent zoom on mobile
-            document.addEventListener('touchmove', function(e) {
-                if(e.scale !== 1) e.preventDefault();
-            }, { passive: false });
-            
-            // Prevent context menu on mobile
-            document.addEventListener('contextmenu', function(e) {
-                e.preventDefault();
-            });
         });
 
         // Handle Google Sign In
@@ -1418,7 +1441,6 @@
             const today = new Date().toDateString();
             
             if (!userDataStr) {
-                // New user
                 const pendingReferral = localStorage.getItem('pending_referral');
                 let referralBonus = WELCOME_POINTS;
                 let referredBy = null;
@@ -1465,7 +1487,6 @@
                 referralMap[referralCode] = user.uid;
                 localStorage.setItem('advista_referral_map', JSON.stringify(referralMap));
                 
-                // Show referral code if user is not referred
                 if (!referredBy) {
                     document.getElementById('referralCodeContainer').style.display = 'block';
                 }
@@ -1522,33 +1543,29 @@
                     }
                 }
             } catch {
-                // Silent fail
+                // لا شيء
             }
         }
 
         // Show tab
         function showTab(tabName) {
-            // Hide all tabs
             document.getElementById('adsTab').style.display = 'none';
             document.getElementById('withdrawalTab').style.display = 'none';
+            document.getElementById('referralTab').style.display = 'none';
             document.getElementById('chatTab').style.display = 'none';
             
-            // Remove active class from all tabs
             document.querySelectorAll('.nav-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
             
-            // Show selected tab
             document.getElementById(tabName + 'Tab').style.display = 'block';
             
-            // Add active class to selected tab
             document.querySelectorAll('.nav-tab').forEach(tab => {
                 if (tab.textContent.includes(getTabName(tabName))) {
                     tab.classList.add('active');
                 }
             });
             
-            // Load chat messages if chat tab is selected
             if (tabName === 'chat') {
                 loadChatMessages();
             }
@@ -1559,6 +1576,7 @@
             const tabs = {
                 'ads': 'الإعلانات',
                 'withdrawal': 'سحب الأرباح',
+                'referral': 'دعوة الأصدقاء',
                 'chat': 'الشات الحي'
             };
             return tabs[tabKey] || tabKey;
@@ -1590,6 +1608,7 @@
             
             if (userData.referralCode) {
                 document.getElementById('referralCodeText').textContent = userData.referralCode;
+                document.getElementById('tabReferralCode').textContent = userData.referralCode;
             }
             
             updateRequiredPoints();
@@ -1627,7 +1646,6 @@
                 adCard.className = 'ad-card';
                 
                 let buttonHtml = '';
-                let limitsHtml = '';
                 
                 if (adLimits.canWatch) {
                     buttonHtml = `
@@ -1652,7 +1670,6 @@
                         شاهد هذا الإعلان لمدة 30 ثانية للحصول على ${ad.points} نقطة
                     </p>
                     <div class="ad-reward">+${ad.points} نقطة</div>
-                    ${limitsHtml}
                     ${buttonHtml}
                     <input type="hidden" id="adLink${index}" value="${ad.link}">
                     <input type="hidden" id="adPoints${index}" value="${ad.points}">
@@ -1693,14 +1710,11 @@
             
             if (!currentUser || !userData) return;
             
-            // Check ad limits
             const adLimits = checkAdLimits(adIndex);
             if (!adLimits.canWatch) return;
             
-            // Get ad points
             currentAdPoints = POINTS_PER_AD;
             
-            // Reset state
             isWatchingAd = true;
             currentAdId = adIndex;
             secondsLeft = 30;
@@ -1710,24 +1724,20 @@
             adStartTime = Date.now();
             tabSwitchCount = 0;
             
-            // Show warning message
             document.getElementById('warningMessage').style.display = 'block';
             document.getElementById('penaltyNotice').style.display = 'none';
             
-            // Show timer
             const timerContainer = document.getElementById('timerContainer');
             const timer = document.getElementById('timer');
             
             timerContainer.style.display = 'block';
             timer.textContent = secondsLeft;
             
-            // Disable all watch buttons
             document.querySelectorAll('.watch-btn').forEach(btn => {
                 btn.disabled = true;
                 btn.innerHTML = '<i class="fas fa-clock"></i> انتظر...';
             });
             
-            // Start countdown
             timerInterval = setInterval(() => {
                 secondsLeft--;
                 timer.textContent = secondsLeft;
@@ -1782,7 +1792,6 @@
             }
             
             try {
-                // Update user data
                 userData.points += currentAdPoints;
                 userData.totalPoints += currentAdPoints;
                 userData.adsWatched = (userData.adsWatched || 0) + 1;
@@ -1792,7 +1801,6 @@
                 userData.todayViews = (userData.todayViews || 0) + 1;
                 userData.lastUpdate = new Date().toISOString();
                 
-                // Record ad view with timestamp
                 if (!userData.adViews) userData.adViews = {};
                 if (!userData.adViews[currentAdId]) userData.adViews[currentAdId] = [];
                 
@@ -1801,16 +1809,14 @@
                     points: currentAdPoints
                 });
                 
-                // Save to localStorage
                 localStorage.setItem(`advista_userdata_${currentUser.uid}`, JSON.stringify(userData));
                 
-                // Update UI
                 updateUserUI();
                 
                 showNotification(`🎉 لقد ربحت ${currentAdPoints} نقطة!`);
                 
             } catch {
-                // Silent fail
+                // لا شيء
             }
             
             setTimeout(() => {
@@ -1838,7 +1844,7 @@
                 
                 updateUserUI();
             } catch {
-                // Silent fail
+                // لا شيء
             }
             
             setTimeout(() => {
@@ -1913,7 +1919,6 @@
                     chatMessagesDiv.appendChild(messageDiv);
                 });
                 
-                // Scroll to bottom
                 chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
             }
         }
@@ -1934,22 +1939,19 @@
                     read: false
                 };
                 
-                // Save message for user
                 const userChatKey = `advista_chat_${currentUser.uid}`;
                 let userMessages = JSON.parse(localStorage.getItem(userChatKey)) || [];
                 userMessages.push(message);
                 localStorage.setItem(userChatKey, JSON.stringify(userMessages));
                 
-                // Clear input
                 input.value = '';
                 
-                // Reload messages
                 loadChatMessages();
                 
                 showNotification('✅ تم إرسال الرسالة');
                 
             } catch {
-                // Silent fail
+                // لا شيء
             }
         }
 
@@ -2102,8 +2104,7 @@
         document.getElementById('submitWithdrawalBtn').addEventListener('click', submitWithdrawal);
         document.getElementById('withdrawAmount').addEventListener('input', updateRequiredPoints);
         
-        // Initialize required points display
         updateRequiredPoints();
     </script>
 </body>
-                                                      </html>
+    </html>
