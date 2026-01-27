@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AdVista Pro - اربح من مشاهدة الإعلانات</title>
+    <title>AdVista ads - اربح من مشاهدة الإعلانات</title>
     
     <!-- Google Identity Services -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -294,6 +294,38 @@
             background: #e5e7eb;
         }
 
+        /* Navigation */
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            padding: 12px 25px;
+            background: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-tab:hover {
+            background: var(--light);
+            transform: translateY(-2px);
+        }
+
+        .nav-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
         /* Hero Section */
         .hero {
             background: rgba(255, 255, 255, 0.95);
@@ -490,6 +522,16 @@
             cursor: not-allowed;
         }
 
+        .ad-limits {
+            margin-top: 10px;
+            padding: 8px;
+            background: var(--light);
+            border-radius: var(--radius);
+            font-size: 0.9rem;
+            color: var(--gray);
+            text-align: center;
+        }
+
         /* Timer Container */
         .timer-container {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
@@ -535,6 +577,119 @@
             border-radius: var(--radius);
             margin: 20px 0;
             display: none;
+        }
+
+        /* Live Chat */
+        .chat-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius);
+            padding: 30px;
+            margin: 20px auto;
+            box-shadow: var(--shadow-lg);
+            display: none;
+        }
+
+        .chat-container {
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--light);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: var(--primary);
+            color: white;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background: white;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message.user {
+            align-items: flex-end;
+        }
+
+        .message.admin {
+            align-items: flex-start;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 10px 15px;
+            border-radius: var(--radius);
+            position: relative;
+        }
+
+        .message.user .message-content {
+            background: var(--accent);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.admin .message-content {
+            background: var(--light);
+            color: var(--dark);
+            border-bottom-left-radius: 5px;
+        }
+
+        .message-sender {
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+            color: var(--gray);
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            margin-top: 5px;
+            opacity: 0.7;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 15px;
+            background: white;
+            border-top: 1px solid var(--light);
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid var(--light);
+            border-radius: var(--radius);
+            margin-left: 10px;
+        }
+
+        .chat-input button {
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .no-messages {
+            text-align: center;
+            padding: 40px;
+            color: var(--gray);
         }
 
         /* Withdrawal Section */
@@ -732,6 +887,11 @@
             color: white;
         }
 
+        .chat-admin-btn {
+            background: var(--primary);
+            color: white;
+        }
+
         /* Notification */
         .notification {
             position: fixed;
@@ -800,6 +960,10 @@
             .admin-table {
                 display: block;
                 overflow-x: auto;
+            }
+            
+            .nav-tabs {
+                justify-content: center;
             }
         }
 
@@ -872,6 +1036,58 @@
             gap: 10px;
             margin-top: 15px;
         }
+
+        /* Cooldown Info */
+        .cooldown-info {
+            background: #fef3c7;
+            padding: 10px 15px;
+            border-radius: var(--radius);
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #92400e;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Admin Chat Panel */
+        .admin-chat-section {
+            margin-top: 40px;
+        }
+
+        .chat-user-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+
+        .chat-user-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--light);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .chat-user-item:hover {
+            background: var(--light);
+        }
+
+        .chat-user-item.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .unread-badge {
+            background: var(--danger);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -906,7 +1122,7 @@
                 </div>
                 <div class="feature-item">
                     <div class="feature-icon">⏱️</div>
-                    <h3>30 ثانية</h3>
+                    <h3>10 مرات يومياً</h3>
                     <p>لكل إعلان</p>
                 </div>
                 <div class="feature-item">
@@ -994,153 +1210,30 @@
                 </div>
             </header>
 
+            <!-- Navigation Tabs -->
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="showTab('ads')">
+                    <i class="fas fa-ad"></i> الإعلانات
+                </button>
+                <button class="nav-tab" onclick="showTab('withdrawal')">
+                    <i class="fas fa-wallet"></i> سحب الأرباح
+                </button>
+                <button class="nav-tab" onclick="showTab('referral')">
+                    <i class="fas fa-users"></i> دعوة الأصدقاء
+                </button>
+                <button class="nav-tab" onclick="showTab('chat')">
+                    <i class="fas fa-comments"></i> الشات الحي
+                </button>
+            </div>
+
             <!-- Hero Section -->
             <section class="hero">
                 <h1>مرحباً <span id="greetingName"></span> 👋</h1>
                 <p>ابدأ رحلتك في ربح النقاط من خلال مشاهدة الإعلانات اليومية</p>
-                
-                <!-- Referral Button -->
-                <button class="submit-btn" onclick="showReferralModal()" style="width: auto; margin-top: 20px; background: var(--accent);">
-                    <i class="fas fa-share-alt"></i> دعوة الأصدقاء واربح 20 نقطة
-                </button>
             </section>
 
-            <!-- Dashboard -->
-            <div class="dashboard">
-                <!-- Stats Section -->
-                <div class="stats-section">
-                    <h2 class="stats-title">
-                        <i class="fas fa-chart-line"></i> إحصائياتك
-                    </h2>
-                    
-                    <div class="stats-cards">
-                        <div class="stat-box">
-                            <div class="stat-value" id="totalEarnings">$0</div>
-                            <div class="stat-label">إجمالي أرباحك</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-value" id="adsWatched">0</div>
-                            <div class="stat-label">إعلانات شاهدتها</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-value" id="timeWatched">0</div>
-                            <div class="stat-label">دقائق مشاهدة</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-value" id="referralsCount">0</div>
-                            <div class="stat-label">عدد الإحالات</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Balance Progress -->
-                    <div style="background: white; padding: 25px; border-radius: var(--radius); margin: 25px 0; box-shadow: var(--shadow);">
-                        <h3 style="margin-bottom: 15px; color: var(--dark);">
-                            <i class="fas fa-chart-bar"></i> تقدمك نحو السحب
-                        </h3>
-                        <div style="margin-bottom: 10px; display: flex; justify-content: space-between;">
-                            <span style="color: var(--gray); font-size: 0.9rem;">رصيدك: <span id="currentBalancePoints">0</span> نقطة</span>
-                            <span style="color: var(--gray); font-size: 0.9rem;">المستهدف: 20,000 نقطة</span>
-                        </div>
-                        <div class="progress-container">
-                            <div class="progress-bar" id="balanceProgress" style="width: 0%">
-                                0%
-                            </div>
-                        </div>
-                        <div style="margin-top: 10px; display: flex; justify-content: space-between;">
-                            <span style="color: var(--primary); font-weight: 600;">$<span id="currentBalanceDollars">0</span></span>
-                            <span style="color: var(--success); font-weight: 600;">$1.00</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Referral Stats -->
-                    <div class="referral-stats-card">
-                        <h3 style="margin-bottom: 15px; color: var(--dark);">
-                            <i class="fas fa-users"></i> إحصائيات الإحالات
-                        </h3>
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
-                            <div>
-                                <div style="font-size: 0.9rem; color: var(--gray);">إجمالي الإحالات</div>
-                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent);" id="totalReferrals">0</div>
-                            </div>
-                            <div>
-                                <div style="font-size: 0.9rem; color: var(--gray);">نقاط الإحالات</div>
-                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--success);" id="referralPoints">0</div>
-                            </div>
-                        </div>
-                        <div class="referral-list" id="referralList">
-                            <!-- Referral items will be loaded here -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Withdrawal Section -->
-                <div class="withdrawal-section">
-                    <h2 class="stats-title">
-                        <i class="fas fa-wallet"></i> سحب الأرباح
-                    </h2>
-                    
-                    <div class="withdrawal-info">
-                        <div class="withdrawal-stats">
-                            <div>
-                                <div style="font-size: 0.9rem; color: var(--gray);">رصيدك القابل للسحب</div>
-                                <div style="font-size: 2rem; font-weight: 700; color: var(--primary);" id="withdrawableBalance">$0</div>
-                            </div>
-                            <div style="text-align: left;">
-                                <div style="font-size: 0.9rem; color: var(--gray);">النقاط المتبقية</div>
-                                <div style="font-size: 1.5rem; font-weight: 700;" id="pointsBalance">0</div>
-                            </div>
-                        </div>
-                        
-                        <div style="background: #fef3c7; padding: 15px; border-radius: var(--radius); margin-top: 20px;">
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <i class="fas fa-info-circle" style="color: #d97706;"></i>
-                                <div>
-                                    <div style="font-weight: 600; color: #92400e;">20,000 نقطة = 1 دولار</div>
-                                    <div style="font-size: 0.9rem; color: #92400e;">الحد الأدنى للسحب: 1 دولار</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Daily Earnings -->
-                        <div style="background: #d1fae5; padding: 15px; border-radius: var(--radius); margin-top: 15px;">
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <div>
-                                    <div style="font-size: 0.9rem; color: #065f46;">أرباح اليوم</div>
-                                    <div style="font-size: 1.2rem; font-weight: 700; color: #065f46;">+<span id="todayEarnings">0</span> نقطة</div>
-                                </div>
-                                <div style="font-size: 0.8rem; color: #065f46;">
-                                    آخر تحديث: <span id="lastUpdateTime">الآن</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="withdrawal-form">
-                        <div class="form-group">
-                            <label class="form-label">المبلغ المطلوب (دولار):</label>
-                            <input type="number" id="withdrawAmount" class="form-input" min="1" max="100" value="1">
-                            <small style="display: block; margin-top: 5px; color: var(--gray);">
-                                النقاط المطلوبة: <span id="requiredPoints">20,000</span> نقطة
-                            </small>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">رقم فودافون كاش:</label>
-                            <input type="tel" id="vodafoneNumber" class="form-input" placeholder="مثال: 01012345678" required>
-                            <small style="display: block; margin-top: 5px; color: var(--gray);">
-                                تأكد من إدخال رقم فودافون كاش صحيح
-                            </small>
-                        </div>
-                        
-                        <button class="submit-btn" id="submitWithdrawalBtn">
-                            <i class="fas fa-paper-plane"></i> إرسال طلب السحب
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Ads Section -->
-            <section class="ads-section">
+            <!-- Ads Tab -->
+            <section class="ads-section" id="adsTab">
                 <h2 class="section-title">
                     <i class="fas fa-ad"></i> الإعلانات المتاحة
                 </h2>
@@ -1181,6 +1274,223 @@
                     <div style="margin-top: 20px; font-size: 0.9rem; opacity: 0.8;">
                         <p>🛡️ نظام التحقق الذكي يعمل - نحن نراقب التفاعل مع الإعلان</p>
                         <p style="margin-top: 5px;">📊 سيتم تسجيل وقت المشاهدة الفعلي</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Withdrawal Tab -->
+            <section class="withdrawal-section" id="withdrawalTab" style="display: none;">
+                <h2 class="section-title">
+                    <i class="fas fa-wallet"></i> سحب الأرباح
+                </h2>
+                
+                <div class="dashboard">
+                    <div class="stats-section">
+                        <h2 class="stats-title">
+                            <i class="fas fa-chart-line"></i> إحصائياتك
+                        </h2>
+                        
+                        <div class="stats-cards">
+                            <div class="stat-box">
+                                <div class="stat-value" id="totalEarnings">$0</div>
+                                <div class="stat-label">إجمالي أرباحك</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-value" id="adsWatched">0</div>
+                                <div class="stat-label">إعلانات شاهدتها</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-value" id="timeWatched">0</div>
+                                <div class="stat-label">دقائق مشاهدة</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-value" id="referralsCount">0</div>
+                                <div class="stat-label">عدد الإحالات</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Balance Progress -->
+                        <div style="background: white; padding: 25px; border-radius: var(--radius); margin: 25px 0; box-shadow: var(--shadow);">
+                            <h3 style="margin-bottom: 15px; color: var(--dark);">
+                                <i class="fas fa-chart-bar"></i> تقدمك نحو السحب
+                            </h3>
+                            <div style="margin-bottom: 10px; display: flex; justify-content: space-between;">
+                                <span style="color: var(--gray); font-size: 0.9rem;">رصيدك: <span id="currentBalancePoints">0</span> نقطة</span>
+                                <span style="color: var(--gray); font-size: 0.9rem;">المستهدف: 20,000 نقطة</span>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar" id="balanceProgress" style="width: 0%">
+                                    0%
+                                </div>
+                            </div>
+                            <div style="margin-top: 10px; display: flex; justify-content: space-between;">
+                                <span style="color: var(--primary); font-weight: 600;">$<span id="currentBalanceDollars">0</span></span>
+                                <span style="color: var(--success); font-weight: 600;">$1.00</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Referral Stats -->
+                        <div class="referral-stats-card">
+                            <h3 style="margin-bottom: 15px; color: var(--dark);">
+                                <i class="fas fa-users"></i> إحصائيات الإحالات
+                            </h3>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                                <div>
+                                    <div style="font-size: 0.9rem; color: var(--gray);">إجمالي الإحالات</div>
+                                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent);" id="totalReferrals">0</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.9rem; color: var(--gray);">نقاط الإحالات</div>
+                                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--success);" id="referralPoints">0</div>
+                                </div>
+                            </div>
+                            <div class="referral-list" id="referralList">
+                                <!-- Referral items will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="withdrawal-section">
+                        <div class="withdrawal-info">
+                            <div class="withdrawal-stats">
+                                <div>
+                                    <div style="font-size: 0.9rem; color: var(--gray);">رصيدك القابل للسحب</div>
+                                    <div style="font-size: 2rem; font-weight: 700; color: var(--primary);" id="withdrawableBalance">$0</div>
+                                </div>
+                                <div style="text-align: left;">
+                                    <div style="font-size: 0.9rem; color: var(--gray);">النقاط المتبقية</div>
+                                    <div style="font-size: 1.5rem; font-weight: 700;" id="pointsBalance">0</div>
+                                </div>
+                            </div>
+                            
+                            <div style="background: #fef3c7; padding: 15px; border-radius: var(--radius); margin-top: 20px;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <i class="fas fa-info-circle" style="color: #d97706;"></i>
+                                    <div>
+                                        <div style="font-weight: 600; color: #92400e;">20,000 نقطة = 1 دولار</div>
+                                        <div style="font-size: 0.9rem; color: #92400e;">الحد الأدنى للسحب: 1 دولار</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Daily Earnings -->
+                            <div style="background: #d1fae5; padding: 15px; border-radius: var(--radius); margin-top: 15px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <div style="font-size: 0.9rem; color: #065f46;">أرباح اليوم</div>
+                                        <div style="font-size: 1.2rem; font-weight: 700; color: #065f46;">+<span id="todayEarnings">0</span> نقطة</div>
+                                    </div>
+                                    <div style="font-size: 0.8rem; color: #065f46;">
+                                        آخر تحديث: <span id="lastUpdateTime">الآن</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="withdrawal-form">
+                            <div class="form-group">
+                                <label class="form-label">المبلغ المطلوب (دولار):</label>
+                                <input type="number" id="withdrawAmount" class="form-input" min="1" max="100" value="1">
+                                <small style="display: block; margin-top: 5px; color: var(--gray);">
+                                    النقاط المطلوبة: <span id="requiredPoints">20,000</span> نقطة
+                                </small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">رقم فودافون كاش:</label>
+                                <input type="tel" id="vodafoneNumber" class="form-input" placeholder="مثال: 01012345678" required>
+                                <small style="display: block; margin-top: 5px; color: var(--gray);">
+                                    تأكد من إدخال رقم فودافون كاش صحيح
+                                </small>
+                            </div>
+                            
+                            <button class="submit-btn" id="submitWithdrawalBtn">
+                                <i class="fas fa-paper-plane"></i> إرسال طلب السحب
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Referral Tab -->
+            <section class="ads-section" id="referralTab" style="display: none;">
+                <h2 class="section-title">
+                    <i class="fas fa-users"></i> دعوة الأصدقاء
+                </h2>
+                
+                <div class="referral-section">
+                    <h3 style="margin-bottom: 15px;">🎯 احصل على نقاط مجانية!</h3>
+                    <p>ادعُ أصدقاءك واحصل على <strong>20 نقطة</strong> لكل صديق يسجل عبر رابطك!</p>
+                    <p style="font-size: 0.9rem; margin-bottom: 15px;">صديقك يحصل على <strong>10 نقاط</strong> هدية عند التسجيل!</p>
+                    
+                    <div class="referral-code">
+                        <span id="tabReferralCode">جارٍ التحميل...</span>
+                        <button class="copy-btn" onclick="copyReferralCode()">
+                            <i class="fas fa-copy"></i> نسخ الكود
+                        </button>
+                    </div>
+                    
+                    <div style="margin-top: 15px; text-align: left;">
+                        <p><strong>رابط الدعوة المباشر:</strong></p>
+                        <div style="background: var(--light); padding: 10px; border-radius: var(--radius); margin-top: 5px; word-break: break-all;">
+                            <span id="tabReferralLink">جارٍ التحميل...</span>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                        <button class="copy-btn" onclick="shareOnWhatsApp()" style="background: #25D366; color: white;">
+                            <i class="fab fa-whatsapp"></i> واتساب
+                        </button>
+                        <button class="copy-btn" onclick="shareOnTelegram()" style="background: #0088cc; color: white;">
+                            <i class="fab fa-telegram"></i> تيليجرام
+                        </button>
+                        <button class="copy-btn" onclick="shareOnFacebook()" style="background: #1877F2; color: white;">
+                            <i class="fab fa-facebook"></i> فيسبوك
+                        </button>
+                        <button class="copy-btn" onclick="copyReferralLink()">
+                            <i class="fas fa-link"></i> نسخ الرابط
+                        </button>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 25px; background: white; padding: 20px; border-radius: var(--radius);">
+                    <h4 style="margin-bottom: 10px; color: var(--dark);">🎁 كيف تعمل الإحالة:</h4>
+                    <ol style="text-align: right; padding-right: 20px;">
+                        <li style="margin-bottom: 8px;">شارك رابط الدعوة مع أصدقائك</li>
+                        <li style="margin-bottom: 8px;">يسجل صديقك عبر الرابط</li>
+                        <li style="margin-bottom: 8px;">تحصل على <strong>20 نقطة</strong> فور تسجيله</li>
+                        <li style="margin-bottom: 8px;">صديقك يحصل على <strong>10 نقاط</strong> هدية</li>
+                        <li style="margin-bottom: 8px;">يمكنك متابعة إحالاتك من قسم الإحصائيات</li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- Chat Tab -->
+            <section class="chat-section" id="chatTab">
+                <h2 class="section-title">
+                    <i class="fas fa-comments"></i> الشات الحي
+                </h2>
+                <p style="color: var(--gray); margin-bottom: 25px;">تواصل مع الإدمن مباشرة للحصول على المساعدة</p>
+                
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <i class="fas fa-headset"></i>
+                        <span>الدعم الفني</span>
+                    </div>
+                    
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="no-messages" id="noMessages">
+                            <i class="fas fa-comment-slash" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.3;"></i>
+                            <p>لا توجد رسائل بعد</p>
+                            <p style="font-size: 0.9rem; margin-top: 10px;">ابدأ المحادثة بإرسال رسالة...</p>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input">
+                        <input type="text" id="chatInput" placeholder="اكتب رسالتك هنا..." onkeypress="handleChatKeyPress(event)">
+                        <button onclick="sendChatMessage()">
+                            <i class="fas fa-paper-plane"></i> إرسال
+                        </button>
                     </div>
                 </div>
             </section>
@@ -1240,17 +1550,6 @@
                     </button>
                 </div>
             </div>
-            
-            <div style="margin-top: 25px; background: white; padding: 20px; border-radius: var(--radius);">
-                <h4 style="margin-bottom: 10px; color: var(--dark);">🎁 كيف تعمل الإحالة:</h4>
-                <ol style="text-align: right; padding-right: 20px;">
-                    <li style="margin-bottom: 8px;">شارك رابط الدعوة مع أصدقائك</li>
-                    <li style="margin-bottom: 8px;">يسجل صديقك عبر الرابط</li>
-                    <li style="margin-bottom: 8px;">تحصل على <strong>20 نقطة</strong> فور تسجيله</li>
-                    <li style="margin-bottom: 8px;">صديقك يحصل على <strong>10 نقاط</strong> هدية</li>
-                    <li style="margin-bottom: 8px;">يمكنك متابعة إحالاتك من قسم الإحصائيات</li>
-                </ol>
-            </div>
         </div>
     </div>
 
@@ -1308,11 +1607,17 @@
         // Constants
         const POINTS_PER_AD = 50;
         const WELCOME_POINTS = 100;
-        const REFERRAL_POINTS_REFERRER = 20; // النقاط للمحيل
-        const REFERRAL_POINTS_REFERRED = 10; // النقاط للمدعو
-        const PENALTY_POINTS = 5; // زيادة العقوبة إلى 5 نقاط
+        const REFERRAL_POINTS_REFERRER = 20;
+        const REFERRAL_POINTS_REFERRED = 10;
+        const PENALTY_POINTS = 5;
         const POINTS_PER_DOLLAR = 20000;
         const ADMIN_EMAIL = "bo2584668@gmail.com";
+        
+        // Ad viewing limits
+        const MAX_VIEWS_PER_DAY = 10;
+        const MAX_VIEWS_PER_HOUR = 5;
+        const COOLDOWN_AFTER_HOUR = 60 * 60 * 1000; // 1 hour in milliseconds
+        const COOLDOWN_AFTER_DAY = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
         
         // Smart links
         const SMART_LINKS = [
@@ -1336,6 +1641,9 @@
         let penaltyApplied = false;
         let lastPenaltyCheck = Date.now();
         let tabSwitchCount = 0;
+        let currentTab = 'ads';
+        let chatMessages = [];
+        let adminChatUsers = {};
 
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
@@ -1368,6 +1676,9 @@
                 // Start balance update interval
                 setInterval(updateBalanceProgress, 1000);
                 
+                // Load chat messages
+                loadChatMessages();
+                
             } catch (error) {
                 console.error('App initialization error:', error);
                 showNotification('حدث خطأ في تحميل التطبيق', 'error');
@@ -1379,12 +1690,8 @@
         function handleGoogleSignIn(response) {
             showLoading();
             
-            // Decode the credential response
             const responsePayload = decodeJWTResponse(response.credential);
             
-            console.log('Google Sign In Response:', responsePayload);
-            
-            // Create user object
             const user = {
                 uid: responsePayload.sub,
                 email: responsePayload.email,
@@ -1393,10 +1700,7 @@
                 verified: responsePayload.email_verified
             };
             
-            // Save to localStorage
             localStorage.setItem('advista_user', JSON.stringify(user));
-            
-            // Handle login
             handleUserLogin(user);
         }
 
@@ -1415,13 +1719,8 @@
         function handleUserLogin(user) {
             try {
                 currentUser = user;
-                
-                // Create or update user data
                 createOrUpdateUser(user);
-                
-                // Show main page
                 showMainPage();
-                
                 showNotification(`مرحباً ${user.displayName}!`, 'success');
                 hideLoading();
                 
@@ -1434,29 +1733,22 @@
 
         // Create or update user
         function createOrUpdateUser(user) {
-            // Try to load existing user data
             let userDataStr = localStorage.getItem(`advista_userdata_${user.uid}`);
             const today = new Date().toDateString();
             
             if (!userDataStr) {
-                // New user - check for referral
+                // New user
                 const pendingReferral = localStorage.getItem('pending_referral');
                 let referralBonus = WELCOME_POINTS;
                 let referredBy = null;
                 
                 if (pendingReferral) {
-                    // Add referral bonus to new user
                     referralBonus += REFERRAL_POINTS_REFERRED;
                     referredBy = pendingReferral;
-                    
-                    // Award points to referrer (20 points)
                     awardReferralPoints(pendingReferral, user.email);
-                    
-                    // Clear pending referral
                     localStorage.removeItem('pending_referral');
                 }
                 
-                // Generate real referral code for new user
                 const referralCode = generateRealReferralCode(user.email);
                 
                 userData = {
@@ -1479,51 +1771,43 @@
                     lastLogin: new Date().toISOString(),
                     isAdmin: user.email === ADMIN_EMAIL,
                     penalties: 0,
-                    completedAds: [],
+                    adViews: {},
+                    todayViews: 0,
                     todayPoints: referralBonus,
-                    lastUpdate: new Date().toISOString()
+                    lastUpdate: new Date().toISOString(),
+                    chatUnread: 0
                 };
                 
-                // Save initial data
                 localStorage.setItem(`advista_userdata_${user.uid}`, JSON.stringify(userData));
                 localStorage.setItem(`advista_lastlogin_${user.uid}`, new Date().toISOString());
                 
-                // Save referral code mapping
                 const referralMap = JSON.parse(localStorage.getItem('advista_referral_map')) || {};
                 referralMap[referralCode] = user.uid;
                 localStorage.setItem('advista_referral_map', JSON.stringify(referralMap));
                 
-                // Record new user
                 recordNewUser();
                 
-                // Show welcome message
                 if (referredBy) {
                     showNotification(`🎉 مرحباً! حصلت على ${REFERRAL_POINTS_REFERRED} نقطة هدية لأنك انضممت عبر دعوة صديق!`, 'success');
                 }
                 
             } else {
-                // Existing user
                 userData = JSON.parse(userDataStr);
                 
-                // Check if it's a new day
                 const lastLoginDate = new Date(userData.lastLogin).toDateString();
                 if (lastLoginDate !== today) {
-                    // Reset daily points
-                    userData.todayPoints = 0;
-                    userData.completedAds = [];
+                    userData.todayViews = 0;
+                    userData.adViews = {};
                 }
                 
-                // Update last login
                 userData.lastLogin = new Date().toISOString();
                 localStorage.setItem(`advista_userdata_${user.uid}`, JSON.stringify(userData));
                 localStorage.setItem(`advista_lastlogin_${user.uid}`, userData.lastLogin);
             }
             
-            // Update UI
             updateUserUI();
             loadAds();
             
-            // Show admin panel for admin
             if (userData.isAdmin) {
                 showAdminPanel();
             }
@@ -1548,14 +1832,12 @@
                     if (referrerDataStr) {
                         const referrerData = JSON.parse(referrerDataStr);
                         
-                        // Award 20 points to referrer
                         referrerData.points += REFERRAL_POINTS_REFERRER;
                         referrerData.referralPoints += REFERRAL_POINTS_REFERRER;
                         referrerData.totalReferrals = (referrerData.totalReferrals || 0) + 1;
                         referrerData.todayPoints = (referrerData.todayPoints || 0) + REFERRAL_POINTS_REFERRER;
                         referrerData.lastUpdate = new Date().toISOString();
                         
-                        // Add referral to list
                         referrerData.referrals = referrerData.referrals || [];
                         referrerData.referrals.push({
                             email: referredEmail,
@@ -1563,10 +1845,8 @@
                             points: REFERRAL_POINTS_REFERRER
                         });
                         
-                        // Save updated referrer data
                         localStorage.setItem(`advista_userdata_${referrerId}`, JSON.stringify(referrerData));
                         
-                        // Show notification to referrer if they're currently logged in
                         if (currentUser && currentUser.uid === referrerId) {
                             showNotification(`🎉 حصلت على ${REFERRAL_POINTS_REFERRER} نقطة لإحالة جديدة!`, 'success');
                             updateUserUI();
@@ -1576,6 +1856,48 @@
             } catch (error) {
                 console.error('Error awarding referral points:', error);
             }
+        }
+
+        // Show tab
+        function showTab(tabName) {
+            // Hide all tabs
+            document.getElementById('adsTab').style.display = 'none';
+            document.getElementById('withdrawalTab').style.display = 'none';
+            document.getElementById('referralTab').style.display = 'none';
+            document.getElementById('chatTab').style.display = 'none';
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + 'Tab').style.display = 'block';
+            
+            // Add active class to selected tab
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                if (tab.textContent.includes(getTabName(tabName))) {
+                    tab.classList.add('active');
+                }
+            });
+            
+            currentTab = tabName;
+            
+            // Load chat messages if chat tab is selected
+            if (tabName === 'chat') {
+                loadChatMessages();
+            }
+        }
+
+        // Get tab name in Arabic
+        function getTabName(tabKey) {
+            const tabs = {
+                'ads': 'الإعلانات',
+                'withdrawal': 'سحب الأرباح',
+                'referral': 'دعوة الأصدقاء',
+                'chat': 'الشات الحي'
+            };
+            return tabs[tabKey] || tabKey;
         }
 
         // Show admin panel
@@ -1670,6 +1992,18 @@
                     </div>
                 </div>
                 
+                <div class="admin-chat-section">
+                    <h3 style="margin-bottom: 20px; color: var(--dark);">
+                        <i class="fas fa-comments"></i> إدارة المحادثات
+                    </h3>
+                    
+                    <div style="background: white; padding: 25px; border-radius: var(--radius); margin-bottom: 25px; box-shadow: var(--shadow);">
+                        <div class="chat-user-list" id="chatUserList">
+                            <!-- Chat users will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+                
                 <div style="margin-top: 40px;">
                     <h3 style="margin-bottom: 20px; color: var(--dark);">
                         <i class="fas fa-users"></i> أفضل 10 دعاة
@@ -1696,12 +2030,12 @@
             loadAdminData();
             loadTopReferrers();
             loadAdminAds();
+            loadAdminChatUsers();
         }
 
         // Record new user
         function recordNewUser() {
             try {
-                // Store in local storage for demo
                 const users = JSON.parse(localStorage.getItem('advista_total_users')) || [];
                 users.push({
                     uid: currentUser.uid,
@@ -1719,7 +2053,6 @@
         function updateUserUI() {
             if (!userData) return;
             
-            // User info
             document.getElementById('userName').textContent = userData.displayName;
             document.getElementById('userEmail').textContent = userData.email;
             document.getElementById('greetingName').textContent = userData.displayName.split(' ')[0];
@@ -1730,35 +2063,30 @@
                 document.getElementById('userAvatar').src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(userData.displayName) + '&background=random';
             }
             
-            // Points and stats
             document.getElementById('userPoints').textContent = userData.points.toLocaleString();
             document.getElementById('totalEarnings').textContent = `$${(userData.totalEarned || 0).toFixed(2)}`;
             document.getElementById('adsWatched').textContent = userData.adsWatched || 0;
             document.getElementById('timeWatched').textContent = Math.floor((userData.timeWatched || 0) / 60);
             document.getElementById('referralsCount').textContent = userData.totalReferrals || 0;
             
-            // Referral stats
             document.getElementById('totalReferrals').textContent = userData.totalReferrals || 0;
             document.getElementById('referralPoints').textContent = userData.referralPoints || 0;
             
-            // Today earnings
             document.getElementById('todayEarnings').textContent = userData.todayPoints || 0;
             document.getElementById('lastUpdateTime').textContent = 'الآن';
             
-            // Update referral list
             updateReferralList();
             
-            // Update referral code display
             if (userData.referralCode) {
                 document.getElementById('referralCodeText').textContent = userData.referralCode;
                 document.getElementById('modalReferralCode').textContent = userData.referralCode;
+                document.getElementById('tabReferralCode').textContent = userData.referralCode;
                 document.getElementById('referralLink').textContent = window.location.origin + window.location.pathname + '?ref=' + userData.referralCode;
+                document.getElementById('tabReferralLink').textContent = window.location.origin + window.location.pathname + '?ref=' + userData.referralCode;
                 
-                // Show referral code container on login page
                 document.getElementById('referralCodeContainer').style.display = 'block';
             }
             
-            // Update balance
             updateBalanceDisplay();
         }
 
@@ -1769,8 +2097,6 @@
             const withdrawableDollars = (userData.points / POINTS_PER_DOLLAR).toFixed(2);
             document.getElementById('withdrawableBalance').textContent = `$${withdrawableDollars}`;
             document.getElementById('pointsBalance').textContent = userData.points.toLocaleString();
-            
-            // Update progress bar
             updateBalanceProgress();
         }
 
@@ -1819,20 +2145,16 @@
 
         // Initialize stats
         function initializeStats() {
-            // These are static for demo
             document.getElementById('totalUsers').textContent = '4,523';
             document.getElementById('totalWithdrawn').textContent = '$2,845';
         }
 
-        // Load ads
+        // Load ads with limits
         function loadAds() {
             const adsGrid = document.getElementById('adsGrid');
             adsGrid.innerHTML = '';
             
-            // Load saved ads
             const savedAds = JSON.parse(localStorage.getItem('advista_ads')) || [];
-            
-            // Use default smart links if no saved ads
             const allAds = savedAds.length > 0 ? savedAds : SMART_LINKS.map((link, index) => ({
                 link: link,
                 title: `إعلان ذكي ${index + 1}`,
@@ -1841,7 +2163,6 @@
                 isDefault: true
             }));
             
-            // Add more default ads if needed
             const defaultTitles = [
                 "عروض تقنية مميزة",
                 "تخفيضات حصرية", 
@@ -1855,15 +2176,40 @@
             const defaultColors = ["#3b82f6", "#10b981", "#8b5cf6", "#f59e0b", "#ef4444", "#06b6d4"];
             
             allAds.forEach((ad, index) => {
-                // Check if ad is already watched today
-                const today = new Date().toDateString();
-                const isWatched = userData.completedAds?.some(completed => 
-                    completed.adId === index && 
-                    new Date(completed.date).toDateString() === today
-                );
-                
+                const adLimits = checkAdLimits(index);
                 const adCard = document.createElement('div');
                 adCard.className = 'ad-card' + (ad.addedBy === ADMIN_EMAIL ? ' admin-ad' : '');
+                
+                let buttonHtml = '';
+                let limitsHtml = '';
+                
+                if (adLimits.canWatch) {
+                    buttonHtml = `
+                        <button class="watch-btn" onclick="startWatchingAd(${index})" id="watchBtn${index}">
+                            <i class="fas fa-play"></i> مشاهدة الإعلان
+                        </button>
+                    `;
+                    
+                    limitsHtml = `
+                        <div class="ad-limits">
+                            ${adLimits.remainingToday} مشاهدة متبقية اليوم | ${adLimits.remainingHour} متبقية هذه الساعة
+                        </div>
+                    `;
+                } else {
+                    buttonHtml = `
+                        <button class="watch-btn" disabled>
+                            <i class="fas fa-clock"></i> ${adLimits.message}
+                        </button>
+                    `;
+                    
+                    limitsHtml = `
+                        <div class="cooldown-info">
+                            <i class="fas fa-hourglass-half"></i>
+                            ${adLimits.message}
+                        </div>
+                    `;
+                }
+                
                 adCard.innerHTML = `
                     <div class="ad-category" style="background: ${defaultColors[index % defaultColors.length]}20; color: ${defaultColors[index % defaultColors.length]};">
                         ${ad.category || defaultCategories[index % defaultCategories.length]}
@@ -1873,18 +2219,81 @@
                         شاهد هذا الإعلان لمدة 30 ثانية للحصول على ${ad.points} نقطة
                     </p>
                     <div class="ad-reward">+${ad.points} نقطة</div>
-                    ${isWatched ? 
-                        '<div style="background: var(--warning); color: white; padding: 8px 20px; border-radius: 50px; font-weight: 600; margin: 15px 0; display: inline-block;">✓ شوهد اليوم</div>' :
-                        ''
-                    }
-                    <button class="watch-btn" onclick="startWatchingAd(${index})" id="watchBtn${index}" ${isWatched ? 'disabled' : ''}>
-                        <i class="fas fa-play"></i> ${isWatched ? 'شوهد اليوم' : 'مشاهدة الإعلان'}
-                    </button>
+                    ${limitsHtml}
+                    ${buttonHtml}
                     <input type="hidden" id="adLink${index}" value="${ad.link}">
                     <input type="hidden" id="adPoints${index}" value="${ad.points}">
                 `;
                 adsGrid.appendChild(adCard);
             });
+        }
+
+        // Check ad viewing limits
+        function checkAdLimits(adIndex) {
+            const now = Date.now();
+            const today = new Date().toDateString();
+            
+            // Initialize ad views if not exists
+            if (!userData.adViews) userData.adViews = {};
+            if (!userData.adViews[adIndex]) userData.adViews[adIndex] = [];
+            
+            const adViews = userData.adViews[adIndex];
+            
+            // Filter today's views
+            const todayViews = adViews.filter(view => 
+                new Date(view.timestamp).toDateString() === today
+            );
+            
+            // Filter last hour views
+            const oneHourAgo = now - (60 * 60 * 1000);
+            const lastHourViews = adViews.filter(view => 
+                view.timestamp > oneHourAgo
+            );
+            
+            // Check daily limit (10 views)
+            if (todayViews.length >= MAX_VIEWS_PER_DAY) {
+                // Check if 24 hours have passed since first view today
+                const firstViewToday = todayViews[0];
+                if (firstViewToday && (now - firstViewToday.timestamp) >= COOLDOWN_AFTER_DAY) {
+                    // Reset for new day
+                    userData.adViews[adIndex] = adViews.filter(view => 
+                        view.timestamp > now - COOLDOWN_AFTER_DAY
+                    );
+                    localStorage.setItem(`advista_userdata_${currentUser.uid}`, JSON.stringify(userData));
+                    return checkAdLimits(adIndex); // Recursive call after reset
+                }
+                
+                const nextAvailable = new Date(firstViewToday.timestamp + COOLDOWN_AFTER_DAY);
+                const hoursLeft = Math.ceil((nextAvailable - now) / (60 * 60 * 1000));
+                
+                return {
+                    canWatch: false,
+                    message: `انتظر ${hoursLeft} ساعة`,
+                    remainingToday: 0,
+                    remainingHour: 0
+                };
+            }
+            
+            // Check hourly limit (5 views)
+            if (lastHourViews.length >= MAX_VIEWS_PER_HOUR) {
+                const firstViewThisHour = lastHourViews[0];
+                const nextAvailable = new Date(firstViewThisHour.timestamp + COOLDOWN_AFTER_HOUR);
+                const minutesLeft = Math.ceil((nextAvailable - now) / (60 * 1000));
+                
+                return {
+                    canWatch: false,
+                    message: `انتظر ${minutesLeft} دقيقة`,
+                    remainingToday: MAX_VIEWS_PER_DAY - todayViews.length,
+                    remainingHour: 0
+                };
+            }
+            
+            return {
+                canWatch: true,
+                message: '',
+                remainingToday: MAX_VIEWS_PER_DAY - todayViews.length,
+                remainingHour: MAX_VIEWS_PER_HOUR - lastHourViews.length
+            };
         }
 
         // Load admin ads
@@ -1993,7 +2402,6 @@
                     editedBy: currentUser.email
                 };
             } else {
-                // Default ad
                 savedAds.push({
                     title: newTitle,
                     link: newLink,
@@ -2037,7 +2445,7 @@
             }
         }
 
-        // Start watching ad
+        // Start watching ad with limits
         function startWatchingAd(adIndex) {
             if (isWatchingAd) {
                 showNotification('⏳ جاري مشاهدة إعلان حالياً', 'warning');
@@ -2049,15 +2457,16 @@
                 return;
             }
             
-            // Check if ad was already watched today
-            const today = new Date().toDateString();
-            const isWatched = userData.completedAds?.some(completed => 
-                completed.adId === adIndex && 
-                new Date(completed.date).toDateString() === today
-            );
+            // Check ad limits
+            const adLimits = checkAdLimits(adIndex);
+            if (!adLimits.canWatch) {
+                showNotification(`❌ ${adLimits.message}`, 'error');
+                return;
+            }
             
-            if (isWatched) {
-                showNotification('❌ لقد شاهدت هذا الإعلان اليوم بالفعل', 'error');
+            // Check daily total views limit
+            if (userData.todayViews >= MAX_VIEWS_PER_DAY) {
+                showNotification('❌ لقد استنفدت عدد المشاهدات اليومية (10 مشاهدة)', 'error');
                 return;
             }
             
@@ -2119,12 +2528,10 @@
             
             const now = Date.now();
             
-            // Check if page is hidden
             if (document.hidden) {
                 pageHidden = true;
                 tabSwitchCount++;
                 
-                // Apply penalty if hidden for more than 3 seconds
                 if (now - lastPenaltyCheck > 3000) {
                     applyPenalty('تم اكتشاف تغيير التبويب!');
                     lastPenaltyCheck = now;
@@ -2134,7 +2541,6 @@
                 lastPenaltyCheck = now;
             }
             
-            // Check if ad window is closed
             if (adWindow && adWindow.closed) {
                 applyPenalty('تم إغلاق نافذة الإعلان!');
             }
@@ -2166,10 +2572,7 @@
         // Handle before unload
         function handleBeforeUnload(e) {
             if (isWatchingAd && !adCompleted) {
-                // Apply penalty if user tries to close the page
                 applyPenalty('تم محاولة إغلاق الصفحة!');
-                
-                // Show warning message
                 e.preventDefault();
                 e.returnValue = 'إذا أغلقت الصفحة الآن، سيتم خصم 5 نقاط من رصيدك. هل أنت متأكد؟';
                 return e.returnValue;
@@ -2181,31 +2584,22 @@
             if (penaltyApplied || !isWatchingAd || adCompleted) return;
             
             penaltyApplied = true;
-            
-            // Stop timer
             clearInterval(timerInterval);
             
-            // Deduct penalty points (5 points)
             userData.points = Math.max(0, userData.points - PENALTY_POINTS);
             userData.penalties = (userData.penalties || 0) + 1;
             
-            // Save user data
             localStorage.setItem(`advista_userdata_${currentUser.uid}`, JSON.stringify(userData));
             
-            // Show penalty notice
             document.getElementById('penaltyText').textContent = `${reason} تم خصم ${PENALTY_POINTS} نقطة!`;
             document.getElementById('penaltyNotice').style.display = 'block';
             document.getElementById('warningMessage').style.display = 'none';
             
-            // Update UI
             updateUserUI();
-            
-            // Record penalty
             recordPenalty(reason);
             
             showNotification(`⚠️ ${reason} - تم خصم ${PENALTY_POINTS} نقطة`, 'warning');
             
-            // Reset after 5 seconds
             setTimeout(() => {
                 resetAdWatch();
             }, 5000);
@@ -2233,7 +2627,7 @@
             }
         }
 
-        // Complete ad watch
+        // Complete ad watch with limits tracking
         function completeAdWatch() {
             if (adCompleted) return;
             
@@ -2241,7 +2635,6 @@
             isWatchingAd = false;
             adCompleted = true;
             
-            // Close ad window if still open
             if (adWindow && !adWindow.closed) {
                 try {
                     adWindow.close();
@@ -2250,22 +2643,18 @@
                 }
             }
             
-            // Calculate watch time
             const watchTime = Math.floor((Date.now() - adStartTime) / 1000);
             
-            // Advanced verification - user must watch at least 28 seconds
-            if (watchTime < 28) { // Increased from 25 to 28 seconds
+            if (watchTime < 28) {
                 applyPenalty('لم تكمل مشاهدة الإعلان المطلوبة!');
                 return;
             }
             
-            // Check for excessive tab switching
             if (tabSwitchCount > 2) {
                 applyPenalty('تم تغيير التبويب عدة مرات!');
                 return;
             }
             
-            // Show points earned
             document.getElementById('earnedPoints').textContent = `+${currentAdPoints} نقطة`;
             document.getElementById('pointsEarned').style.display = 'block';
             document.getElementById('warningMessage').style.display = 'none';
@@ -2279,16 +2668,16 @@
                 userData.timeWatched = (userData.timeWatched || 0) + 30;
                 userData.totalEarned = (userData.totalEarned || 0) + (currentAdPoints / POINTS_PER_DOLLAR);
                 userData.todayPoints = (userData.todayPoints || 0) + currentAdPoints;
+                userData.todayViews = (userData.todayViews || 0) + 1;
                 userData.lastUpdate = new Date().toISOString();
                 
-                // Mark ad as completed today
-                userData.completedAds = userData.completedAds || [];
-                userData.completedAds.push({
-                    adId: currentAdId,
-                    date: new Date().toISOString(),
-                    points: currentAdPoints,
-                    watchTime: watchTime,
-                    tabSwitches: tabSwitchCount
+                // Record ad view with timestamp
+                if (!userData.adViews) userData.adViews = {};
+                if (!userData.adViews[currentAdId]) userData.adViews[currentAdId] = [];
+                
+                userData.adViews[currentAdId].push({
+                    timestamp: Date.now(),
+                    points: currentAdPoints
                 });
                 
                 // Save to localStorage
@@ -2307,10 +2696,9 @@
                 showNotification('حدث خطأ أثناء معالجة النقاط', 'error');
             }
             
-            // Reset after 5 seconds
             setTimeout(() => {
                 resetAdWatch();
-                loadAds(); // Reload ads to update "watched today" status
+                loadAds(); // Reload ads to update limits
             }, 5000);
         }
 
@@ -2319,13 +2707,11 @@
             document.getElementById('timerContainer').style.display = 'none';
             document.getElementById('pointsEarned').style.display = 'none';
             
-            // Re-enable watch buttons
             document.querySelectorAll('.watch-btn').forEach(btn => {
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-play"></i> مشاهدة الإعلان';
             });
             
-            // Reset state
             isWatchingAd = false;
             currentAdId = null;
             adCompleted = false;
@@ -2359,13 +2745,226 @@
                     tabSwitches: tabSwitchCount
                 };
                 
-                // Store in local storage
                 const watches = JSON.parse(localStorage.getItem('advista_ad_watches')) || [];
                 watches.push(watchData);
                 localStorage.setItem('advista_ad_watches', JSON.stringify(watches));
                 
             } catch (error) {
                 console.error('Error recording ad watch:', error);
+            }
+        }
+
+        // Chat functions
+        function loadChatMessages() {
+            const chatMessagesDiv = document.getElementById('chatMessages');
+            const noMessagesDiv = document.getElementById('noMessages');
+            
+            if (!chatMessagesDiv) return;
+            
+            // Load chat messages from localStorage
+            const chatKey = userData.isAdmin ? 
+                `advista_admin_chat_${currentUser.uid}` : 
+                `advista_chat_${currentUser.uid}`;
+            
+            const messages = JSON.parse(localStorage.getItem(chatKey)) || [];
+            chatMessages = messages;
+            
+            if (messages.length === 0) {
+                noMessagesDiv.style.display = 'block';
+                chatMessagesDiv.innerHTML = '';
+            } else {
+                noMessagesDiv.style.display = 'none';
+                chatMessagesDiv.innerHTML = '';
+                
+                messages.forEach(msg => {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = `message ${msg.sender === 'user' ? 'user' : 'admin'}`;
+                    
+                    const time = new Date(msg.timestamp).toLocaleTimeString('ar-EG', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    
+                    messageDiv.innerHTML = `
+                        <div class="message-sender">
+                            ${msg.sender === 'user' ? userData.displayName : 'الإدمن'}
+                        </div>
+                        <div class="message-content">
+                            ${msg.text}
+                        </div>
+                        <div class="message-time">
+                            ${time}
+                        </div>
+                    `;
+                    
+                    chatMessagesDiv.appendChild(messageDiv);
+                });
+                
+                // Scroll to bottom
+                chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+            }
+            
+            // Mark messages as read
+            if (!userData.isAdmin) {
+                userData.chatUnread = 0;
+                localStorage.setItem(`advista_userdata_${currentUser.uid}`, JSON.stringify(userData));
+                updateUserUI();
+            }
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            
+            if (!text) return;
+            
+            const message = {
+                sender: 'user',
+                text: text,
+                timestamp: new Date().toISOString(),
+                userId: currentUser.uid,
+                userName: userData.displayName,
+                read: false
+            };
+            
+            // Save message for user
+            const userChatKey = `advista_chat_${currentUser.uid}`;
+            let userMessages = JSON.parse(localStorage.getItem(userChatKey)) || [];
+            userMessages.push(message);
+            localStorage.setItem(userChatKey, JSON.stringify(userMessages));
+            
+            // Save message for admin
+            const adminChatKey = `advista_admin_chat_${currentUser.uid}`;
+            let adminMessages = JSON.parse(localStorage.getItem(adminChatKey)) || [];
+            adminMessages.push(message);
+            localStorage.setItem(adminChatKey, JSON.stringify(adminMessages));
+            
+            // Notify admin
+            notifyAdminNewMessage();
+            
+            // Clear input
+            input.value = '';
+            
+            // Reload messages
+            loadChatMessages();
+            
+            // Show notification
+            showNotification('✅ تم إرسال الرسالة', 'success');
+        }
+
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendChatMessage();
+            }
+        }
+
+        function notifyAdminNewMessage() {
+            // Update admin chat list
+            if (userData.isAdmin) {
+                loadAdminChatUsers();
+            } else {
+                // Update unread count for admin
+                const adminUsers = JSON.parse(localStorage.getItem('advista_admin_users')) || {};
+                if (!adminUsers[currentUser.uid]) {
+                    adminUsers[currentUser.uid] = {
+                        email: userData.email,
+                        name: userData.displayName,
+                        unread: 0
+                    };
+                }
+                adminUsers[currentUser.uid].unread = (adminUsers[currentUser.uid].unread || 0) + 1;
+                localStorage.setItem('advista_admin_users', JSON.stringify(adminUsers));
+            }
+        }
+
+        function loadAdminChatUsers() {
+            if (!userData.isAdmin) return;
+            
+            const chatUserList = document.getElementById('chatUserList');
+            if (!chatUserList) return;
+            
+            // Get all users with chat messages
+            const adminUsers = JSON.parse(localStorage.getItem('advista_admin_users')) || {};
+            const userList = [];
+            
+            // Scan localStorage for chat messages
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('advista_chat_')) {
+                    const userId = key.replace('advista_chat_', '');
+                    const userDataStr = localStorage.getItem(`advista_userdata_${userId}`);
+                    
+                    if (userDataStr) {
+                        const user = JSON.parse(userDataStr);
+                        const messages = JSON.parse(localStorage.getItem(key)) || [];
+                        const lastMessage = messages[messages.length - 1];
+                        
+                        userList.push({
+                            id: userId,
+                            name: user.displayName,
+                            email: user.email,
+                            unread: adminUsers[userId]?.unread || 0,
+                            lastMessage: lastMessage,
+                            avatar: user.photoURL
+                        });
+                    }
+                }
+            }
+            
+            // Sort by last message time
+            userList.sort((a, b) => {
+                const timeA = a.lastMessage ? new Date(a.lastMessage.timestamp).getTime() : 0;
+                const timeB = b.lastMessage ? new Date(b.lastMessage.timestamp).getTime() : 0;
+                return timeB - timeA;
+            });
+            
+            if (userList.length === 0) {
+                chatUserList.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 20px;">لا توجد محادثات</p>';
+                return;
+            }
+            
+            chatUserList.innerHTML = '';
+            userList.forEach(user => {
+                const userItem = document.createElement('div');
+                userItem.className = 'chat-user-item';
+                userItem.onclick = () => openAdminChat(user.id);
+                
+                const lastMessageTime = user.lastMessage ? 
+                    new Date(user.lastMessage.timestamp).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }) : 
+                    '';
+                
+                userItem.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        ${user.avatar ? `<img src="${user.avatar}" style="width: 40px; height: 40px; border-radius: 50%;">` : 
+                            `<div style="width: 40px; height: 40px; border-radius: 50%; background: var(--accent); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold;">${user.name.charAt(0)}</div>`}
+                        <div>
+                            <div style="font-weight: 600;">${user.name}</div>
+                            <div style="font-size: 0.8rem; color: var(--gray);">${user.email}</div>
+                            ${user.lastMessage ? 
+                                `<div style="font-size: 0.8rem; margin-top: 2px; color: var(--gray);">${user.lastMessage.text.substring(0, 30)}${user.lastMessage.text.length > 30 ? '...' : ''}</div>` : ''}
+                        </div>
+                    </div>
+                    <div style="text-align: left;">
+                        ${lastMessageTime ? `<div style="font-size: 0.8rem; color: var(--gray);">${lastMessageTime}</div>` : ''}
+                        ${user.unread > 0 ? `<div class="unread-badge">${user.unread}</div>` : ''}
+                    </div>
+                `;
+                
+                chatUserList.appendChild(userItem);
+            });
+        }
+
+        function openAdminChat(userId) {
+            // This function would open a chat window for the admin to chat with a specific user
+            // For now, we'll just show a message
+            showNotification(`فتح محادثة مع المستخدم ${userId}`, 'info');
+            
+            // Mark messages as read
+            const adminUsers = JSON.parse(localStorage.getItem('advista_admin_users')) || {};
+            if (adminUsers[userId]) {
+                adminUsers[userId].unread = 0;
+                localStorage.setItem('advista_admin_users', JSON.stringify(adminUsers));
+                loadAdminChatUsers();
             }
         }
 
@@ -2387,7 +2986,6 @@
             const points = amount * POINTS_PER_DOLLAR;
             const vodafoneNumber = document.getElementById('vodafoneNumber').value.trim();
             
-            // Validation
             if (userData.points < points) {
                 showNotification('❌ لا تملك نقاطاً كافية للسحب', 'error');
                 return;
@@ -2408,7 +3006,6 @@
                 btn.disabled = true;
                 btn.innerHTML = '<div class="spinner" style="width: 20px; height: 20px;"></div> جاري الإرسال...';
                 
-                // Create withdrawal data
                 const withdrawalData = {
                     id: Date.now().toString(),
                     userId: currentUser.uid,
@@ -2423,25 +3020,20 @@
                     createdAt: new Date().toISOString()
                 };
                 
-                // Deduct points from user
                 userData.points -= points;
                 userData.withdrawals = userData.withdrawals || [];
                 userData.withdrawals.push(withdrawalData.id);
                 
-                // Save user data
                 localStorage.setItem(`advista_userdata_${currentUser.uid}`, JSON.stringify(userData));
                 
-                // Save withdrawal request
                 const withdrawals = JSON.parse(localStorage.getItem('advista_withdrawals')) || [];
                 withdrawals.push(withdrawalData);
                 localStorage.setItem('advista_withdrawals', JSON.stringify(withdrawals));
                 
-                // Reset form
                 document.getElementById('withdrawAmount').value = 1;
                 document.getElementById('vodafoneNumber').value = '';
                 updateRequiredPoints();
                 
-                // Update UI
                 updateUserUI();
                 
                 btn.disabled = false;
@@ -2449,7 +3041,6 @@
                 
                 showNotification(`✅ تم إرسال طلب السحب بنجاح!`, 'success');
                 
-                // Reload admin data if admin is viewing
                 if (userData.isAdmin) {
                     loadAdminData();
                 }
@@ -2469,7 +3060,6 @@
             if (!userData || !userData.isAdmin) return;
             
             try {
-                // Load pending withdrawals
                 const withdrawals = JSON.parse(localStorage.getItem('advista_withdrawals')) || [];
                 const pendingWithdrawals = withdrawals.filter(w => w.status === 'pending');
                 
@@ -2518,7 +3108,6 @@
                     }
                 }
                 
-                // Update admin stats
                 const allUsers = [];
                 for (let i = 0; i < localStorage.length; i++) {
                     const key = localStorage.key(i);
@@ -2532,7 +3121,7 @@
                     .reduce((sum, w) => sum + w.amount, 0);
                 
                 const adWatches = JSON.parse(localStorage.getItem('advista_ad_watches')) || [];
-                const siteRevenue = totalWithdrawn * 0.1; // 10% commission
+                const siteRevenue = totalWithdrawn * 0.1;
                 
                 document.getElementById('adminTotalUsers').textContent = allUsers.length;
                 document.getElementById('adminTotalWithdrawals').textContent = `$${totalWithdrawn.toFixed(2)}`;
@@ -2553,7 +3142,6 @@
                 const topReferrers = document.getElementById('topReferrers');
                 if (!topReferrers) return;
                 
-                // Get all users
                 const allUsers = [];
                 for (let i = 0; i < localStorage.length; i++) {
                     const key = localStorage.key(i);
@@ -2565,7 +3153,6 @@
                     }
                 }
                 
-                // Sort by referrals
                 allUsers.sort((a, b) => (b.totalReferrals || 0) - (a.totalReferrals || 0));
                 
                 topReferrers.innerHTML = `
@@ -2615,7 +3202,6 @@
                 return;
             }
             
-            // Save new ad
             const newAd = {
                 link: newLink,
                 title: newTitle,
@@ -2626,16 +3212,13 @@
                 isDefault: false
             };
             
-            // Save to localStorage
             const ads = JSON.parse(localStorage.getItem('advista_ads')) || [];
             ads.push(newAd);
             localStorage.setItem('advista_ads', JSON.stringify(ads));
             
-            // Reload ads
             loadAds();
             loadAdminAds();
             
-            // Reset fields
             document.getElementById('newAdLink').value = '';
             document.getElementById('newAdTitle').value = '';
             document.getElementById('newAdPoints').value = '50';
@@ -2649,7 +3232,6 @@
             if (!confirm('هل أنت متأكد من قبول طلب السحب وإرسال المبلغ؟')) return;
             
             try {
-                // Get withdrawals
                 const withdrawals = JSON.parse(localStorage.getItem('advista_withdrawals')) || [];
                 const withdrawalIndex = withdrawals.findIndex(w => w.id === withdrawalId);
                 
@@ -2658,12 +3240,10 @@
                     return;
                 }
                 
-                // Update withdrawal status
                 withdrawals[withdrawalIndex].status = 'completed';
                 withdrawals[withdrawalIndex].approvedAt = new Date().toISOString();
                 withdrawals[withdrawalIndex].approvedBy = currentUser.email;
                 
-                // Save back
                 localStorage.setItem('advista_withdrawals', JSON.stringify(withdrawals));
                 
                 showNotification(`✅ تم قبول طلب السحب وإرسال $${withdrawals[withdrawalIndex].amount}`, 'success');
@@ -2681,7 +3261,6 @@
             if (!reason) return;
             
             try {
-                // Get withdrawals
                 const withdrawals = JSON.parse(localStorage.getItem('advista_withdrawals')) || [];
                 const withdrawalIndex = withdrawals.findIndex(w => w.id === withdrawalId);
                 
@@ -2692,7 +3271,6 @@
                 
                 const withdrawal = withdrawals[withdrawalIndex];
                 
-                // Return points to user
                 const userDataStr = localStorage.getItem(`advista_userdata_${withdrawal.userId}`);
                 if (userDataStr) {
                     const userData = JSON.parse(userDataStr);
@@ -2700,13 +3278,11 @@
                     localStorage.setItem(`advista_userdata_${withdrawal.userId}`, JSON.stringify(userData));
                 }
                 
-                // Update withdrawal status
                 withdrawals[withdrawalIndex].status = 'rejected';
                 withdrawals[withdrawalIndex].rejectReason = reason;
                 withdrawals[withdrawalIndex].rejectedAt = new Date().toISOString();
                 withdrawals[withdrawalIndex].rejectedBy = currentUser.email;
                 
-                // Save back
                 localStorage.setItem('advista_withdrawals', JSON.stringify(withdrawals));
                 
                 showNotification('❌ تم رفض طلب السحب وإرجاع النقاط', 'warning');
@@ -2723,6 +3299,7 @@
             loadAdminData();
             loadTopReferrers();
             loadAdminAds();
+            loadAdminChatUsers();
             showNotification('🔄 تم تحديث بيانات الإدارة', 'success');
         }
 
@@ -2733,7 +3310,6 @@
             if (!confirm('❌ تأكيد نهائي: جميع البيانات ستُحذف ولا يمكن استعادتها!')) return;
             
             try {
-                // Clear all app data
                 const keysToKeep = ['advista_user', `advista_userdata_${currentUser.uid}`];
                 
                 for (let i = 0; i < localStorage.length; i++) {
@@ -2758,7 +3334,6 @@
             try {
                 const allData = {};
                 
-                // Collect all advista data
                 for (let i = 0; i < localStorage.length; i++) {
                     const key = localStorage.key(i);
                     if (key.startsWith('advista_')) {
@@ -2766,7 +3341,6 @@
                     }
                 }
                 
-                // Create and download JSON file
                 const dataStr = JSON.stringify(allData, null, 2);
                 const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
                 
@@ -2833,15 +3407,12 @@
 
         // Sign out
         function handleSignOut() {
-            // Clear local storage
             localStorage.removeItem('advista_user');
             currentUser = null;
             userData = null;
             
-            // Hide Google One Tap
             google.accounts.id.disableAutoSelect();
             
-            // Show login page
             showLoginPage();
             
             showNotification('تم تسجيل الخروج بنجاح', 'success');
@@ -2899,4 +3470,4 @@
         updateRequiredPoints();
     </script>
 </body>
-        </html>
+    </html>
