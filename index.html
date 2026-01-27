@@ -8,8 +8,8 @@
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
-        import { getFirestore, collection, doc, setDoc, getDoc, updateDoc, arrayUnion, query, where, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+        import { getFirestore, collection, doc, setDoc, getDoc, updateDoc, arrayUnion, query, where, getDocs, onSnapshot, increment } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
         import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-analytics.js";
 
         // تكوين Firebase
@@ -30,81 +30,104 @@
         const analytics = getAnalytics(app);
         const googleProvider = new GoogleAuthProvider();
 
-        // جعل المتغيرات عامة
-        window.firebaseAuth = auth;
-        window.firebaseDB = db;
-        window.googleProvider = googleProvider;
-        window.signInWithGoogle = signInWithPopup;
-        window.onAuthStateChanged = onAuthStateChanged;
-        window.firebaseAnalytics = analytics;
-        window.logEvent = logEvent;
-        
-        // Firebase Functions
-        window.firebaseFunctions = {
-            collection,
-            doc,
-            setDoc,
-            getDoc,
-            updateDoc,
-            arrayUnion,
-            query,
-            where,
-            getDocs,
-            onSnapshot
+        // تصدير المتغيرات للاستخدام العام
+        window.firebaseApp = {
+            auth: auth,
+            db: db,
+            analytics: analytics,
+            googleProvider: googleProvider,
+            signInWithPopup: signInWithPopup,
+            signOut: signOut,
+            firestore: {
+                collection: collection,
+                doc: doc,
+                setDoc: setDoc,
+                getDoc: getDoc,
+                updateDoc: updateDoc,
+                arrayUnion: arrayUnion,
+                query: query,
+                where: where,
+                getDocs: getDocs,
+                onSnapshot: onSnapshot,
+                increment: increment
+            }
         };
     </script>
     
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    
     <!-- Styles -->
     <style>
+        /* Reset وتنسيقات عامة */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         :root {
             --primary: #E60000;
+            --primary-dark: #CC0000;
             --secondary: #10b981;
             --accent: #3b82f6;
+            --warning: #f59e0b;
             --dark: #1f2937;
             --light: #f9fafb;
+            --gray: #6b7280;
             --gold: #fbbf24;
+            --success: #10b981;
+            --danger: #ef4444;
         }
 
         body {
+            font-family: 'Segoe UI', 'Cairo', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             color: #333;
+            line-height: 1.6;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 0 15px;
         }
 
         /* Header */
         .header {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px 30px;
+            margin: 20px auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             font-size: 1.8rem;
-            font-weight: bold;
+            font-weight: 800;
             color: var(--primary);
         }
 
+        .logo-icon {
+            font-size: 2.5rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        /* User Info */
         .user-info {
             display: flex;
             align-items: center;
@@ -116,260 +139,484 @@
             color: white;
             padding: 10px 20px;
             border-radius: 50px;
-            font-weight: bold;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+            transition: transform 0.3s;
+        }
+
+        .points-display:hover {
+            transform: scale(1.05);
+        }
+
+        .user-profile {
             display: flex;
             align-items: center;
             gap: 10px;
+            background: var(--light);
+            padding: 8px 15px;
+            border-radius: 50px;
         }
 
-        /* Dashboard Grid */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid var(--primary);
+            object-fit: cover;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            text-align: center;
+            padding: 60px 20px;
+            color: white;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            margin: 30px auto;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-section h1 {
+            font-size: 3.5rem;
             margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
-        .stats-card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        .hero-section p {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
         }
 
-        .stats-card h2 {
-            color: var(--dark);
-            margin-bottom: 20px;
-            font-size: 1.5rem;
-        }
-
+        /* Stats Grid */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
+            margin: 40px 0;
         }
 
-        .stat-item {
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
             text-align: center;
-            padding: 15px;
-            background: var(--light);
-            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .stat-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
         }
 
         .stat-value {
-            font-size: 2rem;
-            font-weight: bold;
+            font-size: 2.5rem;
+            font-weight: 800;
             color: var(--primary);
-            margin-bottom: 5px;
+            margin: 10px 0;
         }
 
         .stat-label {
-            color: #666;
-            font-size: 0.9rem;
+            color: var(--gray);
+            font-size: 1rem;
+        }
+
+        /* Features Section */
+        .features-section {
+            margin: 60px 0;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2rem;
         }
 
         /* Ads Container */
-        .ads-container {
+        .ads-section {
             background: white;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px 0;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         }
 
         .ads-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
+            gap: 25px;
+            margin-top: 30px;
         }
 
         .ad-card {
             border: 2px solid #e5e7eb;
-            border-radius: 10px;
-            padding: 20px;
+            border-radius: 12px;
+            padding: 25px;
             transition: all 0.3s;
-            cursor: pointer;
+            background: var(--light);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ad-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
         }
 
         .ad-card:hover {
             border-color: var(--primary);
             transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(230, 0, 0, 0.1);
+            box-shadow: 0 10px 20px rgba(230, 0, 0, 0.1);
         }
 
         .ad-reward {
-            background: var(--secondary);
+            background: var(--success);
             color: white;
-            padding: 8px 15px;
+            padding: 8px 20px;
             border-radius: 20px;
-            font-weight: bold;
+            font-weight: 700;
             display: inline-block;
-            margin: 10px 0;
+            margin: 15px 0;
         }
 
         /* Timer */
         .timer-container {
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
-            padding: 20px;
-            border-radius: 10px;
+            padding: 30px;
+            border-radius: 15px;
             text-align: center;
-            margin: 20px 0;
+            margin: 30px 0;
             display: none;
+            box-shadow: 0 10px 30px rgba(230, 0, 0, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
         }
 
         .timer {
-            font-size: 3rem;
-            font-weight: bold;
-            margin: 10px 0;
+            font-size: 4rem;
+            font-weight: 800;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         /* Withdrawal Section */
-        .withdrawal-card {
+        .withdrawal-section {
             background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px 0;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         }
 
         .withdrawal-form {
-            margin-top: 20px;
+            background: var(--light);
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 25px;
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
+            margin-bottom: 8px;
+            font-weight: 600;
             color: var(--dark);
         }
 
-        .form-group input,
-        .form-group select {
+        .form-control {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #e5e7eb;
-            border-radius: 8px;
+            padding: 15px;
+            border: 2px solid #d1d5db;
+            border-radius: 10px;
             font-size: 16px;
-            transition: border 0.3s;
+            font-family: inherit;
+            transition: all 0.3s;
         }
 
-        .form-group input:focus,
-        .form-group select:focus {
+        .form-control:focus {
             border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(230, 0, 0, 0.1);
             outline: none;
         }
 
+        /* Buttons */
         .btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            width: 100%;
             justify-content: center;
+            gap: 10px;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
         }
 
-        .btn:hover {
-            background: #cc0000;
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 15px rgba(230, 0, 0, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-dark), #b30000);
             transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(230, 0, 0, 0.4);
         }
 
-        .btn-google {
-            background: white;
-            color: #333;
-            border: 2px solid #ddd;
+        .btn-secondary {
+            background: var(--light);
+            color: var(--dark);
+            border: 2px solid #d1d5db;
         }
 
-        .btn-google:hover {
-            background: #f8f9fa;
-            border-color: #ccc;
+        .btn-secondary:hover {
+            background: #e5e7eb;
+            border-color: #9ca3af;
         }
 
-        /* Login Container */
-        .login-container {
-            background: white;
-            border-radius: 15px;
-            padding: 40px;
-            max-width: 500px;
-            margin: 100px auto;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #0da271);
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-lg {
+            padding: 18px 40px;
+            font-size: 18px;
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        /* Google Sign In Button */
+        .gsi-material-button {
+            background-color: white;
+            background-image: none;
+            border: 1px solid #dadce0;
+            border-radius: 10px;
+            color: #3c4043;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 16px;
+            height: 50px;
+            letter-spacing: 0.25px;
+            outline: none;
+            overflow: hidden;
+            padding: 0 20px;
+            position: relative;
             text-align: center;
+            transition: all 0.3s;
+            vertical-align: middle;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-weight: 500;
         }
 
-        .login-container h1 {
-            color: var(--primary);
-            margin-bottom: 30px;
+        .gsi-material-button:hover {
+            background-color: #f8f9fa;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .gsi-material-button:active {
+            background-color: #e8eaed;
         }
 
         /* Admin Panel */
         .admin-panel {
             background: white;
-            border-radius: 15px;
-            padding: 25px;
-            margin-top: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px 0;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            display: none;
         }
 
         .admin-table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
-        }
-
-        .admin-table th,
-        .admin-table td {
-            padding: 12px;
-            text-align: right;
-            border-bottom: 1px solid #e5e7eb;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         }
 
         .admin-table th {
-            background: var(--light);
-            font-weight: bold;
+            background: var(--primary);
+            color: white;
+            padding: 15px;
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .admin-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: right;
+        }
+
+        .admin-table tr:hover {
+            background: #f8fafc;
+        }
+
+        /* Login Page */
+        .login-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 50px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .login-logo {
+            font-size: 3.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .login-title {
             color: var(--dark);
+            margin-bottom: 10px;
+            font-size: 2rem;
+            font-weight: 800;
         }
 
-        .status-pending {
-            color: #f59e0b;
-            font-weight: bold;
+        .login-subtitle {
+            color: var(--gray);
+            margin-bottom: 40px;
+            font-size: 1.1rem;
         }
 
-        .status-completed {
-            color: var(--secondary);
-            font-weight: bold;
-        }
-
-        /* Notifications */
+        /* Notification */
         .notification {
             position: fixed;
-            bottom: 20px;
+            top: 20px;
             right: 20px;
             background: white;
-            padding: 15px 25px;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            padding: 20px 25px;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
             display: none;
-            z-index: 1000;
-            border-right: 5px solid var(--secondary);
+            z-index: 10000;
+            border-right: 5px solid var(--success);
             max-width: 400px;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification.error {
+            border-right-color: var(--danger);
+        }
+
+        .notification.warning {
+            border-right-color: var(--warning);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Loading Spinner */
+        .loading {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .hero-section h1 {
+                font-size: 2.5rem;
             }
             
             .stats-grid {
@@ -379,38 +626,90 @@
             .ads-grid {
                 grid-template-columns: 1fr;
             }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .admin-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: white;
+            margin-top: 60px;
+            opacity: 0.9;
+        }
+
+        .footer p {
+            margin: 10px 0;
         }
     </style>
 </head>
 <body>
-    <!-- تسجيل الدخول -->
-    <div id="loginPage" class="login-container" style="display: none;">
-        <div class="logo" style="justify-content: center; margin-bottom: 20px;">
-            <span style="font-size: 3rem;">💰</span>
-            <h1>AdVista</h1>
-        </div>
-        
-        <h2>سجل دخول لبدء الربح</h2>
-        <p style="color: #666; margin-bottom: 30px;">شاهد الإعلانات، اربح نقاط، وسحب أموال حقيقية!</p>
-        
-        <button id="googleLoginBtn" class="btn btn-google">
-            <img src="https://img.icons8.com/color/24/000000/google-logo.png" alt="Google">
-            تسجيل الدخول بحساب جوجل
-        </button>
-        
-        <div style="margin-top: 20px; color: #666; font-size: 0.9rem;">
-            <p>بالتسجيل، أنت توافق على <a href="#" style="color: var(--primary);">شروط الخدمة</a> و<a href="#" style="color: var(--primary);">سياسة الخصوصية</a></p>
+    <!-- صفحة تسجيل الدخول -->
+    <div id="loginPage" class="login-page">
+        <div class="login-container">
+            <div class="login-logo">💰</div>
+            <h1 class="login-title">AdVista</h1>
+            <p class="login-subtitle">شاهد الإعلانات، اربح نقاط، وسحب أموال حقيقية عبر فودافون كاش!</p>
+            
+            <div style="margin: 40px 0;">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-value" id="totalUsersCount">0</div>
+                        <div class="stat-label">مستخدم نشط</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-value" id="totalWithdrawn">$0</div>
+                        <div class="stat-label">تم سحبها</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin: 40px 0;">
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🎁</div>
+                        <h3>100 نقطة مجانية</h3>
+                        <p>احصل على 100 نقطة مجانية فور تسجيل الدخول</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⏱️</div>
+                        <h3>30 ثانية فقط</h3>
+                        <p>شاهد الإعلان لمدة 30 ثانية واربح 50 نقطة</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin: 40px 0;">
+                <button id="googleSignInBtn" class="gsi-material-button">
+                    <img src="https://img.icons8.com/color/24/000000/google-logo.png" alt="Google">
+                    تسجيل الدخول بحساب جوجل
+                </button>
+            </div>
+            
+            <div style="color: var(--gray); font-size: 0.9rem; margin-top: 30px;">
+                <p>بالتسجيل، أنت توافق على <a href="#" style="color: var(--primary);">شروط الخدمة</a> و<a href="#" style="color: var(--primary);">سياسة الخصوصية</a></p>
+            </div>
         </div>
     </div>
 
-    <!-- الصفحة الرئيسية -->
+    <!-- الصفحة الرئيسية (تظهر بعد تسجيل الدخول) -->
     <div id="mainPage" style="display: none;">
         <div class="container">
-            <!-- الهيدر -->
-            <div class="header">
+            <!-- Header -->
+            <header class="header">
                 <div class="logo">
-                    <span>💰</span>
-                    <h1>AdVista</h1>
+                    <span class="logo-icon">💰</span>
+                    <span>AdVista</span>
                 </div>
                 
                 <div class="user-info">
@@ -418,153 +717,181 @@
                         <i class="fas fa-coins"></i>
                         <span id="userPoints">0</span> نقطة
                     </div>
-                    <div id="userProfile" style="display: flex; align-items: center; gap: 10px;">
-                        <img id="userAvatar" src="" alt="Profile" style="width: 40px; height: 40px; border-radius: 50%;">
-                        <span id="userName"></span>
+                    
+                    <div class="user-profile">
+                        <img id="userAvatar" class="user-avatar" src="" alt="صورة المستخدم">
+                        <div>
+                            <div id="userName" style="font-weight: 600;"></div>
+                            <small id="userEmail" style="color: var(--gray); font-size: 0.8rem;"></small>
+                        </div>
                     </div>
-                    <button id="logoutBtn" class="btn" style="width: auto; padding: 8px 15px;">
-                        تسجيل الخروج
+                    
+                    <button id="logoutBtn" class="btn btn-secondary">
+                        <i class="fas fa-sign-out-alt"></i> خروج
                     </button>
                 </div>
-            </div>
+            </header>
 
-            <!-- لوحة التحكم -->
-            <div class="dashboard-grid">
-                <!-- الإحصائيات -->
-                <div class="stats-card">
-                    <h2>📊 إحصائياتك</h2>
+            <!-- Hero Section -->
+            <section class="hero-section">
+                <h1>مرحباً <span id="greetingName"></span> 👋</h1>
+                <p>ابدأ رحلتك في ربح النقاط من خلال مشاهدة الإعلانات</p>
+                
+                <div style="margin-top: 30px;">
                     <div class="stats-grid">
-                        <div class="stat-item">
-                            <div class="stat-value" id="totalPoints">0</div>
-                            <div class="stat-label">إجمالي النقاط</div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📊</div>
+                            <div class="stat-value" id="totalEarnings">0</div>
+                            <div class="stat-label">إجمالي أرباحك</div>
                         </div>
-                        <div class="stat-item">
+                        <div class="stat-card">
+                            <div class="stat-icon">👁️</div>
                             <div class="stat-value" id="adsWatched">0</div>
                             <div class="stat-label">إعلانات شاهدتها</div>
                         </div>
-                        <div class="stat-item">
-                            <div class="stat-value" id="totalEarned">$0</div>
-                            <div class="stat-label">إجمالي الأرباح</div>
+                        <div class="stat-card">
+                            <div class="stat-icon">⏰</div>
+                            <div class="stat-value" id="timeWatched">0</div>
+                            <div class="stat-label">دقائق مشاهدة</div>
                         </div>
-                        <div class="stat-item">
-                            <div class="stat-value" id="withdrawalsCount">0</div>
-                            <div class="stat-label">طلبات سحب</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- قسم السحب -->
-                <div class="withdrawal-card">
-                    <h2>💰 سحب الأرباح</h2>
-                    <div class="withdrawal-info">
-                        <p><strong>الحد الأدنى للسحب:</strong> 20,000 نقطة = 1 دولار</p>
-                        <p><strong>رصيدك القابل للسحب:</strong> <span id="withdrawableBalance">$0</span></p>
-                        
-                        <div class="withdrawal-form">
-                            <div class="form-group">
-                                <label>طريقة السحب:</label>
-                                <select id="withdrawalMethod">
-                                    <option value="vodafone">فودافون كاش</option>
-                                    <option value="paypal">PayPal</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group" id="vodafoneField">
-                                <label>رقم فودافون كاش:</label>
-                                <input type="tel" id="vodafoneNumber" placeholder="مثال: 01012345678">
-                            </div>
-                            
-                            <div class="form-group" id="paypalField" style="display: none;">
-                                <label>بريد PayPal:</label>
-                                <input type="email" id="paypalEmail" placeholder="example@email.com">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>المبلغ المطلوب (دولار):</label>
-                                <input type="number" id="withdrawAmount" min="1" max="100" value="1">
-                                <small>النقاط المطلوبة: <span id="requiredPoints">20,000</span> نقطة</small>
-                            </div>
-                            
-                            <button id="submitWithdrawal" class="btn" onclick="submitWithdrawalRequest()">
-                                <i class="fas fa-paper-plane"></i> طلب السحب
-                            </button>
+                        <div class="stat-card">
+                            <div class="stat-icon">🏆</div>
+                            <div class="stat-value" id="userRank">#0</div>
+                            <div class="stat-label">مرتبتك</div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <!-- الإعلانات -->
-            <div class="ads-container">
-                <h2>📺 الإعلانات المتاحة</h2>
-                <p>شاهد الإعلان لمدة 30 ثانية لربح 50 نقطة</p>
+            <!-- Ads Section -->
+            <section class="ads-section">
+                <h2 style="color: var(--dark); margin-bottom: 10px; font-size: 2rem;">📺 الإعلانات المتاحة</h2>
+                <p style="color: var(--gray); margin-bottom: 30px;">شاهد الإعلان لمدة 30 ثانية لربح 50 نقطة</p>
                 
                 <div class="ads-grid" id="adsGrid">
                     <!-- الإعلانات يتم إضافتها هنا -->
                 </div>
                 
-                <!-- مؤقت المشاهدة -->
+                <!-- Timer -->
                 <div class="timer-container" id="timerContainer">
-                    <h3>⏳ جاري مشاهدة الإعلان</h3>
+                    <h3 style="margin-bottom: 20px; font-size: 1.5rem;">⏳ جاري مشاهدة الإعلان</h3>
                     <div class="timer" id="timer">30</div>
-                    <p>الرجاء عدم إغلاق الصفحة</p>
-                    <div class="points-earned" id="pointsEarning" style="display: none;">
-                        +50 نقطة
+                    <p style="margin-top: 20px; opacity: 0.9;">الرجاء عدم إغلاق الصفحة حتى انتهاء المؤقت</p>
+                    <div style="margin-top: 30px; display: none;" id="pointsEarned">
+                        <div style="background: rgba(255, 255, 255, 0.2); padding: 15px; border-radius: 10px; display: inline-block;">
+                            <span style="font-size: 1.5rem; font-weight: bold;">+50 نقطة</span>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <!-- لوحة الإدارة (تظهر للمسؤول فقط) -->
-            <div id="adminPanel" class="admin-panel" style="display: none;">
-                <h2>👑 لوحة تحكم الإدارة</h2>
+            <!-- Withdrawal Section -->
+            <section class="withdrawal-section">
+                <h2 style="color: var(--dark); margin-bottom: 10px; font-size: 2rem;">💰 سحب الأرباح</h2>
+                <p style="color: var(--gray); margin-bottom: 30px;">اسحب أموالك مباشرة إلى فودافون كاش</p>
                 
-                <div style="margin-bottom: 20px;">
-                    <button class="btn" onclick="refreshAdminData()">
+                <div class="withdrawal-form">
+                    <div style="background: var(--primary); color: white; padding: 20px; border-radius: 10px; margin-bottom: 25px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-size: 0.9rem; opacity: 0.9;">رصيدك القابل للسحب</div>
+                                <div style="font-size: 2rem; font-weight: bold;" id="withdrawableBalance">$0</div>
+                            </div>
+                            <div style="text-align: left;">
+                                <div style="font-size: 0.9rem; opacity: 0.9;">النقاط المتبقية</div>
+                                <div style="font-size: 1.5rem; font-weight: bold;" id="pointsBalance">0</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>المبلغ المطلوب (دولار):</label>
+                        <input type="number" id="withdrawAmount" class="form-control" min="1" max="100" value="1" step="1">
+                        <small style="display: block; margin-top: 5px; color: var(--gray);">
+                            النقاط المطلوبة: <span id="requiredPoints">20,000</span> نقطة (20,000 نقطة = 1 دولار)
+                        </small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>رقم فودافون كاش:</label>
+                        <input type="tel" id="vodafoneNumber" class="form-control" placeholder="مثال: 01012345678" required>
+                        <small style="display: block; margin-top: 5px; color: var(--gray);">
+                            تأكد من إدخال رقم فودافون كاش صحيح
+                        </small>
+                    </div>
+                    
+                    <button id="submitWithdrawal" class="btn btn-primary btn-block btn-lg" onclick="submitWithdrawal()">
+                        <i class="fas fa-paper-plane"></i> إرسال طلب السحب
+                    </button>
+                    
+                    <div style="margin-top: 20px; text-align: center; color: var(--gray); font-size: 0.9rem;">
+                        <p>سيتم مراجعة طلبك من قبل الإدارة خلال 24 ساعة</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Admin Panel (للمسؤول فقط) -->
+            <section id="adminPanel" class="admin-panel">
+                <h2 style="color: var(--dark); margin-bottom: 30px; font-size: 2rem;">👑 لوحة تحكم الإدارة</h2>
+                
+                <div style="margin-bottom: 30px;">
+                    <button class="btn btn-primary" onclick="refreshAdminData()">
                         <i class="fas fa-sync-alt"></i> تحديث البيانات
                     </button>
                 </div>
                 
-                <h3>طلبات السحب المعلقة</h3>
-                <table class="admin-table" id="withdrawalsTable">
+                <h3 style="margin-bottom: 20px; color: var(--dark);">طلبات السحب المعلقة</h3>
+                <table class="admin-table">
                     <thead>
                         <tr>
                             <th>المستخدم</th>
                             <th>المبلغ</th>
-                            <th>الطريقة</th>
-                            <th>الحالة</th>
+                            <th>رقم فودافون</th>
                             <th>التاريخ</th>
+                            <th>الحالة</th>
                             <th>الإجراءات</th>
                         </tr>
                     </thead>
-                    <tbody id="withdrawalsBody">
+                    <tbody id="withdrawalsTableBody">
                         <!-- بيانات طلبات السحب -->
                     </tbody>
                 </table>
                 
-                <h3 style="margin-top: 30px;">إحصائيات الموقع</h3>
+                <h3 style="margin: 40px 0 20px; color: var(--dark);">إحصائيات الموقع</h3>
                 <div class="stats-grid">
-                    <div class="stat-item">
-                        <div class="stat-value" id="totalUsersCount">0</div>
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-value" id="adminTotalUsers">0</div>
                         <div class="stat-label">إجمالي المستخدمين</div>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="totalWithdrawalsAmount">$0</div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-value" id="adminTotalWithdrawals">$0</div>
                         <div class="stat-label">إجمالي المسحوبات</div>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="totalAdsWatched">0</div>
+                    <div class="stat-card">
+                        <div class="stat-icon">👁️</div>
+                        <div class="stat-value" id="adminTotalAds">0</div>
                         <div class="stat-label">إعلانات شوهدت</div>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="siteRevenue">$0</div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📈</div>
+                        <div class="stat-value" id="adminSiteRevenue">$0</div>
                         <div class="stat-label">إيرادات الموقع</div>
                     </div>
                 </div>
-            </div>
+            </section>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <p>© 2024 AdVista. جميع الحقوق محفوظة.</p>
+                <p>للدعم الفني: bo2584668@gmail.com</p>
+            </footer>
         </div>
     </div>
 
-    <!-- الإشعارات -->
-    <div class="notification" id="notification">
+    <!-- Notification -->
+    <div id="notification" class="notification">
         <div id="notificationMessage"></div>
     </div>
 
@@ -587,73 +914,58 @@
         let secondsLeft = 30;
 
         // تهيئة التطبيق
-        document.addEventListener('DOMContentLoaded', function() {
-            initAuth();
+        document.addEventListener('DOMContentLoaded', async function() {
+            await initApp();
             setupEventListeners();
+            loadPublicStats();
         });
 
-        // تهيئة المصادقة
-        function initAuth() {
-            window.onAuthStateChanged(window.firebaseAuth, (user) => {
-                if (user) {
-                    currentUser = user;
-                    showNotification(`مرحباً ${user.displayName}!`);
-                    loadUserData();
-                    showMainPage();
-                } else {
-                    showLoginPage();
-                }
-            });
-        }
-
-        // إعداد مستمعي الأحداث
-        function setupEventListeners() {
-            // تسجيل الدخول بجوجل
-            document.getElementById('googleLoginBtn')?.addEventListener('click', signInWithGoogle);
-            
-            // تسجيل الخروج
-            document.getElementById('logoutBtn')?.addEventListener('click', signOut);
-            
-            // تغيير طريقة السحب
-            document.getElementById('withdrawalMethod')?.addEventListener('change', function() {
-                const method = this.value;
-                document.getElementById('vodafoneField').style.display = method === 'vodafone' ? 'block' : 'none';
-                document.getElementById('paypalField').style.display = method === 'paypal' ? 'block' : 'none';
-            });
-            
-            // تحديث النقاط المطلوبة
-            document.getElementById('withdrawAmount')?.addEventListener('input', updateRequiredPoints);
-        }
-
-        // تسجيل الدخول بجوجل
-        async function signInWithGoogle() {
+        // تهيئة التطبيق
+        async function initApp() {
             try {
-                const result = await window.signInWithGoogle(window.firebaseAuth, window.googleProvider);
-                const user = result.user;
-                
-                // تسجيل الحدث في التحليلات
-                window.logEvent(window.firebaseAnalytics, 'login', {
-                    method: 'google'
+                // التحقق من حالة المصادقة
+                window.firebaseApp.auth.onAuthStateChanged(async (user) => {
+                    if (user) {
+                        currentUser = user;
+                        await handleUserLogin(user);
+                    } else {
+                        showLoginPage();
+                    }
                 });
+            } catch (error) {
+                console.error('خطأ في تهيئة التطبيق:', error);
+                showNotification('حدث خطأ في تحميل التطبيق', 'error');
+            }
+        }
+
+        // معالجة تسجيل الدخول
+        async function handleUserLogin(user) {
+            try {
+                showNotification(`مرحباً ${user.displayName}!`, 'success');
                 
                 // إنشاء أو تحديث بيانات المستخدم
-                await createOrUpdateUserData(user);
+                await createOrUpdateUser(user);
                 
-                showNotification(`مرحباً ${user.displayName}! لقد حصلت على ${WELCOME_POINTS} نقطة ترحيبية`);
+                // تحميل بيانات المستخدم
+                await loadUserData();
+                
+                // إظهار الصفحة الرئيسية
+                showMainPage();
+                
             } catch (error) {
-                console.error('خطأ في تسجيل الدخول:', error);
-                showNotification('❌ حدث خطأ في تسجيل الدخول', 'error');
+                console.error('خطأ في معالجة تسجيل الدخول:', error);
+                showNotification('حدث خطأ في تسجيل الدخول', 'error');
             }
         }
 
         // إنشاء أو تحديث بيانات المستخدم
-        async function createOrUpdateUserData(user) {
-            const userRef = window.firebaseFunctions.doc(window.firebaseDB, "users", user.uid);
-            const userSnap = await window.firebaseFunctions.getDoc(userRef);
+        async function createOrUpdateUser(user) {
+            const userRef = window.firebaseApp.firestore.doc(window.firebaseApp.db, "users", user.uid);
+            const userSnap = await window.firebaseApp.firestore.getDoc(userRef);
             
             if (!userSnap.exists()) {
-                // مستخدم جديد
-                await window.firebaseFunctions.setDoc(userRef, {
+                // مستخدم جديد - منح 100 نقطة ترحيبية
+                const userData = {
                     uid: user.uid,
                     email: user.email,
                     displayName: user.displayName,
@@ -662,19 +974,23 @@
                     totalPoints: WELCOME_POINTS,
                     adsWatched: 0,
                     totalEarned: 0,
+                    timeWatched: 0,
                     withdrawals: [],
                     createdAt: new Date().toISOString(),
                     lastLogin: new Date().toISOString(),
                     isAdmin: user.email === ADMIN_EMAIL
-                });
+                };
                 
-                // إضافة إلى التحليلات
-                window.logEvent(window.firebaseAnalytics, 'sign_up', {
+                await window.firebaseApp.firestore.setDoc(userRef, userData);
+                
+                // تسجيل الحدث
+                window.logEvent(window.firebaseApp.analytics, 'sign_up', {
                     method: 'google'
                 });
+                
             } else {
                 // تحديث آخر دخول
-                await window.firebaseFunctions.updateDoc(userRef, {
+                await window.firebaseApp.firestore.updateDoc(userRef, {
                     lastLogin: new Date().toISOString()
                 });
             }
@@ -684,12 +1000,12 @@
         async function loadUserData() {
             if (!currentUser) return;
             
-            const userRef = window.firebaseFunctions.doc(window.firebaseDB, "users", currentUser.uid);
-            const userSnap = await window.firebaseFunctions.getDoc(userRef);
+            const userRef = window.firebaseApp.firestore.doc(window.firebaseApp.db, "users", currentUser.uid);
+            const userSnap = await window.firebaseApp.firestore.getDoc(userRef);
             
             if (userSnap.exists()) {
                 userData = userSnap.data();
-                updateUI();
+                updateUserUI();
                 loadAds();
                 
                 // عرض لوحة الإدارة إذا كان مسؤولاً
@@ -699,49 +1015,84 @@
                 }
                 
                 // الاستماع للتحديثات الفورية
-                window.firebaseFunctions.onSnapshot(userRef, (doc) => {
+                window.firebaseApp.firestore.onSnapshot(userRef, (doc) => {
                     if (doc.exists()) {
                         userData = doc.data();
-                        updateUI();
+                        updateUserUI();
                     }
                 });
             }
         }
 
-        // تحديث الواجهة
-        function updateUI() {
+        // تحديث واجهة المستخدم
+        function updateUserUI() {
             if (!userData) return;
             
-            // تحديث النقاط
-            document.getElementById('userPoints').textContent = userData.points.toLocaleString();
-            document.getElementById('totalPoints').textContent = userData.totalPoints.toLocaleString();
-            document.getElementById('adsWatched').textContent = userData.adsWatched || 0;
-            document.getElementById('totalEarned').textContent = `$${(userData.totalEarned || 0).toFixed(2)}`;
-            document.getElementById('withdrawalsCount').textContent = (userData.withdrawals || []).length;
-            
-            // تحديث رصيد السحب
-            const withdrawableDollars = (userData.points / POINTS_PER_DOLLAR).toFixed(2);
-            document.getElementById('withdrawableBalance').textContent = `$${withdrawableDollars}`;
-            
-            // تحديث صورة المستخدم
-            const userAvatar = document.getElementById('userAvatar');
-            const userName = document.getElementById('userName');
+            // المعلومات الشخصية
+            document.getElementById('userName').textContent = userData.displayName;
+            document.getElementById('userEmail').textContent = userData.email;
+            document.getElementById('greetingName').textContent = userData.displayName;
             
             if (userData.photoURL) {
-                userAvatar.src = userData.photoURL;
-                userAvatar.style.display = 'block';
+                document.getElementById('userAvatar').src = userData.photoURL;
             }
             
-            if (userData.displayName) {
-                userName.textContent = userData.displayName;
+            // النقاط والإحصائيات
+            document.getElementById('userPoints').textContent = userData.points.toLocaleString();
+            document.getElementById('totalEarnings').textContent = `$${(userData.totalEarned || 0).toFixed(2)}`;
+            document.getElementById('adsWatched').textContent = userData.adsWatched || 0;
+            document.getElementById('timeWatched').textContent = Math.floor((userData.timeWatched || 0) / 60);
+            
+            // حساب رصيد السحب
+            const withdrawableDollars = (userData.points / POINTS_PER_DOLLAR).toFixed(2);
+            document.getElementById('withdrawableBalance').textContent = `$${withdrawableDollars}`;
+            document.getElementById('pointsBalance').textContent = userData.points.toLocaleString();
+        }
+
+        // إعداد مستمعي الأحداث
+        function setupEventListeners() {
+            // زر تسجيل الدخول بجوجل
+            document.getElementById('googleSignInBtn').addEventListener('click', signInWithGoogle);
+            
+            // زر تسجيل الخروج
+            document.getElementById('logoutBtn').addEventListener('click', handleSignOut);
+            
+            // تحديث النقاط المطلوبة للسحب
+            document.getElementById('withdrawAmount').addEventListener('input', updateRequiredPoints);
+        }
+
+        // تسجيل الدخول بجوجل
+        async function signInWithGoogle() {
+            try {
+                const btn = document.getElementById('googleSignInBtn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<div class="loading"></div> جاري تسجيل الدخول...';
+                btn.disabled = true;
+                
+                const result = await window.firebaseApp.signInWithPopup(window.firebaseApp.auth, window.firebaseApp.googleProvider);
+                
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                
+            } catch (error) {
+                console.error('خطأ في تسجيل الدخول:', error);
+                showNotification('حدث خطأ في تسجيل الدخول', 'error');
+                
+                const btn = document.getElementById('googleSignInBtn');
+                btn.innerHTML = 'تسجيل الدخول بحساب جوجل';
+                btn.disabled = false;
             }
         }
 
-        // تحديث النقاط المطلوبة للسحب
-        function updateRequiredPoints() {
-            const amount = document.getElementById('withdrawAmount').value;
-            const requiredPoints = amount * POINTS_PER_DOLLAR;
-            document.getElementById('requiredPoints').textContent = requiredPoints.toLocaleString();
+        // تسجيل الخروج
+        async function handleSignOut() {
+            try {
+                await window.firebaseApp.signOut(window.firebaseApp.auth);
+                showNotification('تم تسجيل الخروج بنجاح', 'success');
+            } catch (error) {
+                console.error('خطأ في تسجيل الخروج:', error);
+                showNotification('حدث خطأ في تسجيل الخروج', 'error');
+            }
         }
 
         // تحميل الإعلانات
@@ -750,22 +1101,29 @@
             adsGrid.innerHTML = '';
             
             const ads = [
-                { id: 1, title: "إعلان تجاري 1", category: "تقنية", points: POINTS_PER_AD },
-                { id: 2, title: "إعلان تجاري 2", category: "تسوق", points: POINTS_PER_AD },
-                { id: 3, title: "إعلان تجاري 3", category: "تعليم", points: POINTS_PER_AD },
-                { id: 4, title: "إعلان تجاري 4", category: "ترفيه", points: POINTS_PER_AD },
-                { id: 5, title: "إعلان تجاري 5", category: "صحة", points: POINTS_PER_AD },
-                { id: 6, title: "إعلان تجاري 6", category: "سفر", points: POINTS_PER_AD }
+                { id: 1, title: "إعلان تجاري جديد", category: "تقنية", color: "#3b82f6" },
+                { id: 2, title: "عرض خاص للتسوق", category: "تسوق", color: "#10b981" },
+                { id: 3, title: "خدمات تعليمية", category: "تعليم", color: "#8b5cf6" },
+                { id: 4, title: "ترفيه وألعاب", category: "ترفيه", color: "#f59e0b" },
+                { id: 5, title: "عروض صحية", category: "صحة", color: "#ef4444" },
+                { id: 6, title: "عروض السفر", category: "سفر", color: "#06b6d4" }
             ];
             
             ads.forEach(ad => {
                 const adCard = document.createElement('div');
                 adCard.className = 'ad-card';
                 adCard.innerHTML = `
-                    <h3>${ad.title}</h3>
-                    <p style="color: #666; margin: 5px 0;">فئة: ${ad.category}</p>
-                    <div class="ad-reward">+${ad.points} نقطة</div>
-                    <button class="btn" onclick="startWatchingAd(${ad.id})" style="width: 100%;">
+                    <div style="margin-bottom: 15px;">
+                        <span style="background: ${ad.color}; color: white; padding: 5px 10px; border-radius: 5px; font-size: 0.8rem;">
+                            ${ad.category}
+                        </span>
+                    </div>
+                    <h3 style="margin-bottom: 10px; color: var(--dark);">${ad.title}</h3>
+                    <p style="color: var(--gray); margin-bottom: 15px; font-size: 0.9rem;">
+                        شاهد هذا الإعلان لمدة 30 ثانية
+                    </p>
+                    <div class="ad-reward">+${POINTS_PER_AD} نقطة</div>
+                    <button class="btn btn-primary btn-block" onclick="startWatchingAd(${ad.id})" style="margin-top: 15px;">
                         <i class="fas fa-play"></i> مشاهدة الإعلان
                     </button>
                 `;
@@ -775,14 +1133,22 @@
 
         // بدء مشاهدة الإعلان
         function startWatchingAd(adId) {
+            if (!currentUser || !userData) {
+                showNotification('يجب تسجيل الدخول أولاً', 'warning');
+                return;
+            }
+            
             currentAdId = adId;
             secondsLeft = 30;
             
             // إظهار المؤقت
-            document.getElementById('timerContainer').style.display = 'block';
-            document.getElementById('timer').textContent = secondsLeft;
+            const timerContainer = document.getElementById('timerContainer');
+            const timer = document.getElementById('timer');
             
-            // إخفاء أزرار الإعلانات
+            timerContainer.style.display = 'block';
+            timer.textContent = secondsLeft;
+            
+            // تعطيل أزرار الإعلانات
             document.querySelectorAll('.ad-card button').forEach(btn => {
                 btn.disabled = true;
             });
@@ -790,7 +1156,7 @@
             // بدء المؤقت
             timerInterval = setInterval(() => {
                 secondsLeft--;
-                document.getElementById('timer').textContent = secondsLeft;
+                timer.textContent = secondsLeft;
                 
                 if (secondsLeft <= 0) {
                     completeAdWatch();
@@ -803,52 +1169,74 @@
             clearInterval(timerInterval);
             
             // إظهار النقاط المكتسبة
-            document.getElementById('pointsEarning').style.display = 'block';
+            document.getElementById('pointsEarned').style.display = 'block';
             
-            // تحديث بيانات المستخدم
-            const userRef = window.firebaseFunctions.doc(window.firebaseDB, "users", currentUser.uid);
-            
-            await window.firebaseFunctions.updateDoc(userRef, {
-                points: window.firebaseFunctions.arrayUnion(POINTS_PER_AD),
-                totalPoints: window.firebaseFunctions.arrayUnion(POINTS_PER_AD),
-                adsWatched: (userData.adsWatched || 0) + 1
-            });
-            
-            // تسجيل مشاهدة الإعلان
-            await recordAdWatch(currentAdId);
-            
-            // إظهار الإشعار
-            showNotification(`🎉 لقد ربحت ${POINTS_PER_AD} نقطة!`);
+            try {
+                // تحديث بيانات المستخدم
+                const userRef = window.firebaseApp.firestore.doc(window.firebaseApp.db, "users", currentUser.uid);
+                
+                await window.firebaseApp.firestore.updateDoc(userRef, {
+                    points: window.firebaseApp.firestore.increment(POINTS_PER_AD),
+                    totalPoints: window.firebaseApp.firestore.increment(POINTS_PER_AD),
+                    adsWatched: window.firebaseApp.firestore.increment(1),
+                    timeWatched: window.firebaseApp.firestore.increment(30)
+                });
+                
+                // تسجيل مشاهدة الإعلان
+                await recordAdWatch(currentAdId);
+                
+                // إظهار الإشعار
+                showNotification(`🎉 لقد ربحت ${POINTS_PER_AD} نقطة!`, 'success');
+                
+            } catch (error) {
+                console.error('خطأ في إكمال مشاهدة الإعلان:', error);
+                showNotification('حدث خطأ أثناء معالجة النقاط', 'error');
+            }
             
             // إعادة تعيين
             setTimeout(() => {
                 document.getElementById('timerContainer').style.display = 'none';
-                document.getElementById('pointsEarning').style.display = 'none';
+                document.getElementById('pointsEarned').style.display = 'none';
                 document.querySelectorAll('.ad-card button').forEach(btn => {
                     btn.disabled = false;
                 });
-            }, 2000);
+            }, 3000);
         }
 
         // تسجيل مشاهدة الإعلان
         async function recordAdWatch(adId) {
-            const watchRef = window.firebaseFunctions.collection(window.firebaseDB, "adWatches");
-            await window.firebaseFunctions.addDoc(watchRef, {
-                userId: currentUser.uid,
-                adId: adId,
-                pointsEarned: POINTS_PER_AD,
-                timestamp: new Date().toISOString(),
-                userEmail: currentUser.email
-            });
+            try {
+                const watchRef = window.firebaseApp.firestore.collection(window.firebaseApp.db, "adWatches");
+                await window.firebaseApp.firestore.addDoc(watchRef, {
+                    userId: currentUser.uid,
+                    adId: adId,
+                    pointsEarned: POINTS_PER_AD,
+                    timestamp: new Date().toISOString(),
+                    userEmail: currentUser.email,
+                    userName: currentUser.displayName
+                });
+            } catch (error) {
+                console.error('خطأ في تسجيل مشاهدة الإعلان:', error);
+            }
+        }
+
+        // تحديث النقاط المطلوبة للسحب
+        function updateRequiredPoints() {
+            const amount = document.getElementById('withdrawAmount').value;
+            const requiredPoints = amount * POINTS_PER_DOLLAR;
+            document.getElementById('requiredPoints').textContent = requiredPoints.toLocaleString();
         }
 
         // إرسال طلب السحب
-        async function submitWithdrawalRequest() {
-            if (!currentUser || !userData) return;
+        async function submitWithdrawal() {
+            if (!currentUser || !userData) {
+                showNotification('يجب تسجيل الدخول أولاً', 'warning');
+                return;
+            }
             
             const amount = parseFloat(document.getElementById('withdrawAmount').value);
             const points = amount * POINTS_PER_DOLLAR;
-            const method = document.getElementById('withdrawalMethod').value;
+            const vodafoneNumber = document.getElementById('vodafoneNumber').value.trim();
             
             // التحقق من الرصيد
             if (userData.points < points) {
@@ -862,162 +1250,236 @@
                 return;
             }
             
-            // جمع بيانات الطلب
-            const withdrawalData = {
-                userId: currentUser.uid,
-                userEmail: currentUser.email,
-                userName: currentUser.displayName,
-                amount: amount,
-                points: points,
-                method: method,
-                details: getWithdrawalDetails(),
-                status: 'pending',
-                createdAt: new Date().toISOString(),
-                adminEmail: ADMIN_EMAIL
-            };
+            // التحقق من رقم فودافون
+            if (!vodafoneNumber || !/^01[0-2|5]\d{8}$/.test(vodafoneNumber)) {
+                showNotification('❌ يرجى إدخال رقم فودافون كاش صحيح', 'error');
+                return;
+            }
             
             try {
+                const btn = document.getElementById('submitWithdrawal');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<div class="loading"></div> جاري إرسال الطلب...';
+                btn.disabled = true;
+                
+                // جمع بيانات الطلب
+                const withdrawalData = {
+                    userId: currentUser.uid,
+                    userEmail: currentUser.email,
+                    userName: currentUser.displayName,
+                    userAvatar: currentUser.photoURL,
+                    amount: amount,
+                    points: points,
+                    method: 'vodafone_cash',
+                    vodafoneNumber: vodafoneNumber,
+                    status: 'pending',
+                    createdAt: new Date().toISOString(),
+                    adminEmail: ADMIN_EMAIL
+                };
+                
                 // إضافة طلب السحب
-                const withdrawalRef = window.firebaseFunctions.collection(window.firebaseDB, "withdrawals");
-                const docRef = await window.firebaseFunctions.addDoc(withdrawalRef, withdrawalData);
+                const withdrawalRef = window.firebaseApp.firestore.collection(window.firebaseApp.db, "withdrawals");
+                const docRef = await window.firebaseApp.firestore.addDoc(withdrawalRef, withdrawalData);
                 
                 // خصم النقاط من حساب المستخدم
-                const userRef = window.firebaseFunctions.doc(window.firebaseDB, "users", currentUser.uid);
-                await window.firebaseFunctions.updateDoc(userRef, {
-                    points: userData.points - points,
-                    withdrawals: window.firebaseFunctions.arrayUnion(docRef.id)
+                const userRef = window.firebaseApp.firestore.doc(window.firebaseApp.db, "users", currentUser.uid);
+                await window.firebaseApp.firestore.updateDoc(userRef, {
+                    points: window.firebaseApp.firestore.increment(-points),
+                    withdrawals: window.firebaseApp.firestore.arrayUnion(docRef.id)
                 });
                 
                 // إرسال إشعار للمسؤول
                 await notifyAdmin(withdrawalData, docRef.id);
                 
-                showNotification(`✅ تم إرسال طلب السحب بنجاح! سيتم المراجعة خلال 24 ساعة`);
-                
                 // إعادة تعيين النموذج
                 document.getElementById('withdrawAmount').value = 1;
+                document.getElementById('vodafoneNumber').value = '';
                 updateRequiredPoints();
                 
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                
+                showNotification(`✅ تم إرسال طلب السحب بنجاح! سيتم المراجعة خلال 24 ساعة`, 'success');
+                
             } catch (error) {
-                console.error('خطأ في طلب السحب:', error);
+                console.error('خطأ في إرسال طلب السحب:', error);
                 showNotification('❌ حدث خطأ في إرسال طلب السحب', 'error');
+                
+                const btn = document.getElementById('submitWithdrawal');
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i> إرسال طلب السحب';
+                btn.disabled = false;
             }
-        }
-
-        // الحصول على تفاصيل السحب
-        function getWithdrawalDetails() {
-            const method = document.getElementById('withdrawalMethod').value;
-            
-            if (method === 'vodafone') {
-                return {
-                    type: 'vodafone_cash',
-                    number: document.getElementById('vodafoneNumber').value
-                };
-            } else if (method === 'paypal') {
-                return {
-                    type: 'paypal',
-                    email: document.getElementById('paypalEmail').value
-                };
-            }
-            
-            return {};
         }
 
         // إرسال إشعار للمسؤول
         async function notifyAdmin(withdrawalData, requestId) {
-            // في الإنتاج، استخدم خدمة إيميل مثل SendGrid
-            // هنا نستخدم Firebase Cloud Functions أو نرسل بيانات للوحة التحكم
-            
-            const notificationRef = window.firebaseFunctions.collection(window.firebaseDB, "adminNotifications");
-            await window.firebaseFunctions.addDoc(notificationRef, {
-                type: 'withdrawal_request',
-                withdrawalId: requestId,
-                data: withdrawalData,
-                read: false,
-                createdAt: new Date().toISOString()
-            });
-            
-            console.log('تم إرسال إشعار للمسؤول:', withdrawalData);
+            try {
+                const notificationRef = window.firebaseApp.firestore.collection(window.firebaseApp.db, "adminNotifications");
+                await window.firebaseApp.firestore.addDoc(notificationRef, {
+                    type: 'withdrawal_request',
+                    withdrawalId: requestId,
+                    data: withdrawalData,
+                    read: false,
+                    createdAt: new Date().toISOString()
+                });
+                
+                console.log('تم إرسال إشعار للمسؤول:', withdrawalData);
+            } catch (error) {
+                console.error('خطأ في إرسال إشعار للمسؤول:', error);
+            }
         }
 
         // تحميل بيانات الإدارة
         async function loadAdminData() {
             if (!userData || !userData.isAdmin) return;
             
-            // تحميل طلبات السحب
-            const withdrawalsRef = window.firebaseFunctions.collection(window.firebaseDB, "withdrawals");
-            const q = window.firebaseFunctions.query(withdrawalsRef, window.firebaseFunctions.where("status", "==", "pending"));
-            const querySnapshot = await window.firebaseFunctions.getDocs(q);
-            
-            const withdrawalsBody = document.getElementById('withdrawalsBody');
-            withdrawalsBody.innerHTML = '';
-            
-            querySnapshot.forEach((doc) => {
-                const data = doc.data();
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${data.userName || data.userEmail}</td>
-                    <td>$${data.amount}</td>
-                    <td>${data.method === 'vodafone' ? 'فودافون كاش' : 'PayPal'}</td>
-                    <td class="status-pending">⏳ بانتظار المراجعة</td>
-                    <td>${new Date(data.createdAt).toLocaleDateString('ar-EG')}</td>
-                    <td>
-                        <button class="btn" onclick="approveWithdrawal('${doc.id}')" style="width: auto; padding: 5px 10px; margin: 2px;">
-                            ✅ قبول
-                        </button>
-                        <button class="btn" onclick="rejectWithdrawal('${doc.id}')" style="width: auto; padding: 5px 10px; margin: 2px; background: #ef4444;">
-                            ❌ رفض
-                        </button>
-                    </td>
-                `;
-                withdrawalsBody.appendChild(row);
-            });
-            
-            // تحميل إحصائيات الموقع
-            loadSiteStatistics();
+            try {
+                // تحميل طلبات السحب المعلقة
+                const withdrawalsRef = window.firebaseApp.firestore.collection(window.firebaseApp.db, "withdrawals");
+                const q = window.firebaseApp.firestore.query(
+                    withdrawalsRef, 
+                    window.firebaseApp.firestore.where("status", "==", "pending")
+                );
+                const querySnapshot = await window.firebaseApp.firestore.getDocs(q);
+                
+                const tableBody = document.getElementById('withdrawalsTableBody');
+                tableBody.innerHTML = '';
+                
+                if (querySnapshot.empty) {
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 30px; color: var(--gray);">
+                                لا توجد طلبات سحب معلقة
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    ${data.userAvatar ? `<img src="${data.userAvatar}" style="width: 30px; height: 30px; border-radius: 50%;">` : ''}
+                                    <div>
+                                        <div style="font-weight: 600;">${data.userName}</div>
+                                        <div style="font-size: 0.8rem; color: var(--gray);">${data.userEmail}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="font-weight: bold; color: var(--primary);">$${data.amount}</td>
+                            <td dir="ltr">${data.vodafoneNumber}</td>
+                            <td>${new Date(data.createdAt).toLocaleDateString('ar-EG')}</td>
+                            <td>
+                                <span style="background: var(--warning); color: white; padding: 5px 10px; border-radius: 5px; font-size: 0.8rem;">
+                                    ⏳ بانتظار المراجعة
+                                </span>
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: 10px;">
+                                    <button class="btn btn-success" onclick="approveWithdrawal('${doc.id}')" style="padding: 8px 15px;">
+                                        ✅ قبول
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="rejectWithdrawal('${doc.id}')" style="padding: 8px 15px;">
+                                        ❌ رفض
+                                    </button>
+                                </div>
+                            </td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                }
+                
+                // تحميل إحصائيات الموقع
+                await loadSiteStatistics();
+                
+            } catch (error) {
+                console.error('خطأ في تحميل بيانات الإدارة:', error);
+                showNotification('حدث خطأ في تحميل بيانات الإدارة', 'error');
+            }
         }
 
         // تحميل إحصائيات الموقع
         async function loadSiteStatistics() {
-            // إجمالي المستخدمين
-            const usersRef = window.firebaseFunctions.collection(window.firebaseDB, "users");
-            const usersSnap = await window.firebaseFunctions.getDocs(usersRef);
-            document.getElementById('totalUsersCount').textContent = usersSnap.size;
-            
-            // إجمالي المسحوبات
-            const withdrawalsRef = window.firebaseFunctions.collection(window.firebaseDB, "withdrawals");
-            const completedWithdrawals = window.firebaseFunctions.query(withdrawalsRef, window.firebaseFunctions.where("status", "==", "completed"));
-            const completedSnap = await window.firebaseFunctions.getDocs(completedWithdrawals);
-            
-            let totalWithdrawn = 0;
-            completedSnap.forEach(doc => {
-                totalWithdrawn += doc.data().amount;
-            });
-            document.getElementById('totalWithdrawalsAmount').textContent = `$${totalWithdrawn.toFixed(2)}`;
-            
-            // إجمالي الإعلانات المشاهدة
-            const adsRef = window.firebaseFunctions.collection(window.firebaseDB, "adWatches");
-            const adsSnap = await window.firebaseFunctions.getDocs(adsRef);
-            document.getElementById('totalAdsWatched').textContent = adsSnap.size;
-            
-            // إيرادات الموقع (افتراضية)
-            const siteRevenue = adsSnap.size * 0.01; // 0.01 دولار لكل إعلان
-            document.getElementById('siteRevenue').textContent = `$${siteRevenue.toFixed(2)}`;
+            try {
+                // إجمالي المستخدمين
+                const usersRef = window.firebaseApp.firestore.collection(window.firebaseApp.db, "users");
+                const usersSnap = await window.firebaseApp.firestore.getDocs(usersRef);
+                document.getElementById('adminTotalUsers').textContent = usersSnap.size;
+                
+                // إجمالي المسحوبات المكتملة
+                const withdrawalsRef = window.firebaseApp.firestore.collection(window.firebaseApp.db, "withdrawals");
+                const completedQuery = window.firebaseApp.firestore.query(
+                    withdrawalsRef,
+                    window.firebaseApp.firestore.where("status", "==", "completed")
+                );
+                const completedSnap = await window.firebaseApp.firestore.getDocs(completedQuery);
+                
+                let totalWithdrawn = 0;
+                completedSnap.forEach(doc => {
+                    totalWithdrawn += doc.data().amount;
+                });
+                document.getElementById('adminTotalWithdrawals').textContent = `$${totalWithdrawn.toFixed(2)}`;
+                
+                // إجمالي الإعلانات المشاهدة
+                const adsRef = window.firebaseApp.firestore.collection(window.firebaseApp.db, "adWatches");
+                const adsSnap = await window.firebaseApp.firestore.getDocs(adsRef);
+                document.getElementById('adminTotalAds').textContent = adsSnap.size;
+                
+                // إيرادات الموقع (احتياطية)
+                const siteRevenue = adsSnap.size * 0.01;
+                document.getElementById('adminSiteRevenue').textContent = `$${siteRevenue.toFixed(2)}`;
+                
+            } catch (error) {
+                console.error('خطأ في تحميل إحصائيات الموقع:', error);
+            }
+        }
+
+        // تحميل الإحصائيات العامة
+        async function loadPublicStats() {
+            try {
+                // إجمالي المستخدمين
+                const usersRef = window.firebaseApp.firestore.collection(window.firebaseApp.db, "users");
+                const usersSnap = await window.firebaseApp.firestore.getDocs(usersRef);
+                document.getElementById('totalUsersCount').textContent = usersSnap.size;
+                
+                // إجمالي المسحوبات
+                const withdrawalsRef = window.firebaseApp.firestore.collection(window.firebaseApp.db, "withdrawals");
+                const completedQuery = window.firebaseApp.firestore.query(
+                    withdrawalsRef,
+                    window.firebaseApp.firestore.where("status", "==", "completed")
+                );
+                const completedSnap = await window.firebaseApp.firestore.getDocs(completedQuery);
+                
+                let totalWithdrawn = 0;
+                completedSnap.forEach(doc => {
+                    totalWithdrawn += doc.data().amount;
+                });
+                document.getElementById('totalWithdrawn').textContent = `$${totalWithdrawn.toFixed(2)}`;
+                
+            } catch (error) {
+                console.error('خطأ في تحميل الإحصائيات العامة:', error);
+            }
         }
 
         // قبول طلب السحب
         async function approveWithdrawal(withdrawalId) {
-            if (!confirm('هل أنت متأكد من قبول طلب السحب وإرسال المبلغ؟')) return;
+            if (!confirm('هل أنت متأكد من قبول طلب السحب وإرسال المبلغ إلى رقم فودافون كاش؟')) return;
             
             try {
-                const withdrawalRef = window.firebaseFunctions.doc(window.firebaseDB, "withdrawals", withdrawalId);
-                await window.firebaseFunctions.updateDoc(withdrawalRef, {
+                const withdrawalRef = window.firebaseApp.firestore.doc(window.firebaseApp.db, "withdrawals", withdrawalId);
+                const withdrawalDoc = await window.firebaseApp.firestore.getDoc(withdrawalRef);
+                const withdrawalData = withdrawalDoc.data();
+                
+                await window.firebaseApp.firestore.updateDoc(withdrawalRef, {
                     status: 'completed',
                     approvedAt: new Date().toISOString(),
                     approvedBy: currentUser.email
                 });
                 
-                showNotification('✅ تم قبول طلب السحب وإرسال التحويل');
+                showNotification(`✅ تم قبول طلب السحب وإرسال $${withdrawalData.amount} إلى ${withdrawalData.vodafoneNumber}`, 'success');
                 loadAdminData();
+                
             } catch (error) {
                 console.error('خطأ في قبول السحب:', error);
                 showNotification('❌ حدث خطأ في قبول السحب', 'error');
@@ -1030,29 +1492,30 @@
             if (!reason) return;
             
             try {
-                const withdrawalRef = window.firebaseFunctions.doc(window.firebaseDB, "withdrawals", withdrawalId);
-                const withdrawalDoc = await window.firebaseFunctions.getDoc(withdrawalRef);
+                const withdrawalRef = window.firebaseApp.firestore.doc(window.firebaseApp.db, "withdrawals", withdrawalId);
+                const withdrawalDoc = await window.firebaseApp.firestore.getDoc(withdrawalRef);
                 const withdrawalData = withdrawalDoc.data();
                 
                 // إرجاع النقاط للمستخدم
-                const userRef = window.firebaseFunctions.doc(window.firebaseDB, "users", withdrawalData.userId);
-                const userDoc = await window.firebaseFunctions.getDoc(userRef);
+                const userRef = window.firebaseApp.firestore.doc(window.firebaseApp.db, "users", withdrawalData.userId);
+                const userDoc = await window.firebaseApp.firestore.getDoc(userRef);
                 const userData = userDoc.data();
                 
-                await window.firebaseFunctions.updateDoc(userRef, {
-                    points: (userData.points || 0) + withdrawalData.points
+                await window.firebaseApp.firestore.updateDoc(userRef, {
+                    points: window.firebaseApp.firestore.increment(withdrawalData.points)
                 });
                 
                 // تحديث حالة الطلب
-                await window.firebaseFunctions.updateDoc(withdrawalRef, {
+                await window.firebaseApp.firestore.updateDoc(withdrawalRef, {
                     status: 'rejected',
                     rejectReason: reason,
                     rejectedAt: new Date().toISOString(),
                     rejectedBy: currentUser.email
                 });
                 
-                showNotification('❌ تم رفض طلب السحب وإرجاع النقاط');
+                showNotification('❌ تم رفض طلب السحب وإرجاع النقاط للمستخدم', 'warning');
                 loadAdminData();
+                
             } catch (error) {
                 console.error('خطأ في رفض السحب:', error);
                 showNotification('❌ حدث خطأ في رفض السحب', 'error');
@@ -1062,18 +1525,12 @@
         // تحديث بيانات الإدارة
         function refreshAdminData() {
             loadAdminData();
-            showNotification('🔄 تم تحديث بيانات الإدارة');
-        }
-
-        // تسجيل الخروج
-        function signOut() {
-            window.firebaseAuth.signOut();
-            showNotification('تم تسجيل الخروج بنجاح');
+            showNotification('🔄 تم تحديث بيانات الإدارة', 'success');
         }
 
         // عرض صفحة الدخول
         function showLoginPage() {
-            document.getElementById('loginPage').style.display = 'block';
+            document.getElementById('loginPage').style.display = 'flex';
             document.getElementById('mainPage').style.display = 'none';
         }
 
@@ -1081,6 +1538,7 @@
         function showMainPage() {
             document.getElementById('loginPage').style.display = 'none';
             document.getElementById('mainPage').style.display = 'block';
+            window.scrollTo(0, 0);
         }
 
         // عرض الإشعارات
@@ -1088,10 +1546,17 @@
             const notification = document.getElementById('notification');
             const messageDiv = document.getElementById('notificationMessage');
             
-            messageDiv.textContent = message;
-            notification.style.borderRightColor = type === 'error' ? '#ef4444' : '#10b981';
+            // إزالة الأنواع السابقة
+            notification.classList.remove('error', 'warning', 'success');
+            
+            // إضافة النوع الجديد
+            notification.classList.add(type);
+            
+            // تعيين الرسالة
+            messageDiv.innerHTML = message;
             notification.style.display = 'block';
             
+            // إخفاء الإشعار بعد 5 ثواني
             setTimeout(() => {
                 notification.style.display = 'none';
             }, 5000);
