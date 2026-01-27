@@ -179,11 +179,32 @@
             margin-bottom: 10px;
         }
 
-        .google-btn-container {
+        .google-btn {
             width: 100%;
-            margin: 30px 0 20px;
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: var(--radius);
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
             display: flex;
+            align-items: center;
             justify-content: center;
+            gap: 10px;
+            margin: 30px 0 20px;
+            transition: var(--transition);
+        }
+
+        .google-btn:hover {
+            background: #f8f9fa;
+            border-color: #ccc;
+            transform: translateY(-2px);
+        }
+
+        .google-btn img {
+            width: 20px;
+            height: 20px;
         }
 
         /* Main Page */
@@ -232,7 +253,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 4px 15 rgba(245, 158, 11, 0.3);
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
         }
 
         .user-profile {
@@ -714,16 +735,8 @@
             }
         }
     </style>
-<link rel="stylesheet" href="/index.css">
 </head>
 <body>
-    <!-- Google Identity Services Config -->
-    <div id="g_id_onload"
-         data-client_id="805966277330-9j5j1nvluj69f8uieog0kk77p0jb46q4.apps.googleusercontent.com"
-         data-callback="handleCredentialResponse"
-         data-auto_prompt="false">
-    </div>
-
     <!-- Loading Screen -->
     <div class="loading-screen" id="loadingScreen">
         <div class="spinner"></div>
@@ -738,11 +751,11 @@
             
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-number" id="totalUsers">0</div>
+                    <div class="stat-number" id="totalUsers">4,523</div>
                     <div class="stat-label">مستخدم نشط</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number" id="totalWithdrawn">$0</div>
+                    <div class="stat-number" id="totalWithdrawn">$2,845</div>
                     <div class="stat-label">تم سحبها</div>
                 </div>
             </div>
@@ -770,8 +783,24 @@
                 </div>
             </div>
             
-            <div class="google-btn-container">
-                <div class="g_id_signin" data-type="standard"></div>
+            <!-- Google Sign In Button -->
+            <div id="g_id_onload"
+                 data-client_id="805966277330-9j5j1nvluj69f8uieog0kk77p0jb46q4.apps.googleusercontent.com"
+                 data-context="signin"
+                 data-ux_mode="popup"
+                 data-callback="handleGoogleSignIn"
+                 data-auto_prompt="false">
+            </div>
+
+            <div class="g_id_signin"
+                 data-type="standard"
+                 data-shape="rectangular"
+                 data-theme="outline"
+                 data-text="signin_with"
+                 data-size="large"
+                 data-logo_alignment="left"
+                 data-width="400"
+                 style="width: 100%; margin: 30px 0;">
             </div>
             
             <p style="color: var(--gray); font-size: 0.9rem; margin-top: 20px;">
@@ -927,7 +956,7 @@
                 </h2>
                 
                 <div style="margin-bottom: 25px;">
-                    <button class="submit-btn" id="refreshAdminBtn" style="width: auto;">
+                    <button class="submit-btn" onclick="refreshAdminData()" style="width: auto;">
                         <i class="fas fa-sync-alt"></i> تحديث البيانات
                     </button>
                 </div>
@@ -953,19 +982,19 @@
                     <h3 style="margin-bottom: 20px; color: var(--dark);">إحصائيات الموقع</h3>
                     <div class="stats-cards">
                         <div class="stat-box">
-                            <div class="stat-value" id="adminTotalUsers">0</div>
+                            <div class="stat-value" id="adminTotalUsers">4,523</div>
                             <div class="stat-label">إجمالي المستخدمين</div>
                         </div>
                         <div class="stat-box">
-                            <div class="stat-value" id="adminTotalWithdrawals">$0</div>
+                            <div class="stat-value" id="adminTotalWithdrawals">$2,845</div>
                             <div class="stat-label">إجمالي المسحوبات</div>
                         </div>
                         <div class="stat-box">
-                            <div class="stat-value" id="adminTotalAds">0</div>
+                            <div class="stat-value" id="adminTotalAds">12,847</div>
                             <div class="stat-label">إعلانات شوهدت</div>
                         </div>
                         <div class="stat-box">
-                            <div class="stat-value" id="adminSiteRevenue">$0</div>
+                            <div class="stat-value" id="adminSiteRevenue">$1,284</div>
                             <div class="stat-label">إيرادات الموقع</div>
                         </div>
                     </div>
@@ -985,7 +1014,630 @@
         <div id="notificationMessage"></div>
     </div>
 
-    <script type="module" src="index.tsx"></script>
-<script type="module" src="/index.tsx"></script>
+    <!-- JavaScript -->
+    <script>
+        // Constants
+        const POINTS_PER_AD = 50;
+        const WELCOME_POINTS = 100;
+        const POINTS_PER_DOLLAR = 20000;
+        const ADMIN_EMAIL = "bo2584668@gmail.com";
+        
+        // Global variables
+        let currentUser = null;
+        let userData = null;
+        let currentAdId = null;
+        let timerInterval = null;
+        let secondsLeft = 30;
+        let isWatchingAd = false;
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                // Check if user is already logged in
+                const savedUser = localStorage.getItem('advista_user');
+                if (savedUser) {
+                    const user = JSON.parse(savedUser);
+                    handleUserLogin(user);
+                } else {
+                    hideLoading();
+                }
+                
+                // Initialize stats
+                initializeStats();
+                
+            } catch (error) {
+                console.error('App initialization error:', error);
+                showNotification('حدث خطأ في تحميل التطبيق', 'error');
+                hideLoading();
+            }
+        });
+
+        // Handle Google Sign In
+        function handleGoogleSignIn(response) {
+            showLoading();
+            
+            // Decode the credential response
+            const responsePayload = decodeJWTResponse(response.credential);
+            
+            console.log('Google Sign In Response:', responsePayload);
+            
+            // Create user object
+            const user = {
+                uid: responsePayload.sub,
+                email: responsePayload.email,
+                displayName: responsePayload.name,
+                photoURL: responsePayload.picture,
+                verified: responsePayload.email_verified
+            };
+            
+            // Save to localStorage
+            localStorage.setItem('advista_user', JSON.stringify(user));
+            
+            // Handle login
+            handleUserLogin(user);
+        }
+
+        // Decode JWT token
+        function decodeJWTResponse(token) {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            
+            return JSON.parse(jsonPayload);
+        }
+
+        // Handle user login
+        function handleUserLogin(user) {
+            try {
+                currentUser = user;
+                
+                // Create or update user data
+                createOrUpdateUser(user);
+                
+                // Show main page
+                showMainPage();
+                
+                showNotification(`مرحباً ${user.displayName}!`, 'success');
+                hideLoading();
+                
+            } catch (error) {
+                console.error('Login handling error:', error);
+                showNotification('حدث خطأ في معالجة تسجيل الدخول', 'error');
+                hideLoading();
+            }
+        }
+
+        // Create or update user
+        function createOrUpdateUser(user) {
+            // Try to load existing user data
+            let userDataStr = localStorage.getItem(`advista_userdata_${user.uid}`);
+            
+            if (!userDataStr) {
+                // New user - give welcome points
+                userData = {
+                    uid: user.uid,
+                    email: user.email,
+                    displayName: user.displayName,
+                    photoURL: user.photoURL,
+                    points: WELCOME_POINTS,
+                    totalPoints: WELCOME_POINTS,
+                    adsWatched: 0,
+                    timeWatched: 0,
+                    totalEarned: 0,
+                    withdrawals: [],
+                    createdAt: new Date().toISOString(),
+                    lastLogin: new Date().toISOString(),
+                    isAdmin: user.email === ADMIN_EMAIL
+                };
+                
+                // Save initial data
+                localStorage.setItem(`advista_userdata_${user.uid}`, JSON.stringify(userData));
+                localStorage.setItem(`advista_lastlogin_${user.uid}`, new Date().toISOString());
+                
+                // Record new user
+                recordNewUser();
+                
+            } else {
+                // Existing user
+                userData = JSON.parse(userDataStr);
+                
+                // Update last login
+                userData.lastLogin = new Date().toISOString();
+                localStorage.setItem(`advista_userdata_${user.uid}`, JSON.stringify(userData));
+                localStorage.setItem(`advista_lastlogin_${user.uid}`, userData.lastLogin);
+            }
+            
+            // Update UI
+            updateUserUI();
+            loadAds();
+            
+            // Show admin panel for admin
+            if (userData.isAdmin) {
+                document.getElementById('adminPanel').style.display = 'block';
+                loadAdminData();
+            }
+        }
+
+        // Record new user
+        function recordNewUser() {
+            try {
+                // Store in local storage for demo
+                const users = JSON.parse(localStorage.getItem('advista_total_users')) || [];
+                users.push({
+                    uid: currentUser.uid,
+                    email: currentUser.email,
+                    joined: new Date().toISOString()
+                });
+                localStorage.setItem('advista_total_users', JSON.stringify(users));
+                
+            } catch (error) {
+                console.error('Error recording user:', error);
+            }
+        }
+
+        // Update user UI
+        function updateUserUI() {
+            if (!userData) return;
+            
+            // User info
+            document.getElementById('userName').textContent = userData.displayName;
+            document.getElementById('userEmail').textContent = userData.email;
+            document.getElementById('greetingName').textContent = userData.displayName.split(' ')[0];
+            
+            if (userData.photoURL) {
+                document.getElementById('userAvatar').src = userData.photoURL;
+            } else {
+                document.getElementById('userAvatar').src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(userData.displayName) + '&background=random';
+            }
+            
+            // Points and stats
+            document.getElementById('userPoints').textContent = userData.points.toLocaleString();
+            document.getElementById('totalEarnings').textContent = `$${(userData.totalEarned || 0).toFixed(2)}`;
+            document.getElementById('adsWatched').textContent = userData.adsWatched || 0;
+            document.getElementById('timeWatched').textContent = Math.floor((userData.timeWatched || 0) / 60);
+            document.getElementById('withdrawalsCount').textContent = (userData.withdrawals || []).length;
+            
+            // Withdrawal balance
+            const withdrawableDollars = (userData.points / POINTS_PER_DOLLAR).toFixed(2);
+            document.getElementById('withdrawableBalance').textContent = `$${withdrawableDollars}`;
+            document.getElementById('pointsBalance').textContent = userData.points.toLocaleString();
+        }
+
+        // Initialize stats
+        function initializeStats() {
+            // These are static for demo
+            document.getElementById('totalUsers').textContent = '4,523';
+            document.getElementById('totalWithdrawn').textContent = '$2,845';
+        }
+
+        // Load ads
+        function loadAds() {
+            const adsGrid = document.getElementById('adsGrid');
+            adsGrid.innerHTML = '';
+            
+            const ads = [
+                { id: 1, title: "عروض التقنية الحديثة", category: "تقنية", color: "#3b82f6" },
+                { id: 2, title: "تسوق بخصومات كبيرة", category: "تسوق", color: "#10b981" },
+                { id: 3, title: "دورات تعليمية مجانية", category: "تعليم", color: "#8b5cf6" },
+                { id: 4, title: "ألعاب وتطبيقات ترفيهية", category: "ترفيه", color: "#f59e0b" },
+                { id: 5, title: "عروض صحية ورياضية", category: "صحة", color: "#ef4444" },
+                { id: 6, title: "عروض السفر والسياحة", category: "سفر", color: "#06b6d4" }
+            ];
+            
+            ads.forEach(ad => {
+                const adCard = document.createElement('div');
+                adCard.className = 'ad-card';
+                adCard.innerHTML = `
+                    <div class="ad-category" style="background: ${ad.color}20; color: ${ad.color};">${ad.category}</div>
+                    <h3 class="ad-title">${ad.title}</h3>
+                    <p style="color: var(--gray); margin-bottom: 15px; font-size: 0.9rem;">
+                        شاهد هذا الإعلان لمدة 30 ثانية
+                    </p>
+                    <div class="ad-reward">+${POINTS_PER_AD} نقطة</div>
+                    <button class="watch-btn" onclick="startWatchingAd(${ad.id})" id="watchBtn${ad.id}">
+                        <i class="fas fa-play"></i> مشاهدة الإعلان
+                    </button>
+                `;
+                adsGrid.appendChild(adCard);
+            });
+        }
+
+        // Start watching ad
+        function startWatchingAd(adId) {
+            if (isWatchingAd) return;
+            
+            if (!currentUser || !userData) {
+                showNotification('يجب تسجيل الدخول أولاً', 'warning');
+                return;
+            }
+            
+            isWatchingAd = true;
+            currentAdId = adId;
+            secondsLeft = 30;
+            
+            // Show timer
+            const timerContainer = document.getElementById('timerContainer');
+            const timer = document.getElementById('timer');
+            
+            timerContainer.style.display = 'block';
+            timer.textContent = secondsLeft;
+            
+            // Disable all watch buttons
+            document.querySelectorAll('.watch-btn').forEach(btn => {
+                btn.disabled = true;
+            });
+            
+            // Start timer
+            timerInterval = setInterval(() => {
+                secondsLeft--;
+                timer.textContent = secondsLeft;
+                
+                if (secondsLeft <= 0) {
+                    completeAdWatch();
+                }
+            }, 1000);
+        }
+
+        // Complete ad watch
+        function completeAdWatch() {
+            clearInterval(timerInterval);
+            isWatchingAd = false;
+            
+            // Show points earned
+            document.getElementById('pointsEarned').style.display = 'block';
+            
+            try {
+                // Update user data
+                userData.points += POINTS_PER_AD;
+                userData.totalPoints += POINTS_PER_AD;
+                userData.adsWatched = (userData.adsWatched || 0) + 1;
+                userData.timeWatched = (userData.timeWatched || 0) + 30;
+                userData.totalEarned = (userData.totalEarned || 0) + (POINTS_PER_AD / POINTS_PER_DOLLAR);
+                
+                // Save to localStorage
+                localStorage.setItem(`advista_userdata_${currentUser.uid}`, JSON.stringify(userData));
+                
+                // Record ad watch
+                recordAdWatch(currentAdId);
+                
+                // Update UI
+                updateUserUI();
+                
+                showNotification(`🎉 لقد ربحت ${POINTS_PER_AD} نقطة!`, 'success');
+                
+            } catch (error) {
+                console.error('Error completing ad watch:', error);
+                showNotification('حدث خطأ أثناء معالجة النقاط', 'error');
+            }
+            
+            // Reset
+            setTimeout(() => {
+                document.getElementById('timerContainer').style.display = 'none';
+                document.getElementById('pointsEarned').style.display = 'none';
+                document.querySelectorAll('.watch-btn').forEach(btn => {
+                    btn.disabled = false;
+                });
+            }, 3000);
+        }
+
+        // Record ad watch
+        function recordAdWatch(adId) {
+            try {
+                const watchData = {
+                    userId: currentUser.uid,
+                    adId: adId,
+                    pointsEarned: POINTS_PER_AD,
+                    timestamp: new Date().toISOString(),
+                    userEmail: currentUser.email,
+                    userName: currentUser.displayName
+                };
+                
+                // Store in local storage
+                const watches = JSON.parse(localStorage.getItem('advista_ad_watches')) || [];
+                watches.push(watchData);
+                localStorage.setItem('advista_ad_watches', JSON.stringify(watches));
+                
+            } catch (error) {
+                console.error('Error recording ad watch:', error);
+            }
+        }
+
+        // Update required points for withdrawal
+        function updateRequiredPoints() {
+            const amount = document.getElementById('withdrawAmount').value;
+            const requiredPoints = amount * POINTS_PER_DOLLAR;
+            document.getElementById('requiredPoints').textContent = requiredPoints.toLocaleString();
+        }
+
+        // Submit withdrawal
+        function submitWithdrawal() {
+            if (!currentUser || !userData) {
+                showNotification('يجب تسجيل الدخول أولاً', 'warning');
+                return;
+            }
+            
+            const amount = parseFloat(document.getElementById('withdrawAmount').value);
+            const points = amount * POINTS_PER_DOLLAR;
+            const vodafoneNumber = document.getElementById('vodafoneNumber').value.trim();
+            
+            // Validation
+            if (userData.points < points) {
+                showNotification('❌ لا تملك نقاطاً كافية للسحب', 'error');
+                return;
+            }
+            
+            if (amount < 1) {
+                showNotification('❌ الحد الأدنى للسحب هو 1 دولار', 'error');
+                return;
+            }
+            
+            if (!vodafoneNumber || !/^01[0-2|5]\d{8}$/.test(vodafoneNumber)) {
+                showNotification('❌ يرجى إدخال رقم فودافون كاش صحيح', 'error');
+                return;
+            }
+            
+            try {
+                const btn = document.getElementById('submitWithdrawalBtn');
+                btn.disabled = true;
+                btn.innerHTML = '<div class="spinner" style="width: 20px; height: 20px;"></div> جاري الإرسال...';
+                
+                // Create withdrawal data
+                const withdrawalData = {
+                    id: Date.now().toString(),
+                    userId: currentUser.uid,
+                    userEmail: currentUser.email,
+                    userName: currentUser.displayName,
+                    userAvatar: currentUser.photoURL,
+                    amount: amount,
+                    points: points,
+                    method: 'vodafone_cash',
+                    vodafoneNumber: vodafoneNumber,
+                    status: 'pending',
+                    createdAt: new Date().toISOString()
+                };
+                
+                // Deduct points from user
+                userData.points -= points;
+                userData.withdrawals = userData.withdrawals || [];
+                userData.withdrawals.push(withdrawalData.id);
+                
+                // Save user data
+                localStorage.setItem(`advista_userdata_${currentUser.uid}`, JSON.stringify(userData));
+                
+                // Save withdrawal request
+                const withdrawals = JSON.parse(localStorage.getItem('advista_withdrawals')) || [];
+                withdrawals.push(withdrawalData);
+                localStorage.setItem('advista_withdrawals', JSON.stringify(withdrawals));
+                
+                // Reset form
+                document.getElementById('withdrawAmount').value = 1;
+                document.getElementById('vodafoneNumber').value = '';
+                updateRequiredPoints();
+                
+                // Update UI
+                updateUserUI();
+                
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i> إرسال طلب السحب';
+                
+                showNotification(`✅ تم إرسال طلب السحب بنجاح!`, 'success');
+                
+            } catch (error) {
+                console.error('Withdrawal submission error:', error);
+                showNotification('❌ حدث خطأ في إرسال طلب السحب', 'error');
+                
+                const btn = document.getElementById('submitWithdrawalBtn');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i> إرسال طلب السحب';
+            }
+        }
+
+        // Load admin data
+        function loadAdminData() {
+            if (!userData || !userData.isAdmin) return;
+            
+            try {
+                // Load pending withdrawals
+                const withdrawals = JSON.parse(localStorage.getItem('advista_withdrawals')) || [];
+                const pendingWithdrawals = withdrawals.filter(w => w.status === 'pending');
+                
+                const tableBody = document.getElementById('withdrawalsTable');
+                tableBody.innerHTML = '';
+                
+                if (pendingWithdrawals.length === 0) {
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 30px; color: var(--gray);">
+                                لا توجد طلبات سحب معلقة
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    pendingWithdrawals.forEach((withdrawal) => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    ${withdrawal.userAvatar ? `<img src="${withdrawal.userAvatar}" style="width: 30px; height: 30px; border-radius: 50%;">` : ''}
+                                    <div>
+                                        <div style="font-weight: 600;">${withdrawal.userName}</div>
+                                        <div style="font-size: 0.8rem; color: var(--gray);">${withdrawal.userEmail}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="font-weight: bold; color: var(--primary);">$${withdrawal.amount}</td>
+                            <td dir="ltr">${withdrawal.vodafoneNumber}</td>
+                            <td>${new Date(withdrawal.createdAt).toLocaleDateString('ar-EG')}</td>
+                            <td>
+                                <span class="status-badge status-pending">⏳ بانتظار المراجعة</span>
+                            </td>
+                            <td>
+                                <button class="action-btn approve-btn" onclick="approveWithdrawal('${withdrawal.id}')">
+                                    ✅ قبول
+                                </button>
+                                <button class="action-btn reject-btn" onclick="rejectWithdrawal('${withdrawal.id}')">
+                                    ❌ رفض
+                                </button>
+                            </td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                }
+                
+            } catch (error) {
+                console.error('Error loading admin data:', error);
+                showNotification('حدث خطأ في تحميل بيانات الإدارة', 'error');
+            }
+        }
+
+        // Approve withdrawal
+        function approveWithdrawal(withdrawalId) {
+            if (!confirm('هل أنت متأكد من قبول طلب السحب وإرسال المبلغ؟')) return;
+            
+            try {
+                // Get withdrawals
+                const withdrawals = JSON.parse(localStorage.getItem('advista_withdrawals')) || [];
+                const withdrawalIndex = withdrawals.findIndex(w => w.id === withdrawalId);
+                
+                if (withdrawalIndex === -1) {
+                    showNotification('طلب السحب غير موجود', 'error');
+                    return;
+                }
+                
+                // Update withdrawal status
+                withdrawals[withdrawalIndex].status = 'completed';
+                withdrawals[withdrawalIndex].approvedAt = new Date().toISOString();
+                withdrawals[withdrawalIndex].approvedBy = currentUser.email;
+                
+                // Save back
+                localStorage.setItem('advista_withdrawals', JSON.stringify(withdrawals));
+                
+                showNotification(`✅ تم قبول طلب السحب وإرسال $${withdrawals[withdrawalIndex].amount}`, 'success');
+                loadAdminData();
+                
+            } catch (error) {
+                console.error('Error approving withdrawal:', error);
+                showNotification('❌ حدث خطأ في قبول السحب', 'error');
+            }
+        }
+
+        // Reject withdrawal
+        function rejectWithdrawal(withdrawalId) {
+            const reason = prompt('سبب الرفض:');
+            if (!reason) return;
+            
+            try {
+                // Get withdrawals
+                const withdrawals = JSON.parse(localStorage.getItem('advista_withdrawals')) || [];
+                const withdrawalIndex = withdrawals.findIndex(w => w.id === withdrawalId);
+                
+                if (withdrawalIndex === -1) {
+                    showNotification('طلب السحب غير موجود', 'error');
+                    return;
+                }
+                
+                const withdrawal = withdrawals[withdrawalIndex];
+                
+                // Return points to user
+                const userDataStr = localStorage.getItem(`advista_userdata_${withdrawal.userId}`);
+                if (userDataStr) {
+                    const userData = JSON.parse(userDataStr);
+                    userData.points += withdrawal.points;
+                    localStorage.setItem(`advista_userdata_${withdrawal.userId}`, JSON.stringify(userData));
+                }
+                
+                // Update withdrawal status
+                withdrawals[withdrawalIndex].status = 'rejected';
+                withdrawals[withdrawalIndex].rejectReason = reason;
+                withdrawals[withdrawalIndex].rejectedAt = new Date().toISOString();
+                withdrawals[withdrawalIndex].rejectedBy = currentUser.email;
+                
+                // Save back
+                localStorage.setItem('advista_withdrawals', JSON.stringify(withdrawals));
+                
+                showNotification('❌ تم رفض طلب السحب وإرجاع النقاط', 'warning');
+                loadAdminData();
+                
+            } catch (error) {
+                console.error('Error rejecting withdrawal:', error);
+                showNotification('❌ حدث خطأ في رفض السحب', 'error');
+            }
+        }
+
+        // Refresh admin data
+        function refreshAdminData() {
+            loadAdminData();
+            showNotification('🔄 تم تحديث بيانات الإدارة', 'success');
+        }
+
+        // Sign out
+        function handleSignOut() {
+            // Clear local storage
+            localStorage.removeItem('advista_user');
+            currentUser = null;
+            userData = null;
+            
+            // Hide Google One Tap
+            google.accounts.id.disableAutoSelect();
+            
+            // Show login page
+            showLoginPage();
+            
+            showNotification('تم تسجيل الخروج بنجاح', 'success');
+        }
+
+        // Show login page
+        function showLoginPage() {
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('mainPage').style.display = 'none';
+        }
+
+        // Show main page
+        function showMainPage() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('mainPage').style.display = 'block';
+            window.scrollTo(0, 0);
+        }
+
+        // Show loading
+        function showLoading() {
+            document.getElementById('loadingScreen').style.display = 'flex';
+            document.getElementById('loadingScreen').style.opacity = '1';
+        }
+
+        // Hide loading screen
+        function hideLoading() {
+            document.getElementById('loadingScreen').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('loadingScreen').style.display = 'none';
+            }, 300);
+        }
+
+        // Show notification
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const messageDiv = document.getElementById('notificationMessage');
+            
+            notification.classList.remove('error', 'warning', 'success');
+            notification.classList.add(type);
+            
+            messageDiv.innerHTML = message;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 5000);
+        }
+
+        // Initialize event listeners
+        document.getElementById('logoutBtn').addEventListener('click', handleSignOut);
+        document.getElementById('submitWithdrawalBtn').addEventListener('click', submitWithdrawal);
+        document.getElementById('withdrawAmount').addEventListener('input', updateRequiredPoints);
+        
+        // Initialize required points display
+        updateRequiredPoints();
+    </script>
 </body>
 </html>
