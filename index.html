@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AdVista ads - اربح من مشاهدة الإعلانات</title>
+    <title>AdVista Pro - اربح من مشاهدة الإعلانات</title>
     
     <!-- Google Identity Services -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -1157,7 +1157,7 @@
             
             <!-- Google Sign In Button -->
             <div id="g_id_onload"
-                 data-client_id="805966277330-9j5j1nvluj69f8uieog0kk77p0jb46q4.apps.googleusercontent.com"
+                 data-client_id="509713648189-r9mhrk8qvk9j7hps7vqmg8hpe6t8j8uj.apps.googleusercontent.com"
                  data-context="signin"
                  data-ux_mode="popup"
                  data-callback="handleGoogleSignIn"
@@ -2620,7 +2620,7 @@
                 
                 const penalties = JSON.parse(localStorage.getItem('advista_penalties')) || [];
                 penalties.push(penaltyData);
-                localStorage.setItem('advista_penalties', JSON.stringify(penalties));
+                localStorage.setItem('advista_penalties', JSON.stringify(penaltyData));
                 
             } catch (error) {
                 console.error('Error recording penalty:', error);
@@ -2747,7 +2747,7 @@
                 
                 const watches = JSON.parse(localStorage.getItem('advista_ad_watches')) || [];
                 watches.push(watchData);
-                localStorage.setItem('advista_ad_watches', JSON.stringify(watches));
+                localStorage.setItem('advista_ad_watches', JSON.stringify(watchData));
                 
             } catch (error) {
                 console.error('Error recording ad watch:', error);
