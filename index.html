@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AdVista - اربح من مشاهدة الإعلانات</title>
+    
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Styles -->
+    <style>
+        /* Reset CSS */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Cairo', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #E60000;
+            --primary-dark: #CC0000;
+            --secondary: #10b981;
+            --accent: #3b82f6;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --light: #f9fafb;
+            --gray: #6b7280;
+            --gold: #fbbf24;
+            --success: #10b981;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.3s;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Login Page */
+        .login-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 50px 40px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo {
+            font-size: 3.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .login-title {
+            color: var(--dark);
+            font-size: 2rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .login-subtitle {
+            color: var(--gray);
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: var(--light);
+            padding: 20px;
+            border-radius: var(--radius);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .feature-item {
+            background: white;
+            padding: 20px;
+            border-radius: var(--radius);
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .feature-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .google-btn-container {
+            width: 100%;
+            margin: 30px 0 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Main Page */
+        .main-page {
+            display: none;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius);
+            padding: 20px 30px;
+            margin: 20px auto;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .site-logo {
+            font-size: 2rem;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .points-badge {
+            background: linear-gradient(135deg, var(--gold), #f59e0b);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15 rgba(245, 158, 11, 0.3);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+        }
+
+        .logout-btn {
+            background: var(--light);
+            border: 2px solid #ddd;
+            color: var(--dark);
+            padding: 8px 20px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .logout-btn:hover {
+            background: #e5e7eb;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius);
+            padding: 40px;
+            margin: 20px auto;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            color: var(--dark);
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            color: var(--gray);
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin: 20px auto;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Stats Cards */
+        .stats-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stats-title {
+            font-size: 1.5rem;
+            color: var(--dark);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-box {
+            background: white;
+            padding: 25px;
+            border-radius: var(--radius);
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .stat-box:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Ads Section */
+        .ads-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius);
+            padding: 30px;
+            margin: 20px auto;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--dark);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ads-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .ad-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ad-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .ad-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .ad-category {
+            display: inline-block;
+            background: var(--light);
+            color: var(--gray);
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .ad-title {
+            font-size: 1.2rem;
+            color: var(--dark);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .ad-reward {
+            background: var(--success);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            margin: 15px 0;
+            display: inline-block;
+        }
+
+        .watch-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: var(--transition);
+        }
+
+        .watch-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .watch-btn:disabled {
+            background: var(--gray);
+            cursor: not-allowed;
+        }
+
+        /* Timer */
+        .timer-container {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 30px;
+            border-radius: var(--radius);
+            text-align: center;
+            margin: 30px auto;
+            display: none;
+            box-shadow: var(--shadow-lg);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .timer {
+            font-size: 4rem;
+            font-weight: 700;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Withdrawal Section */
+        .withdrawal-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .withdrawal-info {
+            background: white;
+            padding: 25px;
+            border-radius: var(--radius);
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        .withdrawal-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--light);
+        }
+
+        .withdrawal-form {
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: var(--radius);
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(230, 0, 0, 0.1);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: var(--transition);
+        }
+
+        .submit-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .submit-btn:disabled {
+            background: var(--gray);
+            cursor: not-allowed;
+        }
+
+        /* Admin Panel */
+        .admin-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius);
+            padding: 30px;
+            margin: 20px auto;
+            box-shadow: var(--shadow-lg);
+            display: none;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .admin-table th {
+            background: var(--primary);
+            color: white;
+            padding: 15px;
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .admin-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--light);
+        }
+
+        .admin-table tr:hover {
+            background: var(--light);
+        }
+
+        .status-badge {
+            padding: 6px 15px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-completed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-rejected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .action-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            margin: 0 5px;
+            transition: var(--transition);
+        }
+
+        .approve-btn {
+            background: var(--success);
+            color: white;
+        }
+
+        .reject-btn {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 20px 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            display: none;
+            z-index: 10000;
+            border-right: 5px solid var(--success);
+            max-width: 400px;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification.error {
+            border-right-color: var(--danger);
+        }
+
+        .notification.warning {
+            border-right-color: var(--warning);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: white;
+            margin-top: 40px;
+            opacity: 0.9;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .user-info {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .ads-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .admin-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body>
+    <!-- Google Identity Services Config -->
+    <div id="g_id_onload"
+         data-client_id="1805966277330-q3tk9pjhtueg4lh60ahlqvb6cp9o0otv.apps.googleusercontent.com"
+         data-callback="handleCredentialResponse"
+         data-auto_prompt="false">
+    </div>
+
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Login Page -->
+    <div class="login-page" id="loginPage">
+        <div class="login-card">
+            <div class="logo">💰</div>
+            <h1 class="login-title">AdVista</h1>
+            <p class="login-subtitle">شاهد الإعلانات، اربح نقاط، وسحب أموال حقيقية إلى فودافون كاش</p>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalUsers">0</div>
+                    <div class="stat-label">مستخدم نشط</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalWithdrawn">$0</div>
+                    <div class="stat-label">تم سحبها</div>
+                </div>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">🎁</div>
+                    <h3>100 نقطة مجانية</h3>
+                    <p>عند التسجيل الأول</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">⏱️</div>
+                    <h3>30 ثانية</h3>
+                    <p>لكل إعلان</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">💰</div>
+                    <h3>50 نقطة</h3>
+                    <p>لكل إعلان</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🏦</div>
+                    <h3>فودافون كاش</h3>
+                    <p>سحب مباشر</p>
+                </div>
+            </div>
+            
+            <div class="google-btn-container">
+                <div class="g_id_signin" data-type="standard"></div>
+            </div>
+            
+            <p style="color: var(--gray); font-size: 0.9rem; margin-top: 20px;">
+                بالتسجيل، أنت توافق على <a href="#" style="color: var(--primary);">الشروط والأحكام</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Main Page -->
+    <div class="main-page" id="mainPage">
+        <div class="container">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <div class="site-logo">AdVista</div>
+                </div>
+                
+                <div class="user-info">
+                    <div class="points-badge">
+                        <i class="fas fa-coins"></i>
+                        <span id="userPoints">0</span> نقطة
+                    </div>
+                    
+                    <div class="user-profile">
+                        <img id="userAvatar" class="user-avatar" src="" alt="صورة المستخدم">
+                        <div>
+                            <div id="userName" style="font-weight: 600; font-size: 0.9rem;"></div>
+                            <div id="userEmail" style="font-size: 0.8rem; color: var(--gray);"></div>
+                        </div>
+                    </div>
+                    
+                    <button class="logout-btn" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> خروج
+                    </button>
+                </div>
+            </header>
+
+            <!-- Hero Section -->
+            <section class="hero">
+                <h1>مرحباً <span id="greetingName"></span> 👋</h1>
+                <p>ابدأ رحلتك في ربح النقاط من خلال مشاهدة الإعلانات اليومية</p>
+            </section>
+
+            <!-- Dashboard -->
+            <div class="dashboard">
+                <!-- Stats Section -->
+                <div class="stats-section">
+                    <h2 class="stats-title">
+                        <i class="fas fa-chart-line"></i> إحصائياتك
+                    </h2>
+                    
+                    <div class="stats-cards">
+                        <div class="stat-box">
+                            <div class="stat-value" id="totalEarnings">$0</div>
+                            <div class="stat-label">إجمالي أرباحك</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="adsWatched">0</div>
+                            <div class="stat-label">إعلانات شاهدتها</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="timeWatched">0</div>
+                            <div class="stat-label">دقائق مشاهدة</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="withdrawalsCount">0</div>
+                            <div class="stat-label">طلبات سحب</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Withdrawal Section -->
+                <div class="withdrawal-section">
+                    <h2 class="stats-title">
+                        <i class="fas fa-wallet"></i> سحب الأرباح
+                    </h2>
+                    
+                    <div class="withdrawal-info">
+                        <div class="withdrawal-stats">
+                            <div>
+                                <div style="font-size: 0.9rem; color: var(--gray);">رصيدك القابل للسحب</div>
+                                <div style="font-size: 2rem; font-weight: 700; color: var(--primary);" id="withdrawableBalance">$0</div>
+                            </div>
+                            <div style="text-align: left;">
+                                <div style="font-size: 0.9rem; color: var(--gray);">النقاط المتبقية</div>
+                                <div style="font-size: 1.5rem; font-weight: 700;" id="pointsBalance">0</div>
+                            </div>
+                        </div>
+                        
+                        <div style="background: #fef3c7; padding: 15px; border-radius: var(--radius); margin-top: 20px;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <i class="fas fa-info-circle" style="color: #d97706;"></i>
+                                <div>
+                                    <div style="font-weight: 600; color: #92400e;">20,000 نقطة = 1 دولار</div>
+                                    <div style="font-size: 0.9rem; color: #92400e;">الحد الأدنى للسحب: 1 دولار</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="withdrawal-form">
+                        <div class="form-group">
+                            <label class="form-label">المبلغ المطلوب (دولار):</label>
+                            <input type="number" id="withdrawAmount" class="form-input" min="1" max="100" value="1">
+                            <small style="display: block; margin-top: 5px; color: var(--gray);">
+                                النقاط المطلوبة: <span id="requiredPoints">20,000</span> نقطة
+                            </small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">رقم فودافون كاش:</label>
+                            <input type="tel" id="vodafoneNumber" class="form-input" placeholder="مثال: 01012345678" required>
+                            <small style="display: block; margin-top: 5px; color: var(--gray);">
+                                تأكد من إدخال رقم فودافون كاش صحيح
+                            </small>
+                        </div>
+                        
+                        <button class="submit-btn" id="submitWithdrawalBtn">
+                            <i class="fas fa-paper-plane"></i> إرسال طلب السحب
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ads Section -->
+            <section class="ads-section">
+                <h2 class="section-title">
+                    <i class="fas fa-ad"></i> الإعلانات المتاحة
+                </h2>
+                <p style="color: var(--gray); margin-bottom: 25px;">شاهد الإعلان لمدة 30 ثانية لربح 50 نقطة</p>
+                
+                <div class="ads-grid" id="adsGrid">
+                    <!-- Ads will be loaded here -->
+                </div>
+                
+                <!-- Timer Container -->
+                <div class="timer-container" id="timerContainer">
+                    <h3 style="margin-bottom: 20px;">⏳ جاري مشاهدة الإعلان</h3>
+                    <div class="timer" id="timer">30</div>
+                    <p style="margin-top: 20px; opacity: 0.9;">الرجاء عدم إغلاق الصفحة</p>
+                    <div id="pointsEarned" style="display: none; margin-top: 30px;">
+                        <div style="background: rgba(255, 255, 255, 0.2); padding: 15px; border-radius: var(--radius); display: inline-block;">
+                            <span style="font-size: 1.5rem; font-weight: 700;">+50 نقطة</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Admin Panel -->
+            <div class="admin-panel" id="adminPanel">
+                <h2 class="section-title">
+                    <i class="fas fa-crown"></i> لوحة تحكم الإدارة
+                </h2>
+                
+                <div style="margin-bottom: 25px;">
+                    <button class="submit-btn" id="refreshAdminBtn" style="width: auto;">
+                        <i class="fas fa-sync-alt"></i> تحديث البيانات
+                    </button>
+                </div>
+                
+                <h3 style="margin-bottom: 20px; color: var(--dark);">طلبات السحب المعلقة</h3>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>المستخدم</th>
+                            <th>المبلغ</th>
+                            <th>رقم فودافون</th>
+                            <th>التاريخ</th>
+                            <th>الحالة</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="withdrawalsTable">
+                        <!-- Withdrawal requests will be loaded here -->
+                    </tbody>
+                </table>
+                
+                <div style="margin-top: 40px;">
+                    <h3 style="margin-bottom: 20px; color: var(--dark);">إحصائيات الموقع</h3>
+                    <div class="stats-cards">
+                        <div class="stat-box">
+                            <div class="stat-value" id="adminTotalUsers">0</div>
+                            <div class="stat-label">إجمالي المستخدمين</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="adminTotalWithdrawals">$0</div>
+                            <div class="stat-label">إجمالي المسحوبات</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="adminTotalAds">0</div>
+                            <div class="stat-label">إعلانات شوهدت</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="adminSiteRevenue">$0</div>
+                            <div class="stat-label">إيرادات الموقع</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <p>© 2024 AdVista. جميع الحقوق محفوظة.</p>
+                <p>للدعم الفني: bo2584668@gmail.com</p>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <div id="notificationMessage"></div>
+    </div>
+
+    <script type="module" src="index.tsx"></script>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>
