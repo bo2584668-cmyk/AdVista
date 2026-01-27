@@ -192,7 +192,6 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
-            margin: 30px 0 20px;
             transition: var(--transition);
         }
 
@@ -785,7 +784,7 @@
             
             <!-- Google Sign In Button -->
             <div id="g_id_onload"
-                 data-client_id="805966277330-9j5j1nvluj69f8uieog0kk77p0jb46q4.apps.googleusercontent.com"
+                 data-client_id="509713648189-r9mhrk8qvk9j7hps7vqmg8hpe6t8j8uj.apps.googleusercontent.com"
                  data-context="signin"
                  data-ux_mode="popup"
                  data-callback="handleGoogleSignIn"
@@ -930,7 +929,7 @@
                 <h2 class="section-title">
                     <i class="fas fa-ad"></i> الإعلانات المتاحة
                 </h2>
-                <p style="color: var(--gray); margin-bottom: 25px;">شاهد الإعلان لمدة 30 ثانية لربح 50 نقطة</p>
+                <p style="color: var(--gray); margin-bottom: 25px;">شاهد الإعلان لمدة 30 ثانية لربح نقاط</p>
                 
                 <div class="ads-grid" id="adsGrid">
                     <!-- Ads will be loaded here -->
@@ -943,7 +942,7 @@
                     <p style="margin-top: 20px; opacity: 0.9;">الرجاء عدم إغلاق الصفحة</p>
                     <div id="pointsEarned" style="display: none; margin-top: 30px;">
                         <div style="background: rgba(255, 255, 255, 0.2); padding: 15px; border-radius: var(--radius); display: inline-block;">
-                            <span style="font-size: 1.5rem; font-weight: 700;">+50 نقطة</span>
+                            <span style="font-size: 1.5rem; font-weight: 700;" id="earnedPoints">+0 نقطة</span>
                         </div>
                     </div>
                 </div>
@@ -951,54 +950,7 @@
 
             <!-- Admin Panel -->
             <div class="admin-panel" id="adminPanel">
-                <h2 class="section-title">
-                    <i class="fas fa-crown"></i> لوحة تحكم الإدارة
-                </h2>
-                
-                <div style="margin-bottom: 25px;">
-                    <button class="submit-btn" onclick="refreshAdminData()" style="width: auto;">
-                        <i class="fas fa-sync-alt"></i> تحديث البيانات
-                    </button>
-                </div>
-                
-                <h3 style="margin-bottom: 20px; color: var(--dark);">طلبات السحب المعلقة</h3>
-                <table class="admin-table">
-                    <thead>
-                        <tr>
-                            <th>المستخدم</th>
-                            <th>المبلغ</th>
-                            <th>رقم فودافون</th>
-                            <th>التاريخ</th>
-                            <th>الحالة</th>
-                            <th>الإجراءات</th>
-                        </tr>
-                    </thead>
-                    <tbody id="withdrawalsTable">
-                        <!-- Withdrawal requests will be loaded here -->
-                    </tbody>
-                </table>
-                
-                <div style="margin-top: 40px;">
-                    <h3 style="margin-bottom: 20px; color: var(--dark);">إحصائيات الموقع</h3>
-                    <div class="stats-cards">
-                        <div class="stat-box">
-                            <div class="stat-value" id="adminTotalUsers">4,523</div>
-                            <div class="stat-label">إجمالي المستخدمين</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-value" id="adminTotalWithdrawals">$2,845</div>
-                            <div class="stat-label">إجمالي المسحوبات</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-value" id="adminTotalAds">12,847</div>
-                            <div class="stat-label">إعلانات شوهدت</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-value" id="adminSiteRevenue">$1,284</div>
-                            <div class="stat-label">إيرادات الموقع</div>
-                        </div>
-                    </div>
-                </div>
+                <!-- Admin panel content will be loaded here -->
             </div>
 
             <!-- Footer -->
@@ -1022,6 +974,13 @@
         const POINTS_PER_DOLLAR = 20000;
         const ADMIN_EMAIL = "bo2584668@gmail.com";
         
+        // Smart links
+        const SMART_LINKS = [
+            "https://pickedsarcasm.com/vz3y6txw?key=a1c1e5a19b4a4039601634d549e93ee0",
+            "https://pickedsarcasm.com/p52c7jzc?key=24559b6245c938c283344ce1494f86ef", 
+            "https://pickedsarcasm.com/gyvixxr5?key=5867cab7b335b8109022bae76e8ca674"
+        ];
+        
         // Global variables
         let currentUser = null;
         let userData = null;
@@ -1029,6 +988,7 @@
         let timerInterval = null;
         let secondsLeft = 30;
         let isWatchingAd = false;
+        let currentAdPoints = 0;
 
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
@@ -1155,9 +1115,93 @@
             
             // Show admin panel for admin
             if (userData.isAdmin) {
-                document.getElementById('adminPanel').style.display = 'block';
-                loadAdminData();
+                showAdminPanel();
             }
+        }
+
+        // Show admin panel
+        function showAdminPanel() {
+            const adminPanel = document.getElementById('adminPanel');
+            adminPanel.style.display = 'block';
+            adminPanel.innerHTML = `
+                <h2 class="section-title">
+                    <i class="fas fa-crown"></i> لوحة تحكم الإدارة
+                </h2>
+                
+                <div style="margin-bottom: 25px;">
+                    <button class="submit-btn" onclick="refreshAdminData()" style="width: auto;">
+                        <i class="fas fa-sync-alt"></i> تحديث البيانات
+                    </button>
+                </div>
+                
+                <h3 style="margin-bottom: 20px; color: var(--dark);">طلبات السحب المعلقة</h3>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>المستخدم</th>
+                            <th>المبلغ</th>
+                            <th>رقم فودافون</th>
+                            <th>التاريخ</th>
+                            <th>الحالة</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="withdrawalsTable">
+                        <!-- Withdrawal requests will be loaded here -->
+                    </tbody>
+                </table>
+                
+                <div style="margin-top: 40px;">
+                    <h3 style="margin-bottom: 20px; color: var(--dark);">إحصائيات الموقع</h3>
+                    <div class="stats-cards">
+                        <div class="stat-box">
+                            <div class="stat-value" id="adminTotalUsers">4,523</div>
+                            <div class="stat-label">إجمالي المستخدمين</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="adminTotalWithdrawals">$2,845</div>
+                            <div class="stat-label">إجمالي المسحوبات</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="adminTotalAds">12,847</div>
+                            <div class="stat-label">إعلانات شوهدت</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="adminSiteRevenue">$1,284</div>
+                            <div class="stat-label">إيرادات الموقع</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 40px;">
+                    <h3 style="margin-bottom: 20px; color: var(--dark);">
+                        <i class="fas fa-plus-circle"></i> نشر إعلان جديد
+                    </h3>
+                    
+                    <div style="background: white; padding: 25px; border-radius: var(--radius); margin-bottom: 25px; box-shadow: var(--shadow);">
+                        <div class="form-group">
+                            <label class="form-label">رابط الإعلان الذكي:</label>
+                            <input type="url" id="newAdLink" class="form-input" placeholder="https://pickedsarcasm.com/..." required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">عنوان الإعلان:</label>
+                            <input type="text" id="newAdTitle" class="form-input" placeholder="عنوان الإعلان..." required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">نقاط المكافأة:</label>
+                            <input type="number" id="newAdPoints" class="form-input" value="50" min="10" max="1000" required>
+                        </div>
+                        
+                        <button class="submit-btn" onclick="addNewAd()" style="width: 100%;">
+                            <i class="fas fa-plus"></i> نشر إعلان جديد
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            loadAdminData();
         }
 
         // Record new user
@@ -1217,44 +1261,76 @@
             const adsGrid = document.getElementById('adsGrid');
             adsGrid.innerHTML = '';
             
-            const ads = [
-                { id: 1, title: "عروض التقنية الحديثة", category: "تقنية", color: "#3b82f6" },
-                { id: 2, title: "تسوق بخصومات كبيرة", category: "تسوق", color: "#10b981" },
-                { id: 3, title: "دورات تعليمية مجانية", category: "تعليم", color: "#8b5cf6" },
-                { id: 4, title: "ألعاب وتطبيقات ترفيهية", category: "ترفيه", color: "#f59e0b" },
-                { id: 5, title: "عروض صحية ورياضية", category: "صحة", color: "#ef4444" },
-                { id: 6, title: "عروض السفر والسياحة", category: "سفر", color: "#06b6d4" }
+            // Load saved ads
+            const savedAds = JSON.parse(localStorage.getItem('advista_ads')) || [];
+            
+            // Use default smart links if no saved ads
+            const allAds = savedAds.length > 0 ? savedAds : SMART_LINKS.map((link, index) => ({
+                link: link,
+                title: `إعلان ذكي ${index + 1}`,
+                points: POINTS_PER_AD,
+                isDefault: true,
+                category: "تقنية"
+            }));
+            
+            // Add more default ads if needed
+            const defaultTitles = [
+                "عروض تقنية مميزة",
+                "تخفيضات حصرية", 
+                "دورات تعليمية مجانية",
+                "ألعاب وتطبيقات ترفيهية",
+                "عروض صحية ورياضية",
+                "عروض السفر والسياحة"
             ];
             
-            ads.forEach(ad => {
+            const defaultCategories = ["تقنية", "تسوق", "تعليم", "ترفيه", "صحة", "سفر"];
+            const defaultColors = ["#3b82f6", "#10b981", "#8b5cf6", "#f59e0b", "#ef4444", "#06b6d4"];
+            
+            allAds.forEach((ad, index) => {
                 const adCard = document.createElement('div');
                 adCard.className = 'ad-card';
                 adCard.innerHTML = `
-                    <div class="ad-category" style="background: ${ad.color}20; color: ${ad.color};">${ad.category}</div>
-                    <h3 class="ad-title">${ad.title}</h3>
+                    <div class="ad-category" style="background: ${defaultColors[index % defaultColors.length]}20; color: ${defaultColors[index % defaultColors.length]};">
+                        ${ad.category || defaultCategories[index % defaultCategories.length]}
+                    </div>
+                    <h3 class="ad-title">${ad.title || defaultTitles[index % defaultTitles.length] || `إعلان ${index + 1}`}</h3>
                     <p style="color: var(--gray); margin-bottom: 15px; font-size: 0.9rem;">
-                        شاهد هذا الإعلان لمدة 30 ثانية
+                        شاهد هذا الإعلان لمدة 30 ثانية للحصول على ${ad.points} نقطة
                     </p>
-                    <div class="ad-reward">+${POINTS_PER_AD} نقطة</div>
-                    <button class="watch-btn" onclick="startWatchingAd(${ad.id})" id="watchBtn${ad.id}">
+                    <div class="ad-reward">+${ad.points} نقطة</div>
+                    <button class="watch-btn" onclick="startWatchingAd(${index})" id="watchBtn${index}">
                         <i class="fas fa-play"></i> مشاهدة الإعلان
                     </button>
+                    <input type="hidden" id="adLink${index}" value="${ad.link}">
+                    <input type="hidden" id="adPoints${index}" value="${ad.points}">
                 `;
                 adsGrid.appendChild(adCard);
             });
         }
 
         // Start watching ad
-        function startWatchingAd(adId) {
-            if (isWatchingAd) return;
+        function startWatchingAd(adIndex) {
+            if (isWatchingAd) {
+                showNotification('⏳ جاري مشاهدة إعلان حالياً', 'warning');
+                return;
+            }
             
             if (!currentUser || !userData) {
                 showNotification('يجب تسجيل الدخول أولاً', 'warning');
                 return;
             }
             
+            // Get ad points
+            currentAdPoints = parseInt(document.getElementById(`adPoints${adIndex}`)?.value) || POINTS_PER_AD;
+            
+            // Disable all watch buttons
+            document.querySelectorAll('.watch-btn').forEach(btn => {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-clock"></i> انتظر...';
+            });
+            
             isWatchingAd = true;
-            currentAdId = adId;
+            currentAdId = adIndex;
             secondsLeft = 30;
             
             // Show timer
@@ -1263,21 +1339,23 @@
             
             timerContainer.style.display = 'block';
             timer.textContent = secondsLeft;
+            document.getElementById('pointsEarned').style.display = 'none';
             
-            // Disable all watch buttons
-            document.querySelectorAll('.watch-btn').forEach(btn => {
-                btn.disabled = true;
-            });
-            
-            // Start timer
-            timerInterval = setInterval(() => {
-                secondsLeft--;
-                timer.textContent = secondsLeft;
+            // Open smart link in new window after 3 seconds
+            setTimeout(() => {
+                const adLink = document.getElementById(`adLink${adIndex}`).value;
+                window.open(adLink, '_blank');
                 
-                if (secondsLeft <= 0) {
-                    completeAdWatch();
-                }
-            }, 1000);
+                // Start countdown
+                timerInterval = setInterval(() => {
+                    secondsLeft--;
+                    timer.textContent = secondsLeft;
+                    
+                    if (secondsLeft <= 0) {
+                        completeAdWatch();
+                    }
+                }, 1000);
+            }, 3000); // Wait 3 seconds before opening link
         }
 
         // Complete ad watch
@@ -1286,15 +1364,16 @@
             isWatchingAd = false;
             
             // Show points earned
+            document.getElementById('earnedPoints').textContent = `+${currentAdPoints} نقطة`;
             document.getElementById('pointsEarned').style.display = 'block';
             
             try {
                 // Update user data
-                userData.points += POINTS_PER_AD;
-                userData.totalPoints += POINTS_PER_AD;
+                userData.points += currentAdPoints;
+                userData.totalPoints += currentAdPoints;
                 userData.adsWatched = (userData.adsWatched || 0) + 1;
                 userData.timeWatched = (userData.timeWatched || 0) + 30;
-                userData.totalEarned = (userData.totalEarned || 0) + (POINTS_PER_AD / POINTS_PER_DOLLAR);
+                userData.totalEarned = (userData.totalEarned || 0) + (currentAdPoints / POINTS_PER_DOLLAR);
                 
                 // Save to localStorage
                 localStorage.setItem(`advista_userdata_${currentUser.uid}`, JSON.stringify(userData));
@@ -1305,21 +1384,24 @@
                 // Update UI
                 updateUserUI();
                 
-                showNotification(`🎉 لقد ربحت ${POINTS_PER_AD} نقطة!`, 'success');
+                showNotification(`🎉 لقد ربحت ${currentAdPoints} نقطة!`, 'success');
                 
             } catch (error) {
                 console.error('Error completing ad watch:', error);
                 showNotification('حدث خطأ أثناء معالجة النقاط', 'error');
             }
             
-            // Reset
+            // Reset after 5 seconds
             setTimeout(() => {
                 document.getElementById('timerContainer').style.display = 'none';
                 document.getElementById('pointsEarned').style.display = 'none';
+                
+                // Re-enable watch buttons
                 document.querySelectorAll('.watch-btn').forEach(btn => {
                     btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-play"></i> مشاهدة الإعلان';
                 });
-            }, 3000);
+            }, 5000);
         }
 
         // Record ad watch
@@ -1328,7 +1410,7 @@
                 const watchData = {
                     userId: currentUser.uid,
                     adId: adId,
-                    pointsEarned: POINTS_PER_AD,
+                    pointsEarned: currentAdPoints,
                     timestamp: new Date().toISOString(),
                     userEmail: currentUser.email,
                     userName: currentUser.displayName
@@ -1424,6 +1506,11 @@
                 
                 showNotification(`✅ تم إرسال طلب السحب بنجاح!`, 'success');
                 
+                // Reload admin data if admin is viewing
+                if (userData.isAdmin) {
+                    loadAdminData();
+                }
+                
             } catch (error) {
                 console.error('Withdrawal submission error:', error);
                 showNotification('❌ حدث خطأ في إرسال طلب السحب', 'error');
@@ -1444,52 +1531,102 @@
                 const pendingWithdrawals = withdrawals.filter(w => w.status === 'pending');
                 
                 const tableBody = document.getElementById('withdrawalsTable');
-                tableBody.innerHTML = '';
-                
-                if (pendingWithdrawals.length === 0) {
-                    tableBody.innerHTML = `
-                        <tr>
-                            <td colspan="6" style="text-align: center; padding: 30px; color: var(--gray);">
-                                لا توجد طلبات سحب معلقة
-                            </td>
-                        </tr>
-                    `;
-                } else {
-                    pendingWithdrawals.forEach((withdrawal) => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>
-                                <div style="display: flex; align-items: center; gap: 10px;">
-                                    ${withdrawal.userAvatar ? `<img src="${withdrawal.userAvatar}" style="width: 30px; height: 30px; border-radius: 50%;">` : ''}
-                                    <div>
-                                        <div style="font-weight: 600;">${withdrawal.userName}</div>
-                                        <div style="font-size: 0.8rem; color: var(--gray);">${withdrawal.userEmail}</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td style="font-weight: bold; color: var(--primary);">$${withdrawal.amount}</td>
-                            <td dir="ltr">${withdrawal.vodafoneNumber}</td>
-                            <td>${new Date(withdrawal.createdAt).toLocaleDateString('ar-EG')}</td>
-                            <td>
-                                <span class="status-badge status-pending">⏳ بانتظار المراجعة</span>
-                            </td>
-                            <td>
-                                <button class="action-btn approve-btn" onclick="approveWithdrawal('${withdrawal.id}')">
-                                    ✅ قبول
-                                </button>
-                                <button class="action-btn reject-btn" onclick="rejectWithdrawal('${withdrawal.id}')">
-                                    ❌ رفض
-                                </button>
-                            </td>
+                if (tableBody) {
+                    tableBody.innerHTML = '';
+                    
+                    if (pendingWithdrawals.length === 0) {
+                        tableBody.innerHTML = `
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 30px; color: var(--gray);">
+                                    لا توجد طلبات سحب معلقة
+                                </td>
+                            </tr>
                         `;
-                        tableBody.appendChild(row);
-                    });
+                    } else {
+                        pendingWithdrawals.forEach((withdrawal) => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        ${withdrawal.userAvatar ? `<img src="${withdrawal.userAvatar}" style="width: 30px; height: 30px; border-radius: 50%;">` : ''}
+                                        <div>
+                                            <div style="font-weight: 600;">${withdrawal.userName}</div>
+                                            <div style="font-size: 0.8rem; color: var(--gray);">${withdrawal.userEmail}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="font-weight: bold; color: var(--primary);">$${withdrawal.amount}</td>
+                                <td dir="ltr">${withdrawal.vodafoneNumber}</td>
+                                <td>${new Date(withdrawal.createdAt).toLocaleDateString('ar-EG')}</td>
+                                <td>
+                                    <span class="status-badge status-pending">⏳ بانتظار المراجعة</span>
+                                </td>
+                                <td>
+                                    <button class="action-btn approve-btn" onclick="approveWithdrawal('${withdrawal.id}')">
+                                        ✅ قبول
+                                    </button>
+                                    <button class="action-btn reject-btn" onclick="rejectWithdrawal('${withdrawal.id}')">
+                                        ❌ رفض
+                                    </button>
+                                </td>
+                            `;
+                            tableBody.appendChild(row);
+                        });
+                    }
                 }
                 
             } catch (error) {
                 console.error('Error loading admin data:', error);
                 showNotification('حدث خطأ في تحميل بيانات الإدارة', 'error');
             }
+        }
+
+        // Add new ad (Admin function)
+        function addNewAd() {
+            if (!userData || !userData.isAdmin) return;
+            
+            const newLink = document.getElementById('newAdLink').value.trim();
+            const newTitle = document.getElementById('newAdTitle').value.trim();
+            const newPoints = parseInt(document.getElementById('newAdPoints').value);
+            
+            if (!newLink || !newTitle || !newPoints) {
+                showNotification('❌ يرجى ملء جميع الحقول', 'error');
+                return;
+            }
+            
+            if (!newLink.startsWith('https://pickedsarcasm.com/')) {
+                showNotification('❌ الرابط يجب أن يكون من النطاق pickedsarcasm.com', 'error');
+                return;
+            }
+            
+            if (newPoints < 10 || newPoints > 1000) {
+                showNotification('❌ النقاط يجب أن تكون بين 10 و 1000 نقطة', 'error');
+                return;
+            }
+            
+            // Save new ad
+            const newAd = {
+                link: newLink,
+                title: newTitle,
+                points: newPoints,
+                addedBy: currentUser.email,
+                addedAt: new Date().toISOString()
+            };
+            
+            // Save to localStorage
+            const ads = JSON.parse(localStorage.getItem('advista_ads')) || [];
+            ads.push(newAd);
+            localStorage.setItem('advista_ads', JSON.stringify(ads));
+            
+            // Reload ads
+            loadAds();
+            
+            // Reset fields
+            document.getElementById('newAdLink').value = '';
+            document.getElementById('newAdTitle').value = '';
+            document.getElementById('newAdPoints').value = '50';
+            
+            showNotification('✅ تم نشر الإعلان بنجاح!', 'success');
         }
 
         // Approve withdrawal
@@ -1640,4 +1777,4 @@
         updateRequiredPoints();
     </script>
 </body>
-</html>
+    </html>
