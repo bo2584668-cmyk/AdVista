@@ -12,14 +12,13 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js"></script>
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Styles -->
     <style>
-        /* Reset CSS */
+        /* إعادة تعيين CSS */
         * {
             margin: 0;
             padding: 0;
@@ -65,35 +64,7 @@
             padding: 0 15px;
         }
 
-        /* Loading Screen */
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 0.3s;
-        }
-
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Login Page */
+        /* صفحة تسجيل الدخول */
         .login-page {
             min-height: 100vh;
             display: flex;
@@ -198,7 +169,7 @@
             margin-bottom: 8px;
         }
 
-        /* Referral Section */
+        /* قسم الإحالة */
         .referral-section {
             background: linear-gradient(135deg, var(--accent), #8b5cf6);
             color: white;
@@ -240,12 +211,12 @@
             transform: translateY(-2px);
         }
 
-        /* Main Page */
+        /* الصفحة الرئيسية */
         .main-page {
             display: none;
         }
 
-        /* Header */
+        /* الهيدر */
         .header {
             background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(10px);
@@ -373,7 +344,7 @@
             background: #e5e7eb;
         }
 
-        /* Hero Section */
+        /* قسم البطل */
         .hero {
             background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(10px);
@@ -414,7 +385,7 @@
             }
         }
 
-        /* Page Sections */
+        /* أقسام الصفحة */
         .page-section {
             background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(10px);
@@ -452,7 +423,7 @@
             }
         }
 
-        /* Navigation Tabs */
+        /* تبويبات التنقل */
         .nav-tabs {
             display: flex;
             overflow-x: auto;
@@ -490,7 +461,7 @@
             color: white;
         }
 
-        /* Dashboard */
+        /* لوحة التحكم */
         .dashboard {
             display: grid;
             grid-template-columns: 1fr;
@@ -504,7 +475,7 @@
             }
         }
 
-        /* Stats Cards */
+        /* بطاقات الإحصائيات */
         .stats-section {
             background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(10px);
@@ -564,7 +535,7 @@
             font-size: 0.85rem;
         }
 
-        /* Ads Section */
+        /* قسم الإعلانات */
         .ads-section {
             background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(10px);
@@ -679,7 +650,7 @@
             cursor: not-allowed;
         }
 
-        /* Timer Container */
+        /* حاوية المؤقت */
         .timer-container {
             position: fixed;
             top: 50%;
@@ -742,7 +713,7 @@
             font-size: 0.9rem;
         }
 
-        /* Withdrawal Section */
+        /* قسم السحب */
         .withdrawal-section {
             background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(10px);
@@ -835,7 +806,7 @@
             cursor: not-allowed;
         }
 
-        /* Referral Stats */
+        /* إحصائيات الإحالة */
         .referral-stats-card {
             background: white;
             padding: 20px;
@@ -866,7 +837,7 @@
             }
         }
 
-        /* Admin Panel */
+        /* لوحة الإدارة */
         .admin-panel {
             background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(10px);
@@ -965,7 +936,7 @@
             color: white;
         }
 
-        /* Notification */
+        /* الإشعارات */
         .notification {
             position: fixed;
             top: 20px;
@@ -1001,7 +972,7 @@
             }
         }
 
-        /* Footer */
+        /* الفوتر */
         .footer {
             text-align: center;
             padding: 25px 15px;
@@ -1011,7 +982,7 @@
             font-size: 0.9rem;
         }
 
-        /* Modal */
+        /* المودال */
         .modal {
             display: none;
             position: fixed;
@@ -1056,7 +1027,7 @@
             z-index: 1;
         }
 
-        /* Progress Bar */
+        /* شريط التقدم */
         .progress-container {
             width: 100%;
             background: #e5e7eb;
@@ -1086,7 +1057,7 @@
             flex-wrap: wrap;
         }
 
-        /* Confirmation Modal */
+        /* مودال التأكيد */
         .confirmation-modal {
             background: white;
             padding: 25px;
@@ -1130,7 +1101,7 @@
             border: 2px solid #ddd;
         }
 
-        /* Daily Ads Section */
+        /* قسم الإعلانات اليومية */
         .daily-ads-notice {
             background: linear-gradient(135deg, var(--warning), #f59e0b);
             color: white;
@@ -1141,7 +1112,7 @@
             box-shadow: var(--shadow);
         }
 
-        /* Payments Section */
+        /* قسم المدفوعات */
         .payments-history {
             margin-top: 30px;
         }
@@ -1159,7 +1130,7 @@
             gap: 10px;
         }
 
-        /* Share Section */
+        /* قسم المشاركة */
         .share-buttons {
             display: flex;
             gap: 10px;
@@ -1196,7 +1167,7 @@
             color: white;
         }
 
-        /* Mobile specific adjustments */
+        /* تعديلات خاصة بالجوال */
         @media (max-width: 480px) {
             .login-card {
                 padding: 25px 20px;
@@ -1224,14 +1195,14 @@
             }
         }
 
-        /* Prevent zoom on input focus on mobile */
+        /* منع التكبير عند التركيز على الإدخال في الجوال */
         @media screen and (max-width: 768px) {
             input, select, textarea {
                 font-size: 16px !important;
             }
         }
 
-        /* Fixed footer for mobile */
+        /* فوتر ثابت للجوال */
         .fixed-bottom {
             position: fixed;
             bottom: 0;
@@ -1242,12 +1213,27 @@
             box-shadow: 0 -2px 20px rgba(0,0,0,0.1);
             z-index: 1000;
         }
+
+        /* زر إعادة المحاولة */
+        .retry-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: var(--transition);
+        }
+
+        .retry-btn:hover {
+            background: var(--primary-dark);
+        }
     </style>
 </head>
 <body>
-
-
-    <!-- Login Page -->
+    <!-- صفحة تسجيل الدخول -->
     <div class="login-page" id="loginPage">
         <div class="login-card">
             <div class="logo">💰</div>
@@ -1256,11 +1242,11 @@
             
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-number" id="totalUsers">50,000</div>
+                    <div class="stat-number" id="totalUsers">0</div>
                     <div class="stat-label">مستخدم نشط</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number" id="totalWithdrawn">$6640</div>
+                    <div class="stat-number" id="totalWithdrawn">$0</div>
                     <div class="stat-label">تم سحبها</div>
                 </div>
             </div>
@@ -1288,7 +1274,7 @@
                 </div>
             </div>
             
-            <!-- Referral Section -->
+            <!-- قسم الإحالة -->
             <div class="referral-section">
                 <h3 style="margin-bottom: 15px; font-size: 1.2rem;">🎯 احصل على نقاط مجانية!</h3>
                 <p style="font-size: 0.95rem;">ادعُ أصدقاءك واحصل على <strong>20 نقطة</strong> لكل صديق يسجل</p>
@@ -1306,7 +1292,7 @@
                 </div>
             </div>
             
-            <!-- Google Sign In Button -->
+            <!-- زر تسجيل الدخول بـ Google -->
             <div id="g_id_onload"
                  data-client_id="805966277330-9j5j1nvluj69f8uieog0kk77p0jb46q4.apps.googleusercontent.com"
                  data-context="signin"
@@ -1331,10 +1317,10 @@
         </div>
     </div>
 
-    <!-- Main Page -->
+    <!-- الصفحة الرئيسية -->
     <div class="main-page" id="mainPage">
         <div class="container">
-            <!-- Header -->
+            <!-- الهيدر -->
             <header class="header">
                 <div class="header-left">
                     <div class="site-logo">AdVista Pro</div>
@@ -1360,7 +1346,7 @@
                 </div>
             </header>
 
-            <!-- Navigation Tabs -->
+            <!-- تبويبات التنقل -->
             <div class="nav-tabs" id="navTabs">
                 <button class="nav-tab active" data-section="ads-section" onclick="showSection('ads-section')">
                     <i class="fas fa-ad"></i> الإعلانات
@@ -1379,17 +1365,17 @@
                 </button>
             </div>
 
-            <!-- Hero Section -->
+            <!-- قسم البطل -->
             <section class="hero">
                 <h1>مرحباً <span id="greetingName"></span> 👋</h1>
                 <p>ابدأ رحلتك في ربح النقاط من خلال مشاهدة الإعلانات اليومية</p>
                 
-                <!-- Daily Ads Notice -->
+                <!-- إشعار الإعلانات اليومية -->
                 <div class="daily-ads-notice">
                     <i class="fas fa-bell"></i> لديك <span id="dailyAdsCount">5</span> إعلانات متاحة اليوم!
                 </div>
                 
-                <!-- Quick Stats -->
+                <!-- إحصائيات سريعة -->
                 <div style="display: flex; justify-content: center; gap: 15px; margin-top: 20px; flex-wrap: wrap;">
                     <div style="background: white; padding: 10px 15px; border-radius: var(--radius); box-shadow: var(--shadow); text-align: center; min-width: 120px;">
                         <div style="font-size: 0.9rem; color: var(--gray);">النقاط اليوم</div>
@@ -1406,7 +1392,7 @@
                 </div>
             </section>
 
-            <!-- Ads Section -->
+            <!-- قسم الإعلانات -->
             <section class="page-section active" id="ads-section">
                 <h2 class="section-title">
                     <i class="fas fa-ad"></i> الإعلانات المتاحة اليوم
@@ -1414,11 +1400,11 @@
                 <p style="color: var(--gray); margin-bottom: 25px; text-align: center;">شاهد الإعلان لمدة 30 ثانية لربح نقاط</p>
                 
                 <div class="ads-grid" id="adsGrid">
-                    <!-- Ads will be loaded here -->
+                    <!-- سيتم تحميل الإعلانات هنا -->
                 </div>
             </section>
 
-            <!-- Payments Section -->
+            <!-- قسم المدفوعات -->
             <section class="page-section" id="payments-section">
                 <h2 class="section-title">
                     <i class="fas fa-wallet"></i> طلبات السحب والمدفوعات
@@ -1469,18 +1455,18 @@
                     </button>
                 </div>
                 
-                <!-- Payment History -->
+                <!-- سجل المدفوعات -->
                 <div class="payments-history">
                     <h3 style="margin: 30px 0 15px 0; color: var(--dark);">
                         <i class="fas fa-history"></i> سجل طلبات السحب
                     </h3>
                     <div id="paymentsHistory">
-                        <!-- Payment history will be loaded here -->
+                        <!-- سيتم تحميل سجل المدفوعات هنا -->
                     </div>
                 </div>
             </section>
 
-            <!-- Referral Section -->
+            <!-- قسم المشاركة -->
             <section class="page-section" id="referral-section">
                 <h2 class="section-title">
                     <i class="fas fa-users"></i> دعوة الأصدقاء
@@ -1521,7 +1507,7 @@
                     </div>
                 </div>
                 
-                <!-- Referral Stats -->
+                <!-- إحصائيات الإحالة -->
                 <div class="referral-stats-card">
                     <h3 style="margin-bottom: 15px; color: var(--dark);">
                         <i class="fas fa-chart-pie"></i> إحصائيات الإحالات
@@ -1543,12 +1529,12 @@
                     
                     <h4 style="margin: 20px 0 10px 0; color: var(--dark);">آخر الإحالات</h4>
                     <div class="referral-list" id="referralList">
-                        <!-- Referral items will be loaded here -->
+                        <!-- سيتم تحميل عناصر الإحالة هنا -->
                     </div>
                 </div>
             </section>
 
-            <!-- Stats Section -->
+            <!-- قسم الإحصائيات -->
             <section class="page-section" id="stats-section">
                 <h2 class="section-title">
                     <i class="fas fa-chart-line"></i> إحصائياتك الشخصية
@@ -1573,7 +1559,7 @@
                     </div>
                 </div>
                 
-                <!-- Balance Progress -->
+                <!-- تقدم الرصيد -->
                 <div style="background: white; padding: 20px; border-radius: var(--radius); margin: 25px 0; box-shadow: var(--shadow);">
                     <h3 style="margin-bottom: 15px; color: var(--dark); display: flex; align-items: center; gap: 10px;">
                         <i class="fas fa-chart-bar"></i> تقدمك نحو السحب
@@ -1593,7 +1579,7 @@
                     </div>
                 </div>
                 
-                <!-- Daily Stats -->
+                <!-- إحصائيات اليوم -->
                 <div style="background: white; padding: 20px; border-radius: var(--radius); margin: 25px 0; box-shadow: var(--shadow);">
                     <h3 style="margin-bottom: 15px; color: var(--dark); display: flex; align-items: center; gap: 10px;">
                         <i class="fas fa-calendar-day"></i> إحصائيات اليوم
@@ -1619,14 +1605,14 @@
                 </div>
             </section>
 
-            <!-- Admin Section -->
+            <!-- قسم الإدارة -->
             <section class="page-section" id="admin-section">
                 <div id="adminPanelContent">
-                    <!-- Admin panel will be loaded here -->
+                    <!-- سيتم تحميل لوحة الإدارة هنا -->
                 </div>
             </section>
 
-            <!-- Timer Container -->
+            <!-- حاوية المؤقت -->
             <div class="timer-container" id="timerContainer">
                 <button class="close-modal" onclick="cancelAdWatch()">
                     <i class="fas fa-times"></i>
@@ -1662,7 +1648,7 @@
                 </div>
             </div>
 
-            <!-- Confirmation Modal -->
+            <!-- مودال التأكيد -->
             <div class="modal" id="confirmationModal">
                 <div class="confirmation-modal">
                     <h3 style="margin-bottom: 15px; color: var(--dark);">⚠️ تأكيد الخروج</h3>
@@ -1674,7 +1660,7 @@
                 </div>
             </div>
 
-            <!-- Confirmation Before Ad Modal -->
+            <!-- مودال تأكيد الإعلان -->
             <div class="modal" id="adConfirmationModal">
                 <div class="confirmation-modal">
                     <h3 style="margin-bottom: 15px; color: var(--dark);">⚠️ تأكيد مشاهدة الإعلان</h3>
@@ -1693,7 +1679,7 @@
                 </div>
             </div>
 
-            <!-- Footer -->
+            <!-- الفوتر -->
             <footer class="footer">
                 <p>© 2024 AdVista Pro. جميع الحقوق محفوظة.</p>
                 <p style="margin-top: 5px; font-size: 0.85rem;">للدعم الفني: bo2584668@gmail.com</p>
@@ -1701,14 +1687,14 @@
         </div>
     </div>
 
-    <!-- Notification -->
+    <!-- الإشعار -->
     <div class="notification" id="notification">
         <div id="notificationMessage"></div>
     </div>
 
     <!-- JavaScript -->
     <script>
-        // Firebase Configuration
+        // تكوين Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyC4fZQ-BTUeHsN9nQtMGmnjJz-NKdcUgkc",
             authDomain: "advista-b64ab.firebaseapp.com",
@@ -1719,7 +1705,7 @@
             measurementId: "G-VG4S1SMKH8"
         };
 
-        // Constants
+        // الثوابت
         const POINTS_PER_AD = 50;
         const WELCOME_POINTS = 100;
         const REFERRAL_POINTS_REFERRER = 20;
@@ -1729,7 +1715,7 @@
         const ADMIN_EMAIL = "bo2584668@gmail.com";
         const ADMIN_AD_LINK = "https://otieu.com/4/10481792";
 
-        // Global variables
+        // المتغيرات العامة
         let currentUser = null;
         let userData = null;
         let currentAdId = null;
@@ -1745,110 +1731,110 @@
         let lastPenaltyCheck = Date.now();
         let tabSwitchCount = 0;
 
-        // Firebase instances
-        let auth, db, analytics;
+        // حالات Firebase
+        let auth, db;
 
-        // Initialize Firebase
-        async function initializeFirebase() {
+        // تهيئة التطبيق بشكل سريع
+        async function initializeApp() {
             try {
-                // Initialize Firebase
-                firebase.initializeApp(firebaseConfig);
-                auth = firebase.auth();
-                db = firebase.firestore();
-                analytics = firebase.analytics();
+                // البدء مباشرة
+                showLoginPage();
                 
-                // Enable offline persistence
-                await db.enablePersistence({ synchronizeTabs: true });
+                // محاولة تهيئة Firebase في الخلفية
+                try {
+                    // تهيئة Firebase
+                    if (typeof firebase !== 'undefined' && firebase.apps.length === 0) {
+                        firebase.initializeApp(firebaseConfig);
+                        auth = firebase.auth();
+                        db = firebase.firestore();
+                        
+                        // تمكين التخزين المؤقت
+                        try {
+                            await db.enablePersistence({ synchronizeTabs: true });
+                        } catch (persistenceError) {
+                            // تجاهل خطأ التخزين المؤقت
+                        }
+                        
+                        // إعداد مستمع حالة المصادقة
+                        auth.onAuthStateChanged(async (user) => {
+                            if (user) {
+                                await handleUserLogin(user);
+                            }
+                        });
+                        
+                        // تهيئة الإحصائيات في الخلفية
+                        initializeStats();
+                    }
+                } catch (firebaseError) {
+                    // تجاهل أخطاء Firebase مؤقتاً
+                    console.log('Firebase غير متوفر حالياً');
+                }
                 
-                console.log('Firebase initialized successfully');
-                return true;
+                // إعداد مستمعات الأحداث
+                setupEventListeners();
+                
+                // بدء تحديث شريط التقدم
+                setInterval(updateBalanceProgress, 1000);
+                
+                // تهيئة عرض النقاط المطلوبة
+                updateRequiredPoints();
+                
             } catch (error) {
-                console.error('Firebase initialization error:', error);
-                showNotification('حدث خطأ في تهيئة النظام. يرجى تحديث الصفحة.', 'error');
-                return false;
+                // تجاهل الأخطاء الصامتة
+                console.log('تطبيق يعمل في وضع بسيط');
             }
         }
 
-        // Initialize app
-        document.addEventListener('DOMContentLoaded', async function() {
-            showLoading();
-            
+        // إعداد مستمعات الأحداث
+        function setupEventListeners() {
             try {
-                // Initialize Firebase
-                const firebaseReady = await initializeFirebase();
-                if (!firebaseReady) return;
-                
-                // Check if there's a referral code in URL
-                const urlParams = new URLSearchParams(window.location.search);
-                const referralCode = urlParams.get('ref');
-                if (referralCode) {
-                    localStorage.setItem('pending_referral', referralCode);
-                }
-                
-                // Check if user is already logged in
-                auth.onAuthStateChanged(async (user) => {
-                    if (user) {
-                        await handleUserLogin(user);
-                    } else {
-                        hideLoading();
-                    }
-                });
-                
-                // Initialize stats
-                initializeStats();
-                
-                // Set up visibility change detection
-                document.addEventListener('visibilitychange', handleVisibilityChange);
-                window.addEventListener('blur', handleWindowBlur);
-                window.addEventListener('focus', handleWindowFocus);
-                window.addEventListener('beforeunload', handleBeforeUnload);
-                
-                // Start balance update interval
-                setInterval(updateBalanceProgress, 1000);
-                
-                // Initialize event listeners
                 document.getElementById('logoutBtn').addEventListener('click', showLogoutConfirmation);
                 document.getElementById('confirmYes').addEventListener('click', handleSignOut);
                 document.getElementById('confirmNo').addEventListener('click', closeConfirmationModal);
                 document.getElementById('adConfirmYes').addEventListener('click', confirmStartAdWatch);
                 document.getElementById('adConfirmNo').addEventListener('click', closeAdConfirmationModal);
                 
-                // Initialize required points display
-                updateRequiredPoints();
+                // إعداد اكتشاف تغيير الرؤية
+                document.addEventListener('visibilitychange', handleVisibilityChange);
+                window.addEventListener('blur', handleWindowBlur);
+                window.addEventListener('focus', handleWindowFocus);
+                window.addEventListener('beforeunload', handleBeforeUnload);
                 
             } catch (error) {
-                console.error('App initialization error:', error);
-                showNotification('حدث خطأ في تحميل التطبيق. يرجى تحديث الصفحة.', 'error');
-                hideLoading();
-            }
-        });
-
-        // Handle Google Sign In
-        async function handleGoogleSignIn(response) {
-            showLoading();
-            
-            try {
-                // Decode the credential response
-                const responsePayload = decodeJWTResponse(response.credential);
-                
-                // Create Firebase credential
-                const credential = firebase.auth.GoogleAuthProvider.credential(response.credential);
-                
-                // Sign in with Firebase
-                const userCredential = await auth.signInWithCredential(credential);
-                const user = userCredential.user;
-                
-                // Handle login
-                await handleUserLogin(user);
-                
-            } catch (error) {
-                console.error('Google Sign In error:', error);
-                showNotification('حدث خطأ في تسجيل الدخول باستخدام جوجل', 'error');
-                hideLoading();
+                // تجاهل الأخطاء
             }
         }
 
-        // Decode JWT token
+        // عند تحميل DOM
+        document.addEventListener('DOMContentLoaded', function() {
+            // بدء التهيئة فوراً
+            initializeApp();
+        });
+
+        // التعامل مع تسجيل الدخول بـ Google
+        async function handleGoogleSignIn(response) {
+            try {
+                // فك تشفير استجابة البيانات
+                const responsePayload = decodeJWTResponse(response.credential);
+                
+                // إنشاء كائن مستخدم مباشرة
+                const user = {
+                    uid: responsePayload.sub,
+                    email: responsePayload.email,
+                    displayName: responsePayload.name,
+                    photoURL: responsePayload.picture,
+                    verified: responsePayload.email_verified
+                };
+                
+                // التعامل مع تسجيل الدخول بدون Firebase
+                await handleUserLogin(user);
+                
+            } catch (error) {
+                showNotification('حدث خطأ في تسجيل الدخول', 'error');
+            }
+        }
+
+        // فك تشفير JWT
         function decodeJWTResponse(token) {
             const base64Url = token.split('.')[1];
             const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -1859,55 +1845,48 @@
             return JSON.parse(jsonPayload);
         }
 
-        // Handle user login
+        // التعامل مع تسجيل دخول المستخدم
         async function handleUserLogin(user) {
             try {
                 currentUser = user;
                 
-                // Create or update user data
+                // إنشاء أو تحديث بيانات المستخدم
                 await createOrUpdateUser(user);
                 
-                // Show main page
+                // إظهار الصفحة الرئيسية
                 showMainPage();
                 
                 showNotification(`مرحباً ${user.displayName}!`, 'success');
-                hideLoading();
                 
             } catch (error) {
-                console.error('Login handling error:', error);
                 showNotification('حدث خطأ في معالجة تسجيل الدخول', 'error');
-                hideLoading();
             }
         }
 
-        // Create or update user in Firebase
+        // إنشاء أو تحديث المستخدم
         async function createOrUpdateUser(user) {
             try {
-                const userRef = db.collection('users').doc(user.uid);
                 const today = new Date().toISOString().split('T')[0];
                 
-                // Check if user exists
-                const userDoc = await userRef.get();
+                // التحقق من وجود المستخدم محلياً
+                let userDataStr = localStorage.getItem(`advista_userdata_${user.uid}`);
+                const pendingReferral = localStorage.getItem('pending_referral');
                 
-                if (!userDoc.exists) {
-                    // New user
-                    const pendingReferral = localStorage.getItem('pending_referral');
+                if (!userDataStr) {
+                    // مستخدم جديد
                     let referralBonus = WELCOME_POINTS;
                     let referredBy = null;
                     
                     if (pendingReferral) {
-                        // Add referral bonus to new user
+                        // إضافة مكافأة الإحالة للمستخدم الجديد
                         referralBonus += REFERRAL_POINTS_REFERRED;
                         referredBy = pendingReferral;
                         
-                        // Award points to referrer (20 points)
-                        await awardReferralPoints(pendingReferral, user.email);
-                        
-                        // Clear pending referral
+                        // مسح الإحالة المعلقة
                         localStorage.removeItem('pending_referral');
                     }
                     
-                    // Generate real referral code for new user
+                    // إنشاء كود إحالة
                     const referralCode = generateRealReferralCode(user.email);
                     
                     userData = {
@@ -1935,88 +1914,61 @@
                         todayPoints: referralBonus,
                         todayAds: 0,
                         todayReferrals: 0,
-                        lastUpdate: new Date().toISOString(),
-                        dailyStats: {
-                            [today]: {
-                                points: referralBonus,
-                                ads: 0,
-                                referrals: 0
-                            }
-                        }
+                        lastUpdate: new Date().toISOString()
                     };
                     
-                    // Save user data to Firebase
-                    await userRef.set(userData);
+                    // حفظ بيانات المستخدم محلياً
+                    localStorage.setItem(`advista_userdata_${user.uid}`, JSON.stringify(userData));
                     
-                    // Save referral code mapping
-                    await db.collection('referralCodes').doc(referralCode).set({
-                        userId: user.uid,
-                        email: user.email,
-                        createdAt: new Date().toISOString()
-                    });
+                    // حفظ ترميز كود الإحالة
+                    const referralMap = JSON.parse(localStorage.getItem('advista_referral_map')) || {};
+                    referralMap[referralCode] = user.uid;
+                    localStorage.setItem('advista_referral_map', JSON.stringify(referralMap));
                     
-                    // Update global stats
-                    await updateGlobalStats('totalUsers', 1);
-                    
-                    // Show welcome message
+                    // عرض رسالة ترحيب
                     if (referredBy) {
-                        showNotification(`🎉 مرحباً! حصلت على ${REFERRAL_POINTS_REFERRED} نقطة هدية لأنك انضممت عبر دعوة صديق!`, 'success');
+                        showNotification(`🎉 مرحباً! حصلت على ${REFERRAL_POINTS_REFERRED} نقطة هدية!`, 'success');
                     } else {
-                        showNotification(`🎉 مرحباً! حصلت على ${WELCOME_POINTS} نقطة هدية للترحيب!`, 'success');
+                        showNotification(`🎉 مرحباً! حصلت على ${WELCOME_POINTS} نقطة هدية!`, 'success');
                     }
                     
                 } else {
-                    // Existing user
-                    userData = userDoc.data();
+                    // مستخدم موجود
+                    userData = JSON.parse(userDataStr);
                     
-                    // Check if it's a new day
-                    const lastLoginDate = userData.lastLogin ? 
-                        new Date(userData.lastLogin).toISOString().split('T')[0] : 
-                        null;
+                    // التحقق إذا كان يوم جديد
+                    const lastLoginDate = new Date(userData.lastLogin).toDateString();
+                    const currentDate = new Date().toDateString();
                     
-                    if (lastLoginDate !== today) {
-                        // Reset daily stats
+                    if (lastLoginDate !== currentDate) {
+                        // إعادة تعيين إحصائيات اليوم
                         userData.todayPoints = 0;
                         userData.todayAds = 0;
                         userData.todayReferrals = 0;
                         userData.completedAds = [];
-                        userData.dailyStats = userData.dailyStats || {};
-                        userData.dailyStats[today] = {
-                            points: 0,
-                            ads: 0,
-                            referrals: 0
-                        };
                     }
                     
-                    // Update last login
+                    // تحديث آخر تسجيل دخول
                     userData.lastLogin = new Date().toISOString();
-                    await userRef.update({
-                        lastLogin: userData.lastLogin,
-                        dailyStats: userData.dailyStats,
-                        todayPoints: userData.todayPoints,
-                        todayAds: userData.todayAds,
-                        todayReferrals: userData.todayReferrals,
-                        completedAds: userData.completedAds
-                    });
+                    localStorage.setItem(`advista_userdata_${user.uid}`, JSON.stringify(userData));
                 }
                 
-                // Update UI
+                // تحديث واجهة المستخدم
                 updateUserUI();
                 loadAds();
                 
-                // Show admin tab for admin
+                // عرض تبويب الإدارة للمدير
                 if (userData.isAdmin) {
                     document.getElementById('adminTab').style.display = 'flex';
                     loadAdminPanel();
                 }
                 
             } catch (error) {
-                console.error('Error creating/updating user:', error);
                 throw error;
             }
         }
 
-        // Generate real referral code
+        // إنشاء كود إحالة حقيقي
         function generateRealReferralCode(email) {
             const timestamp = Date.now();
             const randomPart = Math.random().toString(36).substring(2, 10).toUpperCase();
@@ -2024,83 +1976,29 @@
             return `REF${emailPart}${randomPart}${timestamp.toString(36).substring(2, 6).toUpperCase()}`;
         }
 
-        // Award referral points in Firebase
-        async function awardReferralPoints(referralCode, referredEmail) {
+        // تحديث الإحصائيات العامة
+        async function initializeStats() {
             try {
-                // Find referrer by referral code
-                const referralDoc = await db.collection('referralCodes').doc(referralCode).get();
+                // تحديث إجمالي المستخدمين محلياً
+                const users = JSON.parse(localStorage.getItem('advista_total_users')) || [];
+                document.getElementById('totalUsers').textContent = users.length.toLocaleString();
                 
-                if (referralDoc.exists) {
-                    const referralData = referralDoc.data();
-                    const referrerId = referralData.userId;
-                    
-                    // Get referrer's data
-                    const referrerRef = db.collection('users').doc(referrerId);
-                    const referrerDoc = await referrerRef.get();
-                    
-                    if (referrerDoc.exists) {
-                        const referrerData = referrerDoc.data();
-                        const today = new Date().toISOString().split('T')[0];
-                        
-                        // Update referrer's data
-                        const updates = {
-                            points: (referrerData.points || 0) + REFERRAL_POINTS_REFERRER,
-                            referralPoints: (referrerData.referralPoints || 0) + REFERRAL_POINTS_REFERRER,
-                            referralIncome: (referrerData.referralIncome || 0) + (REFERRAL_POINTS_REFERRER / POINTS_PER_DOLLAR),
-                            totalReferrals: (referrerData.totalReferrals || 0) + 1,
-                            todayPoints: (referrerData.todayPoints || 0) + REFERRAL_POINTS_REFERRER,
-                            todayReferrals: (referrerData.todayReferrals || 0) + 1,
-                            lastUpdate: new Date().toISOString(),
-                            [`dailyStats.${today}.points`]: ((referrerData.dailyStats || {})[today]?.points || 0) + REFERRAL_POINTS_REFERRER,
-                            [`dailyStats.${today}.referrals`]: ((referrerData.dailyStats || {})[today]?.referrals || 0) + 1
-                        };
-                        
-                        // Add referral to list
-                        const newReferral = {
-                            email: referredEmail,
-                            date: new Date().toISOString(),
-                            points: REFERRAL_POINTS_REFERRER,
-                            type: 'referral'
-                        };
-                        
-                        await referrerRef.update({
-                            ...updates,
-                            referrals: firebase.firestore.FieldValue.arrayUnion(newReferral)
-                        });
-                        
-                        // Show notification to referrer if they're currently logged in
-                        if (currentUser && currentUser.uid === referrerId) {
-                            showNotification(`🎉 حصلت على ${REFERRAL_POINTS_REFERRER} نقطة لإحالة جديدة!`, 'success');
-                            // Refresh user data
-                            const updatedDoc = await referrerRef.get();
-                            userData = updatedDoc.data();
-                            updateUserUI();
-                        }
-                    }
-                }
+                // تحديث إجمالي المسحوبات محلياً
+                const withdrawals = JSON.parse(localStorage.getItem('advista_withdrawals')) || [];
+                const completedWithdrawals = withdrawals.filter(w => w.status === 'completed');
+                const totalWithdrawn = completedWithdrawals.reduce((sum, w) => sum + w.amount, 0);
+                document.getElementById('totalWithdrawn').textContent = `$${totalWithdrawn.toFixed(2)}`;
+                
             } catch (error) {
-                console.error('Error awarding referral points:', error);
+                // تجاهل الأخطاء
             }
         }
 
-        // Update global stats in Firebase
-        async function updateGlobalStats(statName, increment = 1) {
-            try {
-                const statsRef = db.collection('globalStats').doc('main');
-                await statsRef.set({
-                    [statName]: firebase.firestore.FieldValue.increment(increment),
-                    lastUpdate: new Date().toISOString()
-                }, { merge: true });
-            } catch (error) {
-                console.error('Error updating global stats:', error);
-            }
-        }
-
-        // Update user UI
-        async function updateUserUI() {
+        // تحديث واجهة المستخدم
+        function updateUserUI() {
             if (!userData) return;
             
-            // User info
+            // معلومات المستخدم
             document.getElementById('userName').textContent = userData.displayName;
             document.getElementById('userEmail').textContent = userData.email;
             document.getElementById('greetingName').textContent = userData.displayName.split(' ')[0];
@@ -2111,7 +2009,7 @@
                 document.getElementById('userAvatar').src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(userData.displayName) + '&background=random';
             }
             
-            // Points and stats
+            // النقاط والإحصائيات
             document.getElementById('userPoints').textContent = userData.points.toLocaleString();
             document.getElementById('totalEarnings').textContent = `$${(userData.totalEarned || 0).toFixed(2)}`;
             document.getElementById('adsWatched').textContent = userData.adsWatched || 0;
@@ -2119,42 +2017,42 @@
             document.getElementById('referralsCount').textContent = userData.totalReferrals || 0;
             document.getElementById('penaltiesCount').textContent = userData.penalties || 0;
             
-            // Quick stats
+            // إحصائيات سريعة
             document.getElementById('todayPointsQuick').textContent = userData.todayPoints || 0;
             document.getElementById('adsWatchedQuick').textContent = userData.todayAds || 0;
             document.getElementById('referralsQuick').textContent = userData.todayReferrals || 0;
             
-            // Today earnings
+            // أرباح اليوم
             document.getElementById('todayPoints').textContent = userData.todayPoints || 0;
             document.getElementById('todayAds').textContent = userData.todayAds || 0;
             document.getElementById('todayReferrals').textContent = userData.todayReferrals || 0;
             
-            // Referral stats
+            // إحصائيات الإحالة
             document.getElementById('totalReferrals').textContent = userData.totalReferrals || 0;
             document.getElementById('referralPoints').textContent = userData.referralPoints || 0;
             document.getElementById('referralIncome').textContent = `$${(userData.referralIncome || 0).toFixed(2)}`;
             
-            // Update referral list
+            // تحديث قائمة الإحالة
             updateReferralList();
             
-            // Update referral code display
+            // تحديث عرض كود الإحالة
             if (userData.referralCode) {
                 document.getElementById('referralCodeText').textContent = userData.referralCode;
                 document.getElementById('modalReferralCode').textContent = userData.referralCode;
                 document.getElementById('referralLink').textContent = window.location.origin + window.location.pathname + '?ref=' + userData.referralCode;
                 
-                // Show referral code container on login page
+                // إظهار حاوية كود الإحالة في صفحة تسجيل الدخول
                 document.getElementById('referralCodeContainer').style.display = 'block';
             }
             
-            // Update balance
+            // تحديث الرصيد
             updateBalanceDisplay();
             
-            // Update payments history
+            // تحديث سجل المدفوعات
             updatePaymentsHistory();
         }
 
-        // Update balance display
+        // تحديث عرض الرصيد
         function updateBalanceDisplay() {
             if (!userData) return;
             
@@ -2162,11 +2060,11 @@
             document.getElementById('withdrawableBalance').textContent = `$${withdrawableDollars}`;
             document.getElementById('pointsBalance').textContent = userData.points.toLocaleString();
             
-            // Update progress bar
+            // تحديث شريط التقدم
             updateBalanceProgress();
         }
 
-        // Update balance progress
+        // تحديث شريط تقدم الرصيد
         function updateBalanceProgress() {
             if (!userData) return;
             
@@ -2180,7 +2078,7 @@
             document.getElementById('currentBalanceDollars').textContent = dollars;
         }
 
-        // Update referral list
+        // تحديث قائمة الإحالة
         function updateReferralList() {
             const referralList = document.getElementById('referralList');
             if (!referralList) return;
@@ -2209,27 +2107,25 @@
             });
         }
 
-        // Update payments history from Firebase
-        async function updatePaymentsHistory() {
+        // تحديث سجل المدفوعات
+        function updatePaymentsHistory() {
             const paymentsHistory = document.getElementById('paymentsHistory');
             if (!paymentsHistory) return;
             
             try {
-                const withdrawalsQuery = await db.collection('withdrawals')
-                    .where('userId', '==', currentUser.uid)
-                    .orderBy('createdAt', 'desc')
-                    .limit(10)
-                    .get();
+                const withdrawals = JSON.parse(localStorage.getItem('advista_withdrawals')) || [];
+                const userWithdrawals = withdrawals.filter(w => w.userId === currentUser.uid);
                 
-                if (withdrawalsQuery.empty) {
+                if (userWithdrawals.length === 0) {
                     paymentsHistory.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 20px; font-size: 0.9rem;">لا توجد طلبات سحب سابقة</p>';
                     return;
                 }
                 
+                // الترتيب حسب التاريخ (الأحدث أولاً)
+                userWithdrawals.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                
                 paymentsHistory.innerHTML = '';
-                withdrawalsQuery.docs.forEach((doc) => {
-                    const withdrawal = doc.data();
-                    
+                userWithdrawals.forEach((withdrawal, index) => {
                     const paymentItem = document.createElement('div');
                     paymentItem.className = 'payment-item';
                     
@@ -2273,196 +2169,127 @@
                 });
                 
             } catch (error) {
-                console.error('Error updating payments history:', error);
                 paymentsHistory.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 20px;">حدث خطأ في تحميل سجل المدفوعات</p>';
             }
         }
 
-        // Initialize stats from Firebase
-        async function initializeStats() {
-            try {
-                // Load global stats
-                const statsDoc = await db.collection('globalStats').doc('main').get();
-                
-                if (statsDoc.exists) {
-                    const stats = statsDoc.data();
-                    document.getElementById('totalUsers').textContent = (stats.totalUsers || 0).toLocaleString();
-                    document.getElementById('totalWithdrawn').textContent = `$${(stats.totalWithdrawn || 0).toFixed(2)}`;
-                }
-                
-                // Update total withdrawn
-                const withdrawalsQuery = await db.collection('withdrawals')
-                    .where('status', '==', 'completed')
-                    .get();
-                
-                let totalWithdrawn = 0;
-                withdrawalsQuery.forEach(doc => {
-                    const withdrawal = doc.data();
-                    totalWithdrawn += withdrawal.amount || 0;
-                });
-                
-                // Update total withdrawn stat
-                await db.collection('globalStats').doc('main').set({
-                    totalWithdrawn: totalWithdrawn,
-                    lastUpdate: new Date().toISOString()
-                }, { merge: true });
-                
-                document.getElementById('totalWithdrawn').textContent = `$${totalWithdrawn.toFixed(2)}`;
-                
-            } catch (error) {
-                console.error('Error initializing stats:', error);
-            }
-        }
-
-        // Load ads from Firebase
-        async function loadAds() {
+        // تحميل الإعلانات
+        function loadAds() {
             const adsGrid = document.getElementById('adsGrid');
             if (!adsGrid) return;
             
             adsGrid.innerHTML = '';
             
-            try {
-                // Load ads from Firebase
-                const adsQuery = await db.collection('ads')
-                    .where('active', '==', true)
-                    .orderBy('createdAt', 'desc')
-                    .limit(20)
-                    .get();
-                
-                let allAds = [];
-                
-                if (adsQuery.empty) {
-                    // Create default ads if none exist
-                    allAds = await createDefaultAds();
-                } else {
-                    allAds = adsQuery.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                }
-                
-                // Update daily ads count
-                document.getElementById('dailyAdsCount').textContent = allAds.length;
-                
-                // Default categories and colors
-                const defaultCategories = ["مميز", "تقنية", "تسوق", "تعليم", "ترفيه", "صحة", "سفر"];
-                const defaultColors = ["#E60000", "#3b82f6", "#10b981", "#8b5cf6", "#f59e0b", "#06b6d4", "#ec4899"];
-                
-                // Check today's date
-                const today = new Date().toDateString();
-                
-                allAds.forEach((ad, index) => {
-                    // Check if ad is already watched today
-                    const isWatched = userData.completedAds?.some(completed => 
-                        completed.adId === ad.id && 
-                        new Date(completed.date).toDateString() === today
-                    );
-                    
-                    // Determine category color
-                    const categoryIndex = defaultCategories.indexOf(ad.category) % defaultColors.length;
-                    const categoryColor = defaultColors[categoryIndex] || defaultColors[0];
-                    
-                    const adCard = document.createElement('div');
-                    adCard.className = 'ad-card' + (ad.addedBy === ADMIN_EMAIL ? ' admin-ad' : '');
-                    adCard.innerHTML = `
-                        <div class="ad-category" style="background: ${categoryColor}20; color: ${categoryColor};">
-                            ${ad.category || defaultCategories[index % defaultCategories.length]}
-                        </div>
-                        <h3 class="ad-title">${ad.title}</h3>
-                        <p style="color: var(--gray); margin-bottom: 15px; font-size: 0.9rem;">
-                            شاهد هذا الإعلان لمدة 30 ثانية للحصول على ${ad.points} نقطة
-                        </p>
-                        <div class="ad-reward">+${ad.points} نقطة</div>
-                        ${isWatched ? 
-                            '<div style="background: var(--warning); color: white; padding: 8px 15px; border-radius: 50px; font-weight: 600; margin: 15px 0; display: inline-block; font-size: 0.85rem;">✓ شوهد اليوم</div>' :
-                            ''
-                        }
-                        <button class="watch-btn" onclick="showAdConfirmation('${ad.id}')" id="watchBtn${index}" ${isWatched ? 'disabled' : ''}>
-                            <i class="fas fa-play"></i> ${isWatched ? 'شوهد اليوم' : 'مشاهدة الإعلان'}
-                        </button>
-                        <input type="hidden" id="adLink${index}" value="${ad.link}">
-                        <input type="hidden" id="adPoints${index}" value="${ad.points}">
-                        ${ad.addedBy === ADMIN_EMAIL ? 
-                            '<div style="position: absolute; top: 10px; left: 10px; background: var(--gold); color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600;">إداري</div>' : 
-                            ''
-                        }
-                    `;
-                    adsGrid.appendChild(adCard);
-                });
-                
-            } catch (error) {
-                console.error('Error loading ads:', error);
-                showNotification('حدث خطأ في تحميل الإعلانات', 'error');
-            }
-        }
-
-        // Create default ads in Firebase
-        async function createDefaultAds() {
-            const defaultAds = [
-                {
-                    link: ADMIN_AD_LINK,
-                    title: "إعلان خاص - ربح مضمون",
-                    points: 50,
-                    category: "مميز",
-                    addedBy: ADMIN_EMAIL,
-                    isDefault: true,
-                    active: true,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString()
-                },
-                {
-                    link: "https://pickedsarcasm.com/vz3y6txw?key=a1c1e5a19b4a4039601634d549e93ee0",
-                    title: "عروض تقنية حصرية",
-                    points: 50,
-                    category: "تقنية",
-                    addedBy: "system",
-                    isDefault: true,
-                    active: true,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString()
-                },
-                {
-                    link: "https://pickedsarcasm.com/p52c7jzc?key=24559b6245c938c283344ce1494f86ef",
-                    title: "تخفيضات وأسعار خاصة",
-                    points: 50,
-                    category: "تسوق",
-                    addedBy: "system",
-                    isDefault: true,
-                    active: true,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString()
-                },
-                {
-                    link: "https://pickedsarcasm.com/gyvixxr5?key=5867cab7b335b8109022bae76e8ca674",
-                    title: "دورات تعليمية مجانية",
-                    points: 50,
-                    category: "تعليم",
-                    addedBy: "system",
-                    isDefault: true,
-                    active: true,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString()
-                },
-                {
-                    link: "https://pickedsarcasm.com/vz3y6txw?key=a1c1e5a19b4a4039601634d549e93ee0",
-                    title: "ألعاب وتطبيقات ترفيهية",
-                    points: 50,
-                    category: "ترفيه",
-                    addedBy: "system",
-                    isDefault: true,
-                    active: true,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString()
-                }
-            ];
+            // تحميل الإعلانات المحفوظة
+            const savedAds = JSON.parse(localStorage.getItem('advista_ads')) || [];
             
-            // Add default ads to Firebase
-            for (const ad of defaultAds) {
-                await db.collection('ads').add(ad);
+            // استخدام الإعلانات الافتراضية إذا لم توجد إعلانات محفوظة
+            let allAds = [];
+            
+            if (savedAds.length > 0) {
+                allAds = savedAds;
+            } else {
+                // إنشاء إعلانات افتراضية
+                allAds = [
+                    {
+                        link: ADMIN_AD_LINK,
+                        title: "إعلان خاص - ربح مضمون",
+                        points: 50,
+                        category: "مميز",
+                        addedBy: ADMIN_EMAIL,
+                        addedAt: new Date().toISOString(),
+                        isDefault: false
+                    },
+                    {
+                        link: "https://pickedsarcasm.com/vz3y6txw?key=a1c1e5a19b4a4039601634d549e93ee0",
+                        title: "عروض تقنية حصرية",
+                        points: 50,
+                        category: "تقنية",
+                        addedBy: "system",
+                        isDefault: true
+                    },
+                    {
+                        link: "https://pickedsarcasm.com/p52c7jzc?key=24559b6245c938c283344ce1494f86ef",
+                        title: "تخفيضات وأسعار خاصة",
+                        points: 50,
+                        category: "تسوق",
+                        addedBy: "system",
+                        isDefault: true
+                    },
+                    {
+                        link: "https://pickedsarcasm.com/gyvixxr5?key=5867cab7b335b8109022bae76e8ca674",
+                        title: "دورات تعليمية مجانية",
+                        points: 50,
+                        category: "تعليم",
+                        addedBy: "system",
+                        isDefault: true
+                    },
+                    {
+                        link: "https://pickedsarcasm.com/vz3y6txw?key=a1c1e5a19b4a4039601634d549e93ee0",
+                        title: "ألعاب وتطبيقات ترفيهية",
+                        points: 50,
+                        category: "ترفيه",
+                        addedBy: "system",
+                        isDefault: true
+                    }
+                ];
+                
+                // حفظ الإعلانات الافتراضية
+                localStorage.setItem('advista_ads', JSON.stringify(allAds));
             }
             
-            return defaultAds;
+            // تحديث عدد الإعلانات اليومية
+            document.getElementById('dailyAdsCount').textContent = allAds.length;
+            
+            // الفئات والألوان الافتراضية
+            const defaultCategories = ["مميز", "تقنية", "تسوق", "تعليم", "ترفيه", "صحة", "سفر"];
+            const defaultColors = ["#E60000", "#3b82f6", "#10b981", "#8b5cf6", "#f59e0b", "#06b6d4", "#ec4899"];
+            
+            // التحقق من تاريخ اليوم
+            const today = new Date().toDateString();
+            
+            allAds.forEach((ad, index) => {
+                // التحقق إذا تمت مشاهدة الإعلان اليوم
+                const isWatched = userData.completedAds?.some(completed => 
+                    completed.adId === index && 
+                    new Date(completed.date).toDateString() === today
+                );
+                
+                // تحديد لون الفئة
+                const categoryIndex = defaultCategories.indexOf(ad.category) % defaultColors.length;
+                const categoryColor = defaultColors[categoryIndex] || defaultColors[0];
+                
+                const adCard = document.createElement('div');
+                adCard.className = 'ad-card' + (ad.addedBy === ADMIN_EMAIL ? ' admin-ad' : '');
+                adCard.innerHTML = `
+                    <div class="ad-category" style="background: ${categoryColor}20; color: ${categoryColor};">
+                        ${ad.category || defaultCategories[index % defaultCategories.length]}
+                    </div>
+                    <h3 class="ad-title">${ad.title}</h3>
+                    <p style="color: var(--gray); margin-bottom: 15px; font-size: 0.9rem;">
+                        شاهد هذا الإعلان لمدة 30 ثانية للحصول على ${ad.points} نقطة
+                    </p>
+                    <div class="ad-reward">+${ad.points} نقطة</div>
+                    ${isWatched ? 
+                        '<div style="background: var(--warning); color: white; padding: 8px 15px; border-radius: 50px; font-weight: 600; margin: 15px 0; display: inline-block; font-size: 0.85rem;">✓ شوهد اليوم</div>' :
+                        ''
+                    }
+                    <button class="watch-btn" onclick="showAdConfirmation(${index})" id="watchBtn${index}" ${isWatched ? 'disabled' : ''}>
+                        <i class="fas fa-play"></i> ${isWatched ? 'شوهد اليوم' : 'مشاهدة الإعلان'}
+                    </button>
+                    <input type="hidden" id="adLink${index}" value="${ad.link}">
+                    <input type="hidden" id="adPoints${index}" value="${ad.points}">
+                    ${ad.addedBy === ADMIN_EMAIL ? 
+                        '<div style="position: absolute; top: 10px; left: 10px; background: var(--gold); color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600;">إداري</div>' : 
+                        ''
+                    }
+                `;
+                adsGrid.appendChild(adCard);
+            });
         }
 
-        // Show ad confirmation modal
-        async function showAdConfirmation(adId) {
+        // إظهار مودال تأكيد الإعلان
+        function showAdConfirmation(adIndex) {
             if (isWatchingAd) {
                 showNotification('⏳ جاري مشاهدة إعلان حالياً', 'warning');
                 return;
@@ -2473,10 +2300,10 @@
                 return;
             }
             
-            // Check if ad was already watched today
+            // التحقق إذا تمت مشاهدة الإعلان اليوم
             const today = new Date().toDateString();
             const isWatched = userData.completedAds?.some(completed => 
-                completed.adId === adId && 
+                completed.adId === adIndex && 
                 new Date(completed.date).toDateString() === today
             );
             
@@ -2485,30 +2312,25 @@
                 return;
             }
             
-            // Get ad details from Firebase
-            try {
-                const adDoc = await db.collection('ads').doc(adId).get();
-                if (!adDoc.exists) {
-                    showNotification('الإعلان غير موجود', 'error');
-                    return;
-                }
-                
-                const ad = adDoc.data();
-                currentAdId = adId;
-                currentAdPoints = ad.points || POINTS_PER_AD;
-                
-                // Show confirmation modal
-                document.getElementById('adConfirmationModal').style.display = 'flex';
-                
-            } catch (error) {
-                console.error('Error getting ad details:', error);
-                showNotification('حدث خطأ في تحميل الإعلان', 'error');
-            }
+            // تخزين فهرس الإعلان للاستخدام لاحقاً
+            currentAdId = adIndex;
+            
+            // إظهار مودال التأكيد
+            document.getElementById('adConfirmationModal').style.display = 'flex';
         }
 
-        // Start watching ad
-        async function startWatchingAd(adId) {
-            // Reset state
+        // تأكيد بدء مشاهدة الإعلان
+        function confirmStartAdWatch() {
+            closeAdConfirmationModal();
+            startWatchingAd(currentAdId);
+        }
+
+        // بدء مشاهدة الإعلان
+        async function startWatchingAd(adIndex) {
+            // الحصول على نقاط الإعلان
+            currentAdPoints = parseInt(document.getElementById(`adPoints${adIndex}`)?.value) || POINTS_PER_AD;
+            
+            // إعادة تعيين الحالة
             isWatchingAd = true;
             secondsLeft = 30;
             adCompleted = false;
@@ -2518,72 +2340,66 @@
             tabSwitchCount = 0;
             lastPenaltyCheck = Date.now();
             
-            // Show warning message
+            // إظهار رسالة التحذير
             document.getElementById('warningMessage').style.display = 'block';
             document.getElementById('penaltyNotice').style.display = 'none';
             document.getElementById('pointsEarned').style.display = 'none';
             
-            // Show timer
+            // إظهار المؤقت
             const timerContainer = document.getElementById('timerContainer');
             const timer = document.getElementById('timer');
             
             timerContainer.style.display = 'block';
             timer.textContent = secondsLeft;
             
-            // Disable all watch buttons
+            // تعطيل جميع أزرار المشاهدة
             document.querySelectorAll('.watch-btn').forEach(btn => {
                 btn.disabled = true;
                 btn.innerHTML = '<i class="fas fa-clock"></i> انتظر...';
             });
             
-            // Get ad link
-            try {
-                const adDoc = await db.collection('ads').doc(adId).get();
-                if (!adDoc.exists) {
-                    showNotification('الإعلان غير موجود', 'error');
-                    resetAdWatch();
-                    return;
-                }
-                
-                const ad = adDoc.data();
-                
-                // Open smart link in new window after 1 second
-                setTimeout(() => {
-                    adWindow = window.open(ad.link, '_blank', 'width=800,height=600,noopener,noreferrer');
+            // فتح الرابط الذكي في نافذة جديدة بعد ثانية واحدة
+            setTimeout(() => {
+                try {
+                    const adLink = document.getElementById(`adLink${adIndex}`).value;
+                    adWindow = window.open(adLink, '_blank', 'width=800,height=600,noopener,noreferrer');
                     
-                    // Start countdown
-                    timerInterval = setInterval(() => {
-                        secondsLeft--;
-                        timer.textContent = secondsLeft;
-                        
-                        // Advanced penalty checking
-                        checkForPenalty();
-                        
-                        if (secondsLeft <= 0) {
-                            completeAdWatch(adId, ad);
-                        }
-                    }, 1000);
-                }, 1000);
-                
-            } catch (error) {
-                console.error('Error getting ad details:', error);
-                showNotification('حدث خطأ في بدء مشاهدة الإعلان', 'error');
-                resetAdWatch();
-            }
+                    if (adWindow) {
+                        // بدء العد التنازلي
+                        timerInterval = setInterval(() => {
+                            secondsLeft--;
+                            timer.textContent = secondsLeft;
+                            
+                            // فحص العقوبة المتقدم
+                            checkForPenalty();
+                            
+                            if (secondsLeft <= 0) {
+                                completeAdWatch();
+                            }
+                        }, 1000);
+                    } else {
+                        showNotification('لم يتمكن من فتح نافذة الإعلان. يرجى التحقق من إعدادات المنع النافذة المنبثقة', 'error');
+                        resetAdWatch();
+                    }
+                } catch (error) {
+                    showNotification('حدث خطأ في فتح نافذة الإعلان', 'error');
+                    resetAdWatch();
+                }
+            }, 1000);
         }
 
-        // Advanced penalty checking
+        // فحص العقوبة المتقدم
         function checkForPenalty() {
             if (!isWatchingAd || adCompleted || penaltyApplied) return;
             
             const now = Date.now();
             
-            // Check if page is hidden
+            // التحقق إذا كانت الصفحة مخفية
             if (document.hidden) {
                 pageHidden = true;
                 tabSwitchCount++;
                 
-                // Apply penalty if hidden for more than 3 seconds
+                // تطبيق العقوبة إذا كانت مخفية لأكثر من 3 ثوان
                 if (now - lastPenaltyCheck > 3000) {
                     applyPenalty('تم اكتشاف تغيير التبويب!');
                     lastPenaltyCheck = now;
@@ -2593,13 +2409,13 @@
                 lastPenaltyCheck = now;
             }
             
-            // Check if ad window is closed
+            // التحقق إذا تم إغلاق نافذة الإعلان
             if (adWindow && adWindow.closed) {
                 applyPenalty('تم إغلاق نافذة الإعلان!');
             }
         }
 
-        // Handle visibility change
+        // التعامل مع تغيير الرؤية
         function handleVisibilityChange() {
             if (document.hidden && isWatchingAd && !adCompleted) {
                 pageHidden = true;
@@ -2609,7 +2425,7 @@
             }
         }
 
-        // Handle window blur
+        // التعامل مع فقدان التركيز
         function handleWindowBlur() {
             if (isWatchingAd && !adCompleted) {
                 pageHidden = true;
@@ -2617,150 +2433,96 @@
             }
         }
 
-        // Handle window focus
+        // التعامل مع التركيز
         function handleWindowFocus() {
             pageHidden = false;
         }
 
-        // Handle before unload
+        // التعامل مع قبل إغلاق الصفحة
         function handleBeforeUnload(e) {
             if (isWatchingAd && !adCompleted) {
-                // Apply penalty if user tries to close the page
+                // تطبيق العقوبة إذا حاول المستخدم إغلاق الصفحة
                 applyPenalty('تم محاولة إغلاق الصفحة!');
                 
-                // Show warning message
+                // إظهار رسالة تحذير
                 e.preventDefault();
                 e.returnValue = 'إذا أغلقت الصفحة الآن، سيتم خصم 5 نقاط من رصيدك. هل أنت متأكد؟';
                 return e.returnValue;
             }
         }
 
-        // Apply penalty
-        async function applyPenalty(reason) {
+        // تطبيق العقوبة
+        function applyPenalty(reason) {
             if (penaltyApplied || !isWatchingAd || adCompleted) return;
             
             penaltyApplied = true;
             
-            // Stop timer
+            // إيقاف المؤقت
             clearInterval(timerInterval);
             
-            try {
-                // Deduct penalty points (5 points)
-                const userRef = db.collection('users').doc(currentUser.uid);
-                await userRef.update({
-                    points: firebase.firestore.FieldValue.increment(-PENALTY_POINTS),
-                    penalties: firebase.firestore.FieldValue.increment(1),
-                    lastUpdate: new Date().toISOString()
-                });
-                
-                // Update local user data
-                userData.points = Math.max(0, userData.points - PENALTY_POINTS);
-                userData.penalties = (userData.penalties || 0) + 1;
-                
-                // Show penalty notice
-                document.getElementById('penaltyText').textContent = `${reason} تم خصم ${PENALTY_POINTS} نقطة!`;
-                document.getElementById('penaltyNotice').style.display = 'block';
-                document.getElementById('warningMessage').style.display = 'none';
-                
-                // Update UI
-                updateUserUI();
-                
-                // Record penalty in Firebase
-                await db.collection('penalties').add({
-                    userId: currentUser.uid,
-                    userEmail: currentUser.email,
-                    adId: currentAdId,
-                    reason: reason,
-                    pointsDeducted: PENALTY_POINTS,
-                    timestamp: new Date().toISOString(),
-                    tabSwitches: tabSwitchCount
-                });
-                
-                showNotification(`⚠️ ${reason} - تم خصم ${PENALTY_POINTS} نقطة`, 'warning');
-                
-                // Reset after 5 seconds
-                setTimeout(() => {
-                    resetAdWatch();
-                }, 5000);
-                
-            } catch (error) {
-                console.error('Error applying penalty:', error);
-                showNotification('حدث خطأ في تطبيق العقوبة', 'error');
-            }
+            // خصم نقاط العقوبة (5 نقاط)
+            userData.points = Math.max(0, userData.points - PENALTY_POINTS);
+            userData.penalties = (userData.penalties || 0) + 1;
+            
+            // حفظ بيانات المستخدم
+            localStorage.setItem(`advista_userdata_${currentUser.uid}`, JSON.stringify(userData));
+            
+            // إظهار إشعار العقوبة
+            document.getElementById('penaltyText').textContent = `${reason} تم خصم ${PENALTY_POINTS} نقطة!`;
+            document.getElementById('penaltyNotice').style.display = 'block';
+            document.getElementById('warningMessage').style.display = 'none';
+            
+            // تحديث واجهة المستخدم
+            updateUserUI();
+            
+            showNotification(`⚠️ ${reason} - تم خصم ${PENALTY_POINTS} نقطة`, 'warning');
+            
+            // إعادة التعيين بعد 5 ثوان
+            setTimeout(() => {
+                resetAdWatch();
+            }, 5000);
         }
 
-        // Complete ad watch and award points
-        async function completeAdWatch(adId, ad) {
+        // إكمال مشاهدة الإعلان
+        function completeAdWatch() {
             if (adCompleted) return;
             
             clearInterval(timerInterval);
             isWatchingAd = false;
             adCompleted = true;
             
-            // Close ad window if still open
+            // إغلاق نافذة الإعلان إذا كانت لا تزال مفتوحة
             if (adWindow && !adWindow.closed) {
                 try {
                     adWindow.close();
                 } catch (e) {
-                    console.log('Could not close ad window');
+                    // تجاهل الخطأ
                 }
             }
             
-            // Calculate watch time
+            // حساب وقت المشاهدة
             const watchTime = Math.floor((Date.now() - adStartTime) / 1000);
             
-            // Advanced verification - user must watch at least 28 seconds
+            // التحقق المتقدم - يجب على المستخدم مشاهدة 28 ثانية على الأقل
             if (watchTime < 28) {
                 applyPenalty('لم تكمل مشاهدة الإعلان المطلوبة!');
                 return;
             }
             
-            // Check for excessive tab switching
+            // التحقق من التبديل المفرط بين التبويبات
             if (tabSwitchCount > 2) {
                 applyPenalty('تم تغيير التبويب عدة مرات!');
                 return;
             }
             
-            // Show points earned
+            // إظهار النقاط المكتسبة
             document.getElementById('earnedPoints').textContent = `+${currentAdPoints} نقطة`;
             document.getElementById('pointsEarned').style.display = 'block';
             document.getElementById('warningMessage').style.display = 'none';
             document.getElementById('penaltyNotice').style.display = 'none';
             
             try {
-                const today = new Date().toISOString().split('T')[0];
-                
-                // Update user data in Firebase
-                const userRef = db.collection('users').doc(currentUser.uid);
-                
-                const updates = {
-                    points: firebase.firestore.FieldValue.increment(currentAdPoints),
-                    totalPoints: firebase.firestore.FieldValue.increment(currentAdPoints),
-                    adsWatched: firebase.firestore.FieldValue.increment(1),
-                    timeWatched: firebase.firestore.FieldValue.increment(30),
-                    totalEarned: firebase.firestore.FieldValue.increment(currentAdPoints / POINTS_PER_DOLLAR),
-                    todayPoints: firebase.firestore.FieldValue.increment(currentAdPoints),
-                    todayAds: firebase.firestore.FieldValue.increment(1),
-                    lastUpdate: new Date().toISOString(),
-                    [`dailyStats.${today}.points`]: firebase.firestore.FieldValue.increment(currentAdPoints),
-                    [`dailyStats.${today}.ads`]: firebase.firestore.FieldValue.increment(1)
-                };
-                
-                // Mark ad as completed today
-                const completedAd = {
-                    adId: adId,
-                    date: new Date().toISOString(),
-                    points: currentAdPoints,
-                    watchTime: watchTime,
-                    tabSwitches: tabSwitchCount
-                };
-                
-                await userRef.update({
-                    ...updates,
-                    completedAds: firebase.firestore.FieldValue.arrayUnion(completedAd)
-                });
-                
-                // Update local user data
+                // تحديث بيانات المستخدم
                 userData.points += currentAdPoints;
                 userData.totalPoints += currentAdPoints;
                 userData.adsWatched = (userData.adsWatched || 0) + 1;
@@ -2768,53 +2530,49 @@
                 userData.totalEarned = (userData.totalEarned || 0) + (currentAdPoints / POINTS_PER_DOLLAR);
                 userData.todayPoints = (userData.todayPoints || 0) + currentAdPoints;
                 userData.todayAds = (userData.todayAds || 0) + 1;
-                userData.completedAds = userData.completedAds || [];
-                userData.completedAds.push(completedAd);
+                userData.lastUpdate = new Date().toISOString();
                 
-                // Record ad watch in Firebase
-                await db.collection('adWatches').add({
-                    userId: currentUser.uid,
-                    adId: adId,
-                    pointsEarned: currentAdPoints,
+                // وضع علامة على الإعلان كمكتمل اليوم
+                userData.completedAds = userData.completedAds || [];
+                userData.completedAds.push({
+                    adId: currentAdId,
+                    date: new Date().toISOString(),
+                    points: currentAdPoints,
                     watchTime: watchTime,
-                    timestamp: new Date().toISOString(),
-                    userEmail: currentUser.email,
-                    userName: currentUser.displayName,
                     tabSwitches: tabSwitchCount
                 });
                 
-                // Update global stats
-                await updateGlobalStats('totalAdsWatched', 1);
+                // الحفظ في التخزين المحلي
+                localStorage.setItem(`advista_userdata_${currentUser.uid}`, JSON.stringify(userData));
                 
-                // Update UI
+                // تحديث واجهة المستخدم
                 updateUserUI();
                 
                 showNotification(`🎉 لقد ربحت ${currentAdPoints} نقطة!`, 'success');
                 
             } catch (error) {
-                console.error('Error completing ad watch:', error);
                 showNotification('حدث خطأ أثناء معالجة النقاط', 'error');
             }
             
-            // Reset after 5 seconds
+            // إعادة التعيين بعد 5 ثوان
             setTimeout(() => {
                 resetAdWatch();
-                loadAds(); // Reload ads to update "watched today" status
+                loadAds(); // إعادة تحميل الإعلانات لتحديث حالة "شوهد اليوم"
             }, 5000);
         }
 
-        // Reset ad watch
+        // إعادة تعيين مشاهدة الإعلان
         function resetAdWatch() {
             document.getElementById('timerContainer').style.display = 'none';
             document.getElementById('pointsEarned').style.display = 'none';
             
-            // Re-enable watch buttons
+            // إعادة تمكين أزرار المشاهدة
             document.querySelectorAll('.watch-btn').forEach(btn => {
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-play"></i> مشاهدة الإعلان';
             });
             
-            // Reset state
+            // إعادة تعيين الحالة
             isWatchingAd = false;
             currentAdId = null;
             adCompleted = false;
@@ -2823,24 +2581,24 @@
             tabSwitchCount = 0;
         }
 
-        // Cancel ad watch
+        // إلغاء مشاهدة الإعلان
         function cancelAdWatch() {
             if (isWatchingAd && !adCompleted) {
                 showNotification(`إذا أغلقت الآن، سيتم خصم ${PENALTY_POINTS} نقاط من رصيدك.`, 'warning');
-                // Don't auto-apply penalty, let user decide
+                // لا تطبق العقوبة تلقائياً، دع المستخدم يقرر
             }
             resetAdWatch();
         }
 
-        // Update required points for withdrawal
+        // تحديث النقاط المطلوبة للسحب
         function updateRequiredPoints() {
             const amount = document.getElementById('withdrawAmount').value;
             const requiredPoints = amount * POINTS_PER_DOLLAR;
             document.getElementById('requiredPoints').textContent = requiredPoints.toLocaleString();
         }
 
-        // Submit withdrawal request to Firebase
-        async function submitWithdrawal() {
+        // إرسال طلب السحب
+        function submitWithdrawal() {
             if (!currentUser || !userData) {
                 showNotification('يجب تسجيل الدخول أولاً', 'warning');
                 return;
@@ -2850,7 +2608,7 @@
             const points = amount * POINTS_PER_DOLLAR;
             const vodafoneNumber = document.getElementById('vodafoneNumber').value.trim();
             
-            // Validation
+            // التحقق من الصحة
             if (isNaN(amount) || amount < 1) {
                 showNotification('❌ الحد الأدنى للسحب هو 1 دولار', 'error');
                 return;
@@ -2869,14 +2627,11 @@
             try {
                 const btn = document.getElementById('submitWithdrawalBtn');
                 btn.disabled = true;
-                btn.innerHTML = '<div class="spinner" style="width: 20px; height: 20px; border-width: 2px;"></div> جاري الإرسال...';
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
                 
-                // Create withdrawal ID
-                const withdrawalId = 'W' + Date.now().toString() + Math.random().toString(36).substr(2, 9);
-                
-                // Create withdrawal data
+                // إنشاء بيانات السحب
                 const withdrawalData = {
-                    id: withdrawalId,
+                    id: 'W' + Date.now().toString(),
                     userId: currentUser.uid,
                     userEmail: currentUser.email,
                     userName: currentUser.displayName,
@@ -2886,33 +2641,28 @@
                     method: 'vodafone_cash',
                     vodafoneNumber: vodafoneNumber,
                     status: 'pending',
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString()
+                    createdAt: new Date().toISOString()
                 };
                 
-                // Create withdrawal in Firebase
-                await db.collection('withdrawals').doc(withdrawalId).set(withdrawalData);
-                
-                // Deduct points from user
-                await db.collection('users').doc(currentUser.uid).update({
-                    points: firebase.firestore.FieldValue.increment(-points),
-                    lastUpdate: new Date().toISOString()
-                });
-                
-                // Update local user data
+                // خصم النقاط من المستخدم
                 userData.points -= points;
+                userData.withdrawals = userData.withdrawals || [];
+                userData.withdrawals.push(withdrawalData.id);
                 
-                // Update user withdrawals list
-                await db.collection('users').doc(currentUser.uid).update({
-                    withdrawals: firebase.firestore.FieldValue.arrayUnion(withdrawalId)
-                });
+                // حفظ بيانات المستخدم
+                localStorage.setItem(`advista_userdata_${currentUser.uid}`, JSON.stringify(userData));
                 
-                // Reset form
+                // حفظ طلب السحب
+                const withdrawals = JSON.parse(localStorage.getItem('advista_withdrawals')) || [];
+                withdrawals.push(withdrawalData);
+                localStorage.setItem('advista_withdrawals', JSON.stringify(withdrawals));
+                
+                // إعادة تعيين النموذج
                 document.getElementById('withdrawAmount').value = 1;
                 document.getElementById('vodafoneNumber').value = '';
                 updateRequiredPoints();
                 
-                // Update UI
+                // تحديث واجهة المستخدم
                 updateUserUI();
                 updatePaymentsHistory();
                 
@@ -2921,13 +2671,12 @@
                 
                 showNotification(`✅ تم إرسال طلب السحب بنجاح! سيتم المراجعة خلال 24 ساعة.`, 'success');
                 
-                // Reload admin data if admin is viewing
+                // إعادة تحميل بيانات الإدارة إذا كان المدير يشاهد
                 if (userData.isAdmin) {
                     loadAdminPanel();
                 }
                 
             } catch (error) {
-                console.error('Withdrawal submission error:', error);
                 showNotification('❌ حدث خطأ في إرسال طلب السحب', 'error');
                 
                 const btn = document.getElementById('submitWithdrawalBtn');
@@ -2936,53 +2685,38 @@
             }
         }
 
-        // Load admin panel from Firebase
-        async function loadAdminPanel() {
+        // تحميل لوحة الإدارة
+        function loadAdminPanel() {
             if (!userData || !userData.isAdmin) return;
             
             const adminPanelContent = document.getElementById('adminPanelContent');
             if (!adminPanelContent) return;
             
             try {
-                // Load all users
-                const usersQuery = await db.collection('users').limit(100).get();
+                // تحميل جميع البيانات
                 const users = [];
-                usersQuery.forEach(doc => users.push({ id: doc.id, ...doc.data() }));
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key.startsWith('advista_userdata_')) {
+                        users.push(JSON.parse(localStorage.getItem(key)));
+                    }
+                }
                 
-                // Load pending withdrawals
-                const withdrawalsQuery = await db.collection('withdrawals')
-                    .where('status', '==', 'pending')
-                    .orderBy('createdAt', 'desc')
-                    .limit(50)
-                    .get();
-                const pendingWithdrawals = [];
-                withdrawalsQuery.forEach(doc => pendingWithdrawals.push({ id: doc.id, ...doc.data() }));
+                const withdrawals = JSON.parse(localStorage.getItem('advista_withdrawals')) || [];
+                const pendingWithdrawals = withdrawals.filter(w => w.status === 'pending');
+                const adWatches = JSON.parse(localStorage.getItem('advista_ad_watches')) || [];
                 
-                // Load completed withdrawals for total
-                const completedWithdrawalsQuery = await db.collection('withdrawals')
-                    .where('status', '==', 'completed')
-                    .get();
-                let totalWithdrawn = 0;
-                completedWithdrawalsQuery.forEach(doc => {
-                    const withdrawal = doc.data();
-                    totalWithdrawn += withdrawal.amount || 0;
-                });
+                const totalWithdrawn = withdrawals
+                    .filter(w => w.status === 'completed')
+                    .reduce((sum, w) => sum + w.amount, 0);
                 
-                // Load total ad watches
-                const adWatchesQuery = await db.collection('adWatches').get();
-                const totalAdWatches = adWatchesQuery.size;
+                const siteRevenue = totalWithdrawn * 0.1; // عمولة 10%
                 
-                const siteRevenue = totalWithdrawn * 0.1; // 10% commission
-                
-                // Load top referrers
+                // تحميل أفضل الدعاة
                 const topReferrers = users
                     .filter(u => u.totalReferrals > 0)
                     .sort((a, b) => (b.totalReferrals || 0) - (a.totalReferrals || 0))
                     .slice(0, 10);
-                
-                // Load global stats
-                const statsDoc = await db.collection('globalStats').doc('main').get();
-                const totalUsers = statsDoc.exists ? (statsDoc.data().totalUsers || users.length) : users.length;
                 
                 adminPanelContent.innerHTML = `
                     <h2 class="section-title">
@@ -3003,7 +2737,7 @@
                     
                     <div class="stats-cards" style="margin-bottom: 30px;">
                         <div class="stat-box">
-                            <div class="stat-value">${totalUsers}</div>
+                            <div class="stat-value">${users.length}</div>
                             <div class="stat-label">إجمالي المستخدمين</div>
                         </div>
                         <div class="stat-box">
@@ -3011,7 +2745,7 @@
                             <div class="stat-label">إجمالي المسحوبات</div>
                         </div>
                         <div class="stat-box">
-                            <div class="stat-value">${totalAdWatches}</div>
+                            <div class="stat-value">${adWatches.length}</div>
                             <div class="stat-label">إعلانات شوهدت</div>
                         </div>
                         <div class="stat-box">
@@ -3134,7 +2868,7 @@
                         </h3>
                         
                         <div id="adminAdsList">
-                            <!-- Ads will be loaded here for admin editing -->
+                            <!-- سيتم تحميل الإعلانات هنا لتحريرها من قبل المدير -->
                         </div>
                     </div>
                 `;
@@ -3142,32 +2876,27 @@
                 loadAdminAds();
                 
             } catch (error) {
-                console.error('Error loading admin panel:', error);
                 adminPanelContent.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 20px;">حدث خطأ في تحميل لوحة الإدارة</p>';
             }
         }
 
-        // Load admin ads from Firebase
-        async function loadAdminAds() {
+        // تحميل إعلانات الإدارة
+        function loadAdminAds() {
             if (!userData.isAdmin) return;
             
             const adminAdsList = document.getElementById('adminAdsList');
             if (!adminAdsList) return;
             
             try {
-                const adsQuery = await db.collection('ads')
-                    .orderBy('createdAt', 'desc')
-                    .limit(50)
-                    .get();
+                const savedAds = JSON.parse(localStorage.getItem('advista_ads')) || [];
                 
-                if (adsQuery.empty) {
+                if (savedAds.length === 0) {
                     adminAdsList.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 20px;">لا توجد إعلانات</p>';
                     return;
                 }
                 
                 adminAdsList.innerHTML = '';
-                adsQuery.forEach((doc, index) => {
-                    const ad = { id: doc.id, ...doc.data() };
+                savedAds.forEach((ad, index) => {
                     const adCard = document.createElement('div');
                     adCard.className = 'ad-card admin-ad';
                     adCard.innerHTML = `
@@ -3181,14 +2910,13 @@
                         <div class="ad-reward">+${ad.points} نقطة</div>
                         <div style="margin-top: 10px; font-size: 0.8rem; color: var(--gray);">
                             أضيف بواسطة: ${ad.addedBy || 'النظام'} 
-                            ${ad.createdAt ? ` - ${new Date(ad.createdAt).toLocaleDateString('ar-EG')}` : ''}
-                            ${ad.active === false ? ' <span style="color: var(--danger); font-weight: 600;">(غير نشط)</span>' : ''}
+                            ${ad.addedAt ? ` - ${new Date(ad.addedAt).toLocaleDateString('ar-EG')}` : ''}
                         </div>
                         <div class="ad-actions">
-                            <button class="edit-btn action-btn" onclick="openEditAdModal('${ad.id}')">
+                            <button class="edit-btn action-btn" onclick="openEditAdModal(${index})">
                                 <i class="fas fa-edit"></i> تعديل
                             </button>
-                            <button class="delete-btn action-btn" onclick="confirmDeleteAd('${ad.id}')">
+                            <button class="delete-btn action-btn" onclick="confirmDeleteAd(${index})">
                                 <i class="fas fa-trash"></i> حذف
                             </button>
                         </div>
@@ -3197,89 +2925,70 @@
                 });
                 
             } catch (error) {
-                console.error('Error loading admin ads:', error);
                 adminAdsList.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 20px;">حدث خطأ في تحميل الإعلانات</p>';
             }
         }
 
-        // Open edit ad modal
-        async function openEditAdModal(adId) {
-            try {
-                const adDoc = await db.collection('ads').doc(adId).get();
-                if (!adDoc.exists) {
-                    showNotification('الإعلان غير موجود', 'error');
-                    return;
-                }
-                
-                const ad = adDoc.data();
-                
-                // Create modal for editing
-                const modal = document.createElement('div');
-                modal.className = 'modal';
-                modal.style.display = 'flex';
-                modal.innerHTML = `
-                    <div class="modal-content">
-                        <button class="close-modal" onclick="this.parentElement.parentElement.remove()">
-                            <i class="fas fa-times"></i>
-                        </button>
+        // فتح مودال تحرير الإعلان
+        function openEditAdModal(adIndex) {
+            const savedAds = JSON.parse(localStorage.getItem('advista_ads')) || [];
+            const ad = savedAds[adIndex];
+            if (!ad) return;
+            
+            // إنشاء مودال للتحرير
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'flex';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <button class="close-modal" onclick="this.parentElement.parentElement.remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    
+                    <h2 class="modal-title">✏️ تعديل الإعلان</h2>
+                    
+                    <div style="margin: 20px 0;">
+                        <div class="form-group">
+                            <label class="form-label">عنوان الإعلان:</label>
+                            <input type="text" id="editAdTitle" class="form-input" value="${ad.title}" required>
+                        </div>
                         
-                        <h2 class="modal-title">✏️ تعديل الإعلان</h2>
+                        <div class="form-group">
+                            <label class="form-label">رابط الإعلان:</label>
+                            <input type="url" id="editAdLink" class="form-input" value="${ad.link}" required>
+                        </div>
                         
-                        <div style="margin: 20px 0;">
-                            <div class="form-group">
-                                <label class="form-label">عنوان الإعلان:</label>
-                                <input type="text" id="editAdTitle" class="form-input" value="${ad.title}" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label">رابط الإعلان:</label>
-                                <input type="url" id="editAdLink" class="form-input" value="${ad.link}" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label">نقاط المكافأة:</label>
-                                <input type="number" id="editAdPoints" class="form-input" value="${ad.points}" min="10" max="1000" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label">فئة الإعلان:</label>
-                                <input type="text" id="editAdCategory" class="form-input" value="${ad.category || 'تقنية'}" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label" style="display: flex; align-items: center; gap: 10px;">
-                                    <input type="checkbox" id="editAdActive" ${ad.active !== false ? 'checked' : ''}>
-                                    نشط
-                                </label>
-                            </div>
-                            
-                            <div style="display: flex; gap: 10px; margin-top: 20px;">
-                                <button class="submit-btn" onclick="updateAd('${adId}')" style="flex: 1;">
-                                    <i class="fas fa-save"></i> حفظ التعديلات
-                                </button>
-                                <button class="submit-btn" onclick="deleteAd('${adId}'); this.parentElement.parentElement.parentElement.remove();" style="flex: 1; background: var(--danger);">
-                                    <i class="fas fa-trash"></i> حذف الإعلان
-                                </button>
-                            </div>
+                        <div class="form-group">
+                            <label class="form-label">نقاط المكافأة:</label>
+                            <input type="number" id="editAdPoints" class="form-input" value="${ad.points}" min="10" max="1000" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">فئة الإعلان:</label>
+                            <input type="text" id="editAdCategory" class="form-input" value="${ad.category || 'تقنية'}" required>
+                        </div>
+                        
+                        <div style="display: flex; gap: 10px; margin-top: 20px;">
+                            <button class="submit-btn" onclick="updateAd(${adIndex})" style="flex: 1;">
+                                <i class="fas fa-save"></i> حفظ التعديلات
+                            </button>
+                            <button class="submit-btn" onclick="deleteAd(${adIndex}); this.parentElement.parentElement.parentElement.remove();" style="flex: 1; background: var(--danger);">
+                                <i class="fas fa-trash"></i> حذف الإعلان
+                            </button>
                         </div>
                     </div>
-                `;
-                
-                document.body.appendChild(modal);
-                
-            } catch (error) {
-                console.error('Error opening edit modal:', error);
-                showNotification('حدث خطأ في تحميل بيانات الإعلان', 'error');
-            }
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
         }
 
-        // Update ad in Firebase
-        async function updateAd(adId) {
+        // تحديث الإعلان
+        function updateAd(adIndex) {
             const newTitle = document.getElementById('editAdTitle').value.trim();
             const newLink = document.getElementById('editAdLink').value.trim();
             const newPoints = parseInt(document.getElementById('editAdPoints').value);
             const newCategory = document.getElementById('editAdCategory').value.trim();
-            const isActive = document.getElementById('editAdActive').checked;
             
             if (!newTitle || !newLink || !newPoints || !newCategory) {
                 showNotification('❌ يرجى ملء جميع الحقول', 'error');
@@ -3292,54 +3001,59 @@
             }
             
             try {
-                await db.collection('ads').doc(adId).update({
-                    title: newTitle,
-                    link: newLink,
-                    points: newPoints,
-                    category: newCategory,
-                    active: isActive,
-                    updatedAt: new Date().toISOString(),
-                    editedBy: currentUser.email
-                });
-                
-                // Remove modal
-                document.querySelector('.modal').remove();
-                
-                // Reload ads
-                loadAds();
-                loadAdminAds();
-                
-                showNotification('✅ تم تحديث الإعلان بنجاح', 'success');
-                
+                const savedAds = JSON.parse(localStorage.getItem('advista_ads')) || [];
+                if (adIndex < savedAds.length) {
+                    savedAds[adIndex] = {
+                        ...savedAds[adIndex],
+                        title: newTitle,
+                        link: newLink,
+                        points: newPoints,
+                        category: newCategory,
+                        editedAt: new Date().toISOString(),
+                        editedBy: currentUser.email
+                    };
+                    
+                    localStorage.setItem('advista_ads', JSON.stringify(savedAds));
+                    
+                    // إزالة المودال
+                    document.querySelector('.modal').remove();
+                    
+                    // إعادة تحميل الإعلانات
+                    loadAds();
+                    loadAdminAds();
+                    
+                    showNotification('✅ تم تحديث الإعلان بنجاح', 'success');
+                }
             } catch (error) {
-                console.error('Error updating ad:', error);
                 showNotification('❌ حدث خطأ في تحديث الإعلان', 'error');
             }
         }
 
-        // Confirm delete ad
-        function confirmDeleteAd(adId) {
+        // تأكيد حذف الإعلان
+        function confirmDeleteAd(adIndex) {
             if (!confirm('هل أنت متأكد من حذف هذا الإعلان؟ لا يمكن التراجع عن هذا الإجراء.')) return;
-            deleteAd(adId);
+            deleteAd(adIndex);
         }
 
-        // Delete ad from Firebase
-        async function deleteAd(adId) {
+        // حذف الإعلان
+        function deleteAd(adIndex) {
             try {
-                await db.collection('ads').doc(adId).delete();
-                
-                loadAds();
-                loadAdminAds();
-                showNotification('✅ تم حذف الإعلان بنجاح', 'success');
-                
+                const savedAds = JSON.parse(localStorage.getItem('advista_ads')) || [];
+                if (adIndex < savedAds.length) {
+                    savedAds.splice(adIndex, 1);
+                    localStorage.setItem('advista_ads', JSON.stringify(savedAds));
+                    
+                    loadAds();
+                    loadAdminAds();
+                    showNotification('✅ تم حذف الإعلان بنجاح', 'success');
+                }
             } catch (error) {
-                console.error('Error deleting ad:', error);
                 showNotification('❌ حدث خطأ في حذف الإعلان', 'error');
             }
         }
 
-        // Add new ad to Firebase (Admin function)
-        async function addNewAd() {
+        // إضافة إعلان جديد
+        function addNewAd() {
             if (!userData || !userData.isAdmin) return;
             
             const newLink = document.getElementById('newAdLink').value.trim();
@@ -3358,26 +3072,27 @@
             }
             
             try {
-                // Save new ad to Firebase
+                // حفظ الإعلان الجديد
                 const newAd = {
                     link: newLink,
                     title: newTitle,
                     points: newPoints,
                     category: newCategory,
                     addedBy: currentUser.email,
-                    isDefault: false,
-                    active: true,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString()
+                    addedAt: new Date().toISOString(),
+                    isDefault: false
                 };
                 
-                await db.collection('ads').add(newAd);
+                // الحفظ في التخزين المحلي
+                const ads = JSON.parse(localStorage.getItem('advista_ads')) || [];
+                ads.push(newAd);
+                localStorage.setItem('advista_ads', JSON.stringify(ads));
                 
-                // Reload ads
+                // إعادة تحميل الإعلانات
                 loadAds();
                 loadAdminAds();
                 
-                // Reset fields
+                // إعادة تعيين الحقول
                 document.getElementById('newAdLink').value = ADMIN_AD_LINK;
                 document.getElementById('newAdTitle').value = "إعلان خاص - ربح مضمون";
                 document.getElementById('newAdPoints').value = "50";
@@ -3386,163 +3101,135 @@
                 showNotification('✅ تم نشر الإعلان بنجاح!', 'success');
                 
             } catch (error) {
-                console.error('Error adding new ad:', error);
                 showNotification('❌ حدث خطأ في نشر الإعلان', 'error');
             }
         }
 
-        // Approve withdrawal in Firebase
-        async function approveWithdrawal(withdrawalId) {
+        // قبول السحب
+        function approveWithdrawal(withdrawalId) {
             if (!confirm('هل أنت متأكد من قبول طلب السحب وإرسال المبلغ؟')) return;
             
             try {
-                // Get withdrawal
-                const withdrawalRef = db.collection('withdrawals').doc(withdrawalId);
-                const withdrawalDoc = await withdrawalRef.get();
+                // الحصول على عمليات السحب
+                const withdrawals = JSON.parse(localStorage.getItem('advista_withdrawals')) || [];
+                const withdrawalIndex = withdrawals.findIndex(w => w.id === withdrawalId);
                 
-                if (!withdrawalDoc.exists) {
+                if (withdrawalIndex === -1) {
                     showNotification('طلب السحب غير موجود', 'error');
                     return;
                 }
                 
-                const withdrawal = withdrawalDoc.data();
+                // تحديث حالة السحب
+                withdrawals[withdrawalIndex].status = 'completed';
+                withdrawals[withdrawalIndex].approvedAt = new Date().toISOString();
+                withdrawals[withdrawalIndex].approvedBy = currentUser.email;
                 
-                // Update withdrawal status
-                await withdrawalRef.update({
-                    status: 'completed',
-                    approvedAt: new Date().toISOString(),
-                    approvedBy: currentUser.email,
-                    updatedAt: new Date().toISOString()
-                });
+                // الحفظ مرة أخرى
+                localStorage.setItem('advista_withdrawals', JSON.stringify(withdrawals));
                 
-                // Update global stats
-                await updateGlobalStats('totalWithdrawn', withdrawal.amount);
-                
-                showNotification(`✅ تم قبول طلب السحب وإرسال $${withdrawal.amount}`, 'success');
+                showNotification(`✅ تم قبول طلب السحب وإرسال $${withdrawals[withdrawalIndex].amount}`, 'success');
                 loadAdminPanel();
                 
             } catch (error) {
-                console.error('Error approving withdrawal:', error);
                 showNotification('❌ حدث خطأ في قبول السحب', 'error');
             }
         }
 
-        // Reject withdrawal in Firebase
-        async function rejectWithdrawal(withdrawalId) {
+        // رفض السحب
+        function rejectWithdrawal(withdrawalId) {
             const reason = prompt('سبب الرفض:');
             if (!reason) return;
             
             try {
-                // Get withdrawal
-                const withdrawalRef = db.collection('withdrawals').doc(withdrawalId);
-                const withdrawalDoc = await withdrawalRef.get();
+                // الحصول على عمليات السحب
+                const withdrawals = JSON.parse(localStorage.getItem('advista_withdrawals')) || [];
+                const withdrawalIndex = withdrawals.findIndex(w => w.id === withdrawalId);
                 
-                if (!withdrawalDoc.exists) {
+                if (withdrawalIndex === -1) {
                     showNotification('طلب السحب غير موجود', 'error');
                     return;
                 }
                 
-                const withdrawal = withdrawalDoc.data();
+                const withdrawal = withdrawals[withdrawalIndex];
                 
-                // Return points to user
-                await db.collection('users').doc(withdrawal.userId).update({
-                    points: firebase.firestore.FieldValue.increment(withdrawal.points),
-                    lastUpdate: new Date().toISOString()
-                });
+                // إرجاع النقاط للمستخدم
+                const userDataStr = localStorage.getItem(`advista_userdata_${withdrawal.userId}`);
+                if (userDataStr) {
+                    const userData = JSON.parse(userDataStr);
+                    userData.points += withdrawal.points;
+                    localStorage.setItem(`advista_userdata_${withdrawal.userId}`, JSON.stringify(userData));
+                }
                 
-                // Update withdrawal status
-                await withdrawalRef.update({
-                    status: 'rejected',
-                    rejectReason: reason,
-                    rejectedAt: new Date().toISOString(),
-                    rejectedBy: currentUser.email,
-                    updatedAt: new Date().toISOString()
-                });
+                // تحديث حالة السحب
+                withdrawals[withdrawalIndex].status = 'rejected';
+                withdrawals[withdrawalIndex].rejectReason = reason;
+                withdrawals[withdrawalIndex].rejectedAt = new Date().toISOString();
+                withdrawals[withdrawalIndex].rejectedBy = currentUser.email;
+                
+                // الحفظ مرة أخرى
+                localStorage.setItem('advista_withdrawals', JSON.stringify(withdrawals));
                 
                 showNotification('❌ تم رفض طلب السحب وإرجاع النقاط', 'warning');
                 loadAdminPanel();
                 
             } catch (error) {
-                console.error('Error rejecting withdrawal:', error);
                 showNotification('❌ حدث خطأ في رفض السحب', 'error');
             }
         }
 
-        // Refresh admin data
+        // تحديث بيانات الإدارة
         function refreshAdminData() {
             loadAdminPanel();
             showNotification('🔄 تم تحديث بيانات الإدارة', 'success');
         }
 
-        // Show reset confirmation
+        // إظهار تأكيد إعادة التعيين
         function showResetConfirmation() {
             document.getElementById('confirmationText').textContent = '⚠️ تحذير: هذا سيحذف جميع بيانات التطبيق (باستثناء حسابك). هل أنت متأكد؟';
             document.getElementById('confirmYes').onclick = resetAllData;
             document.getElementById('confirmationModal').style.display = 'flex';
         }
 
-        // Reset all data (Admin only) - حذف جميع البيانات من Firebase
-        async function resetAllData() {
+        // إعادة تعيين جميع البيانات
+        function resetAllData() {
             closeConfirmationModal();
             
-            if (!confirm('⚠️ تحذير نهائي: هذا سيحذف جميع بيانات المستخدمين، الإعلانات، طلبات السحب، وسجل المشاهدات. لا يمكن التراجع عن هذا الإجراء. هل أنت متأكد تماماً؟')) {
-                return;
-            }
-            
-            showLoading();
-            
             try {
-                // حذف جميع بيانات Firebase
-                const collections = ['users', 'ads', 'withdrawals', 'adWatches', 'penalties', 'referralCodes'];
+                // مسح جميع بيانات التطبيق باستثناء المستخدم الحالي
+                const keysToKeep = ['advista_user', `advista_userdata_${currentUser.uid}`];
                 
-                for (const collection of collections) {
-                    const querySnapshot = await db.collection(collection).get();
-                    const batch = db.batch();
-                    
-                    querySnapshot.docs.forEach((doc) => {
-                        batch.delete(doc.ref);
-                    });
-                    
-                    await batch.commit();
-                    
-                    // إضافة تأخير لتجنب تجاوز الحدود
-                    await new Promise(resolve => setTimeout(resolve, 100));
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (!keysToKeep.includes(key) && key.startsWith('advista_')) {
+                        localStorage.removeItem(key);
+                    }
                 }
                 
-                // إعادة إنشاء الإعلانات الافتراضية
-                await createDefaultAds();
-                
-                showNotification('✅ تم مسح جميع البيانات بنجاح وإعادة إنشاء الإعلانات الافتراضية', 'success');
+                showNotification('✅ تم مسح جميع البيانات بنجاح', 'success');
                 refreshAdminData();
                 loadAds();
                 
             } catch (error) {
-                console.error('Error resetting data:', error);
                 showNotification('❌ حدث خطأ في مسح البيانات', 'error');
-            } finally {
-                hideLoading();
             }
         }
 
-        // Export all data from Firebase
-        async function exportAllData() {
-            showLoading();
-            
+        // تصدير جميع البيانات
+        function exportAllData() {
             try {
                 const allData = {};
-                const collections = ['users', 'ads', 'withdrawals', 'adWatches', 'penalties', 'referralCodes', 'globalStats'];
                 
-                for (const collection of collections) {
-                    const querySnapshot = await db.collection(collection).get();
-                    allData[collection] = querySnapshot.docs.map(doc => ({
-                        id: doc.id,
-                        ...doc.data()
-                    }));
+                // جمع جميع بيانات advista
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key.startsWith('advista_')) {
+                        allData[key] = JSON.parse(localStorage.getItem(key));
+                    }
                 }
                 
-                // Create and download JSON file
+                // إنشاء وتنزيل ملف JSON
                 const dataStr = JSON.stringify(allData, null, 2);
-                const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
                 
                 const exportFileDefaultName = `advista_backup_${new Date().toISOString().split('T')[0]}.json`;
                 
@@ -3554,42 +3241,39 @@
                 showNotification('✅ تم تصدير جميع البيانات بنجاح', 'success');
                 
             } catch (error) {
-                console.error('Error exporting data:', error);
                 showNotification('❌ حدث خطأ في تصدير البيانات', 'error');
-            } finally {
-                hideLoading();
             }
         }
 
-        // Show section
+        // إظهار القسم
         function showSection(sectionId) {
-            // Hide all sections
+            // إخفاء جميع الأقسام
             document.querySelectorAll('.page-section').forEach(section => {
                 section.classList.remove('active');
             });
             
-            // Remove active class from all tabs
+            // إزالة الفئة النشطة من جميع التبويبات
             document.querySelectorAll('.nav-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
             
-            // Show selected section
+            // إظهار القسم المحدد
             const section = document.getElementById(sectionId);
             if (section) {
                 section.classList.add('active');
                 
-                // Set active tab
+                // تعيين التبويب النشط
                 const tab = document.querySelector(`.nav-tab[data-section="${sectionId}"]`);
                 if (tab) {
                     tab.classList.add('active');
                 }
                 
-                // Scroll to top of section
+                // التمرير إلى أعلى القسم
                 section.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         }
 
-        // Copy referral code
+        // نسخ كود الإحالة
         function copyReferralCode() {
             const code = userData.referralCode;
             navigator.clipboard.writeText(code).then(() => {
@@ -3597,7 +3281,7 @@
             });
         }
 
-        // Copy referral link
+        // نسخ رابط الإحالة
         function copyReferralLink() {
             const link = window.location.origin + window.location.pathname + '?ref=' + userData.referralCode;
             navigator.clipboard.writeText(link).then(() => {
@@ -3605,105 +3289,77 @@
             });
         }
 
-        // Share on WhatsApp
+        // المشاركة على واتساب
         function shareOnWhatsApp() {
             const link = window.location.origin + window.location.pathname + '?ref=' + userData.referralCode;
             const text = `انضم إلى AdVista Pro واربح النقاط! سجل عبر رابطي واحصل على ${REFERRAL_POINTS_REFERRED} نقطة هدية، وأحصل أنا على ${REFERRAL_POINTS_REFERRER} نقطة: ${link}`;
             window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
         }
 
-        // Share on Telegram
+        // المشاركة على تيليجرام
         function shareOnTelegram() {
             const link = window.location.origin + window.location.pathname + '?ref=' + userData.referralCode;
             const text = `انضم إلى AdVista Pro واربح النقاط! سجل عبر رابطي واحصل على ${REFERRAL_POINTS_REFERRED} نقطة هدية، وأحصل أنا على ${REFERRAL_POINTS_REFERRER} نقطة: ${link}`;
             window.open(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`, '_blank');
         }
 
-        // Share on Facebook
+        // المشاركة على فيسبوك
         function shareOnFacebook() {
             const link = window.location.origin + window.location.pathname + '?ref=' + userData.referralCode;
             window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}`, '_blank');
         }
 
-        // Show logout confirmation
+        // إظهار تأكيد الخروج
         function showLogoutConfirmation() {
             document.getElementById('confirmationText').textContent = 'هل أنت متأكد من تسجيل الخروج؟';
             document.getElementById('confirmYes').onclick = handleSignOut;
             document.getElementById('confirmationModal').style.display = 'flex';
         }
 
-        // Close confirmation modal
+        // إغلاق مودال التأكيد
         function closeConfirmationModal() {
             document.getElementById('confirmationModal').style.display = 'none';
         }
 
-        // Close ad confirmation modal
+        // إغلاق مودال تأكيد الإعلان
         function closeAdConfirmationModal() {
             document.getElementById('adConfirmationModal').style.display = 'none';
         }
 
-        // Sign out
-        async function handleSignOut() {
+        // تسجيل الخروج
+        function handleSignOut() {
             closeConfirmationModal();
             
-            try {
-                await auth.signOut();
-                
-                // Clear local storage
-                localStorage.removeItem('advista_user');
-                currentUser = null;
-                userData = null;
-                
-                // Hide Google One Tap
-                if (window.google && google.accounts && google.accounts.id) {
-                    google.accounts.id.disableAutoSelect();
-                }
-                
-                // Show login page
-                showLoginPage();
-                
-                showNotification('تم تسجيل الخروج بنجاح', 'success');
-                
-            } catch (error) {
-                console.error('Sign out error:', error);
-                showNotification('حدث خطأ في تسجيل الخروج', 'error');
+            // مسح التخزين المحلي
+            localStorage.removeItem('advista_user');
+            currentUser = null;
+            userData = null;
+            
+            // إخفاء Google One Tap
+            if (window.google && google.accounts && google.accounts.id) {
+                google.accounts.id.disableAutoSelect();
             }
+            
+            // إظهار صفحة تسجيل الدخول
+            showLoginPage();
+            
+            showNotification('تم تسجيل الخروج بنجاح', 'success');
         }
 
-        // Confirm start ad watch
-        function confirmStartAdWatch() {
-            closeAdConfirmationModal();
-            startWatchingAd(currentAdId);
-        }
-
-        // Show login page
+        // إظهار صفحة تسجيل الدخول
         function showLoginPage() {
             document.getElementById('loginPage').style.display = 'flex';
             document.getElementById('mainPage').style.display = 'none';
         }
 
-        // Show main page
+        // إظهار الصفحة الرئيسية
         function showMainPage() {
             document.getElementById('loginPage').style.display = 'none';
             document.getElementById('mainPage').style.display = 'block';
             window.scrollTo(0, 0);
         }
 
-        // Show loading
-        function showLoading() {
-            document.getElementById('loadingScreen').style.display = 'flex';
-            document.getElementById('loadingScreen').style.opacity = '1';
-        }
-
-        // Hide loading screen
-        function hideLoading() {
-            document.getElementById('loadingScreen').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('loadingScreen').style.display = 'none';
-            }, 300);
-        }
-
-        // Show notification
+        // إظهار الإشعار
         function showNotification(message, type = 'success') {
             const notification = document.getElementById('notification');
             const messageDiv = document.getElementById('notificationMessage');
@@ -3718,4 +3374,4 @@
         }
     </script>
 </body>
-    </html>
+        </html>
