@@ -227,7 +227,6 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         @media (min-width: 768px) {
@@ -1725,6 +1724,8 @@
         let currentAdPoints = 0;
         let adWindow = null;
         let adStartTime = null;
+        
+        // متغيرات العقوبات والمراقبة
         let pageHidden = false;
         let adCompleted = false;
         let penaltyApplied = false;
@@ -2374,7 +2375,7 @@
                             checkForPenalty();
                             
                             if (secondsLeft <= 0) {
-                                completeAdWatch();
+                                completeAdWatch(); // هنا يتم استدعاء الدالة عند انتهاء 30 ثانية
                             }
                         }, 1000);
                     } else {
@@ -2386,6 +2387,42 @@
                     resetAdWatch();
                 }
             }, 1000);
+        }
+
+        // دالة مراقبة تغيير الرؤية
+        function handleVisibilityChange() {
+            if (document.hidden && isWatchingAd && !adCompleted) {
+                pageHidden = true;
+                tabSwitchCount++;
+            } else {
+                pageHidden = false;
+            }
+        }
+
+        // دالة مراقبة فقدان التركيز
+        function handleWindowBlur() {
+            if (isWatchingAd && !adCompleted) {
+                pageHidden = true;
+                tabSwitchCount++;
+            }
+        }
+
+        // دالة مراقبة التركيز
+        function handleWindowFocus() {
+            pageHidden = false;
+        }
+
+        // دالة مراقبة قبل إغلاق الصفحة
+        function handleBeforeUnload(e) {
+            if (isWatchingAd && !adCompleted) {
+                // تطبيق العقوبة إذا حاول المستخدم إغلاق الصفحة
+                applyPenalty('تم محاولة إغلاق الصفحة!');
+                
+                // إظهار رسالة تحذير
+                e.preventDefault();
+                e.returnValue = 'إذا أغلقت الصفحة الآن، سيتم خصم 5 نقاط من رصيدك. هل أنت متأكد؟';
+                return e.returnValue;
+            }
         }
 
         // فحص العقوبة المتقدم
@@ -2412,42 +2449,6 @@
             // التحقق إذا تم إغلاق نافذة الإعلان
             if (adWindow && adWindow.closed) {
                 applyPenalty('تم إغلاق نافذة الإعلان!');
-            }
-        }
-
-        // التعامل مع تغيير الرؤية
-        function handleVisibilityChange() {
-            if (document.hidden && isWatchingAd && !adCompleted) {
-                pageHidden = true;
-                tabSwitchCount++;
-            } else {
-                pageHidden = false;
-            }
-        }
-
-        // التعامل مع فقدان التركيز
-        function handleWindowBlur() {
-            if (isWatchingAd && !adCompleted) {
-                pageHidden = true;
-                tabSwitchCount++;
-            }
-        }
-
-        // التعامل مع التركيز
-        function handleWindowFocus() {
-            pageHidden = false;
-        }
-
-        // التعامل مع قبل إغلاق الصفحة
-        function handleBeforeUnload(e) {
-            if (isWatchingAd && !adCompleted) {
-                // تطبيق العقوبة إذا حاول المستخدم إغلاق الصفحة
-                applyPenalty('تم محاولة إغلاق الصفحة!');
-                
-                // إظهار رسالة تحذير
-                e.preventDefault();
-                e.returnValue = 'إذا أغلقت الصفحة الآن، سيتم خصم 5 نقاط من رصيدك. هل أنت متأكد؟';
-                return e.returnValue;
             }
         }
 
@@ -2483,7 +2484,7 @@
             }, 5000);
         }
 
-        // إكمال مشاهدة الإعلان
+        // إكمال مشاهدة الإعلان - هذه هي الدالة المفقودة!
         function completeAdWatch() {
             if (adCompleted) return;
             
@@ -3374,4 +3375,4 @@
         }
     </script>
 </body>
-        </html>
+    </html>
