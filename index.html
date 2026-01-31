@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AdVista  - اربح من مشاهدة الإعلانات</title>
+    <title>AdVista Pro - اربح من مشاهدة الإعلانات</title>
     
     <!-- Firebase 9 -->
     <script type="module">
@@ -1522,7 +1522,7 @@
     <div class="login-page" id="loginPage">
         <div class="login-card">
             <div class="logo">💰</div>
-            <h1 class="login-title">AdVista </h1>
+            <h1 class="login-title">AdVista Pro</h1>
             <p class="login-subtitle">شاهد الإعلانات، اربح نقاطاً، وسحب أموالاً حقيقية إلى فودافون كاش</p>
             
             <div class="features">
@@ -2150,6 +2150,71 @@
         // Admin email
         const ADMIN_EMAIL = 'bo2584668@gmail.com';
 
+        // Initialize the application
+        async function initApp() {
+            try {
+                // Initialize Google Auth
+                setTimeout(initGoogleAuth, 1000);
+                
+                // Initialize event listeners
+                initEventListeners();
+                
+                // Check authentication state
+                firebase.onAuthStateChanged(firebase.auth, async (user) => {
+                    console.log('Auth state changed:', user ? 'User logged in' : 'No user');
+                    if (user) {
+                        await handleUserLogin(user);
+                    } else {
+                        showLoginPage();
+                    }
+                });
+                
+                // Load system settings
+                await loadSystemSettings();
+                
+                // Check for referral code
+                checkReferralCode();
+                
+            } catch (error) {
+                console.error('App initialization error:', error);
+                showNotification('حدث خطأ في تحميل التطبيق', 'error');
+            }
+        }
+
+        // Initialize event listeners
+        function initEventListeners() {
+            // User menu toggle
+            document.getElementById('userMenuToggle').addEventListener('click', toggleUserMenu);
+            
+            // Close user menu when clicking outside
+            document.addEventListener('click', (e) => {
+                const userMenu = document.getElementById('userMenu');
+                const userMenuToggle = document.getElementById('userMenuToggle');
+                
+                if (!userMenuToggle.contains(e.target) && !userMenu.contains(e.target)) {
+                    userMenu.classList.remove('active');
+                }
+            });
+            
+            // Withdrawal amount input
+            const withdrawAmountInput = document.getElementById('withdrawAmount');
+            if (withdrawAmountInput) {
+                withdrawAmountInput.addEventListener('input', updateRequiredPoints);
+            }
+            
+            // Search users input
+            const searchUsersInput = document.getElementById('searchUsers');
+            if (searchUsersInput) {
+                searchUsersInput.addEventListener('input', searchUsers);
+            }
+            
+            // Submit withdrawal button
+            const submitWithdrawalBtn = document.getElementById('submitWithdrawalBtn');
+            if (submitWithdrawalBtn) {
+                submitWithdrawalBtn.addEventListener('click', submitWithdrawal);
+            }
+        }
+
         // Initialize Google Sign-In
         function initGoogleAuth() {
             try {
@@ -2191,70 +2256,6 @@
             } catch (error) {
                 console.error('Error initializing Google Auth:', error);
                 document.getElementById('alternativeSignIn').style.display = 'block';
-            }
-        }
-
-        // Initialize app when Firebase is ready
-        window.addEventListener('DOMContentLoaded', async () => {
-            try {
-                // Initialize Google Auth
-                setTimeout(initGoogleAuth, 1000);
-                
-                // Initialize event listeners
-                initEventListeners();
-                
-                // Check authentication state
-                firebase.onAuthStateChanged(firebase.auth, async (user) => {
-                    if (user) {
-                        await handleUserLogin(user);
-                    } else {
-                        showLoginPage();
-                    }
-                });
-                
-                // Load system settings
-                await loadSystemSettings();
-                
-                // Check for referral code
-                checkReferralCode();
-                
-            } catch (error) {
-                console.error('App initialization error:', error);
-                showNotification('حدث خطأ في تحميل التطبيق', 'error');
-            }
-        });
-
-        // Initialize event listeners
-        function initEventListeners() {
-            // User menu toggle
-            document.getElementById('userMenuToggle').addEventListener('click', toggleUserMenu);
-            
-            // Close user menu when clicking outside
-            document.addEventListener('click', (e) => {
-                const userMenu = document.getElementById('userMenu');
-                const userMenuToggle = document.getElementById('userMenuToggle');
-                
-                if (!userMenuToggle.contains(e.target) && !userMenu.contains(e.target)) {
-                    userMenu.classList.remove('active');
-                }
-            });
-            
-            // Withdrawal amount input
-            const withdrawAmountInput = document.getElementById('withdrawAmount');
-            if (withdrawAmountInput) {
-                withdrawAmountInput.addEventListener('input', updateRequiredPoints);
-            }
-            
-            // Search users input
-            const searchUsersInput = document.getElementById('searchUsers');
-            if (searchUsersInput) {
-                searchUsersInput.addEventListener('input', searchUsers);
-            }
-            
-            // Submit withdrawal button
-            const submitWithdrawalBtn = document.getElementById('submitWithdrawalBtn');
-            if (submitWithdrawalBtn) {
-                submitWithdrawalBtn.addEventListener('click', submitWithdrawal);
             }
         }
 
@@ -2375,6 +2376,8 @@
                 
                 // Update UI
                 updateUserUI();
+                
+                // Load data sequentially to prevent race conditions
                 await loadDashboardData();
                 await loadAds();
                 await loadWithdrawalHistory();
@@ -2388,7 +2391,7 @@
                 
             } catch (error) {
                 console.error('Login handling error:', error);
-                showNotification('حدث خطأ في معالجة تسجيل الدخول', 'error');
+                showNotification('حدث خطأ في معالجة تسجيل الدخول: ' + error.message, 'error');
             } finally {
                 hideLoading();
             }
@@ -2407,14 +2410,24 @@
 
         // Show login page
         function showLoginPage() {
-            document.getElementById('loginPage').style.display = 'flex';
-            document.getElementById('mainApp').style.display = 'none';
+            const loginPage = document.getElementById('loginPage');
+            const mainApp = document.getElementById('mainApp');
+            
+            if (loginPage) loginPage.style.display = 'flex';
+            if (mainApp) mainApp.style.display = 'none';
         }
 
         // Show main app
         function showMainApp() {
-            document.getElementById('loginPage').style.display = 'none';
-            document.getElementById('mainApp').style.display = 'block';
+            const loginPage = document.getElementById('loginPage');
+            const mainApp = document.getElementById('mainApp');
+            
+            if (loginPage) loginPage.style.display = 'none';
+            if (mainApp) {
+                mainApp.style.display = 'block';
+                // Ensure the dashboard page is active
+                switchPage('dashboard');
+            }
         }
 
         // Switch page
@@ -2433,7 +2446,10 @@
             });
             
             // Show selected page
-            document.getElementById(`${page}Page`).classList.add('active');
+            const pageElement = document.getElementById(`${page}Page`);
+            if (pageElement) {
+                pageElement.classList.add('active');
+            }
             
             // Load page data
             switch(page) {
@@ -2547,6 +2563,8 @@
         async function loadAds() {
             try {
                 const adsGrid = document.getElementById('adsGrid');
+                if (!adsGrid) return;
+                
                 adsGrid.innerHTML = `
                     <div style="text-align: center; padding: 40px; color: var(--gray);">
                         <div class="spinner"></div>
@@ -2914,11 +2932,18 @@
         function resetAdWatch() {
             clearInterval(timerInterval);
             
-            document.getElementById('timerModal').style.display = 'none';
-            document.getElementById('timerWarning').style.display = 'block';
-            document.getElementById('timerWarning').innerHTML = '⚠️ تحذير: إذا خرجت قبل انتهاء الوقت، سيتم خصم 5 نقاط!';
-            document.getElementById('timerWarning').style.background = 'rgba(255, 255, 255, 0.2)';
-            document.getElementById('rewardDisplay').style.display = 'none';
+            const timerModal = document.getElementById('timerModal');
+            if (timerModal) timerModal.style.display = 'none';
+            
+            const timerWarning = document.getElementById('timerWarning');
+            if (timerWarning) {
+                timerWarning.style.display = 'block';
+                timerWarning.innerHTML = '⚠️ تحذير: إذا خرجت قبل انتهاء الوقت، سيتم خصم 5 نقاط!';
+                timerWarning.style.background = 'rgba(255, 255, 255, 0.2)';
+            }
+            
+            const rewardDisplay = document.getElementById('rewardDisplay');
+            if (rewardDisplay) rewardDisplay.style.display = 'none';
             
             currentAd = null;
             adWindow = null;
@@ -3047,6 +3072,8 @@
         async function loadWithdrawalHistory() {
             try {
                 const historyContainer = document.getElementById('withdrawalHistory');
+                if (!historyContainer) return;
+                
                 historyContainer.innerHTML = '<div style="text-align: center; padding: 30px; color: var(--gray);"><div class="spinner"></div></div>';
                 
                 const withdrawalsQuery = firebase.query(
@@ -3106,6 +3133,8 @@
         async function loadReferralList() {
             try {
                 const listContainer = document.getElementById('referralList');
+                if (!listContainer) return;
+                
                 listContainer.innerHTML = '<div style="text-align: center; padding: 30px; color: var(--gray);"><div class="spinner"></div></div>';
                 
                 const referralsQuery = firebase.query(
@@ -3278,6 +3307,8 @@
         async function loadAdminAds() {
             try {
                 const adsContainer = document.getElementById('adminAdsList');
+                if (!adsContainer) return;
+                
                 adsContainer.innerHTML = '<div style="text-align: center; padding: 30px; color: var(--gray);"><div class="spinner"></div></div>';
                 
                 const adsQuery = firebase.query(
@@ -3349,6 +3380,8 @@
         async function loadAdminUsers() {
             try {
                 const usersContainer = document.getElementById('adminUsersList');
+                if (!usersContainer) return;
+                
                 usersContainer.innerHTML = '<div style="text-align: center; padding: 30px; color: var(--gray);"><div class="spinner"></div></div>';
                 
                 const usersQuery = firebase.query(
@@ -3416,6 +3449,8 @@
         async function loadAdminWithdrawals() {
             try {
                 const tableBody = document.getElementById('adminWithdrawalsTable');
+                if (!tableBody) return;
+                
                 tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 30px; color: var(--gray);"><div class="spinner"></div></td></tr>';
                 
                 const withdrawalsQuery = firebase.query(
@@ -3755,6 +3790,9 @@
                 showNotification('تم اكتشاف كود دعوة، ستحصل على نقاط إضافية عند التسجيل!', 'info');
             }
         }
+
+        // Initialize app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initApp);
 
     </script>
 </body>
