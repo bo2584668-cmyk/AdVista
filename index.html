@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         :root {
             --primary-color: #2c3e50;
@@ -421,8 +421,40 @@
             margin-bottom: 30px;
         }
         
+        .login-subtitle {
+            color: #7f8c8d;
+            margin-bottom: 30px;
+        }
         
-        /* التجاوب مع الشاشات الصغيرة */
+        .login-info {
+            background-color: #e8f4fc;
+            border-radius: 10px;
+            padding: 15px;
+            color: var(--primary-color);
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        /* تخصيص زر جوجل */
+        #buttonDiv {
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        #buttonDiv > div {
+            width: 100% !important;
+            border-radius: 15px !important;
+            overflow: hidden !important;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        /* تحسينات للجوال */
         @media (max-width: 768px) {
             .card-value {
                 font-size: 1.8rem;
@@ -438,6 +470,10 @@
             
             .login-card {
                 padding: 30px 20px;
+            }
+            
+            #buttonDiv {
+                max-width: 300px;
             }
         }
         
@@ -492,90 +528,58 @@
         .progress-bar-custom {
             background-color: var(--secondary-color);
         }
-        /* تخصيص زر جوجل الجديد */
-#buttonDiv {
-    margin: 20px auto;
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    max-width: 400px;
-}
-
-#buttonDiv > div {
-    width: 100% !important;
-    border-radius: 15px !important;
-    overflow: hidden !important;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
-}
-
-/* تعديلات للجوال */
-@media (max-width: 768px) {
-    #buttonDiv {
-        max-width: 300px;
-    }
-}
-
-/* تحسينات إضافية */
-.g_id_signin > div > div {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 10px !important;
-}
-
-/* تحسين مظهر زر جوجل */
-.g_id_signin {
-    transition: all 0.3s ease !important;
-}
-
-.g_id_signin:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
+        
+        .login-page {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 20px;
         }
     </style>
 </head>
 <body>
-    <!-- صفحة تسجيل الدخول (الواجهة الافتراضية) -->
     <!-- صفحة تسجيل الدخول -->
-<div id="loginPage" class="login-page">
-    <div class="login-container">
-        <div class="login-logo">
-            <i class="fas fa-ad"></i>
-        </div>
-        <h1 class="login-title">ادفيستا</h1>
-        <p class="login-subtitle">منصة ربح النقاط الأولى من خلال مشاهدة الإعلانات</p>
-        
-        <!-- زر جوجل الجديد -->
-        <div id="buttonDiv" class="mb-4" style="width: 100%; display: flex; justify-content: center;"></div>
-        
-        <div class="login-info">
-            <i class="fas fa-info-circle"></i>
-            يجب أن يكون حسابك على جوجل مفعل لدخول الموقع
-        </div>
-        
-        <hr class="my-4">
-        
-        <h5 class="fw-bold mb-3">تواصل مع الإدارة</h5>
-        <div class="social-icons justify-content-center">
-            <a href="https://wa.me/201273740256" target="_blank" title="واتساب">
-                <i class="fab fa-whatsapp"></i>
-            </a>
-            <a href="https://www.instagram.com/Baraa___offical" target="_blank" title="انستجرام">
-                <i class="fab fa-instagram"></i>
-            </a>
-            <a href="https://www.tiktok.com/@Baraa_offical" target="_blank" title="تيك توك">
-                <i class="fab fa-tiktok"></i>
-            </a>
-            <a href="https://www.facebook.com/baraa_omar_talaat" target="_blank" title="فيسبوك">
-                <i class="fab fa-facebook-f"></i>
-            </a>
-        </div>
-        
-        <div class="mt-4">
-            <small class="text-muted">الإدمن: bo2584668@gmail.com</small>
+    <div id="loginPage" class="login-page">
+        <div class="login-card">
+            <div class="login-logo">
+                <i class="fas fa-ad"></i>
+            </div>
+            <h1 class="login-title">ادفيستا</h1>
+            <p class="login-subtitle">منصة ربح النقاط الأولى من خلال مشاهدة الإعلانات</p>
+            
+            <!-- زر جوجل الجديد -->
+            <div id="buttonDiv" class="mb-4"></div>
+            
+            <div class="login-info">
+                <i class="fas fa-info-circle"></i>
+                يجب أن يكون حسابك على جوجل مفعل لدخول الموقع
+            </div>
+            
+            <hr class="my-4">
+            
+            <h5 class="fw-bold mb-3">تواصل مع الإدارة</h5>
+            <div class="social-icons d-flex justify-content-center mb-4">
+                <a href="https://wa.me/201273740256" target="_blank" title="واتساب">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+                <a href="https://www.instagram.com/Baraa___offical" target="_blank" title="انستجرام">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://www.tiktok.com/@Baraa_offical" target="_blank" title="تيك توك">
+                    <i class="fab fa-tiktok"></i>
+                </a>
+                <a href="https://www.facebook.com/baraa_omar_talaat" target="_blank" title="فيسبوك">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+            </div>
+            
+            <div class="mt-4">
+                <small class="text-muted">الإدمن: bo2584668@gmail.com</small>
+            </div>
         </div>
     </div>
-</div>
 
     <!-- صفحة المستخدم الرئيسية (مخفية حتى تسجيل الدخول) -->
     <div id="userPage" style="display: none;">
@@ -1421,385 +1425,114 @@
         const db = firebase.firestore();
         const storage = firebase.storage();
         
-        // إعدادات Google Sign-In
+        // ============================================
+        // المتغيرات العامة
+        // ============================================
+        let currentUser = null;
+        let userData = null;
+        let ads = [];
+        let adsPerPage = 12;
+        let currentPage = 1;
+        let currentAd = null;
+        let timerValue = 30;
+        let totalTime = 30;
+        let countdownInterval = null;
+        let isWindowFocused = true;
+        let penaltyPoints = 0;
+        let adTab = null;
         
         // ============================================
-// نظام المصادقة باستخدام Google Sign-In الجديد
-// ============================================
-
-// تهيئة جوجل ساين إن عندما يتم تحميل الصفحة
-function initializeGoogleSignIn() {
-    if (typeof google === 'undefined') {
-        console.error("Google Identity Services library not loaded");
-        setTimeout(initializeGoogleSignIn, 100);
-        return;
-    }
-    
-    google.accounts.id.initialize({
-        client_id: "805966277330-9j5j1nvluj69f8uieog0kk77p0jb46q4.apps.googleusercontent.com",
-        callback: handleCredentialResponse,
-        auto_select: false,
-        cancel_on_tap_outside: true,
-        context: "signin"
-    });
-    
-    // عرض زر تسجيل الدخول
-    google.accounts.id.renderButton(
-        document.getElementById("buttonDiv"),
-        { 
-            theme: "filled_blue", 
-            size: "large",
-            text: "signin_with",
-            shape: "rectangular",
-            width: "400",
-            locale: "ar",
-            logo_alignment: "left"
-        }
-    );
-    
-    // عرض نافذة One-Tap الاختيارية
-    google.accounts.id.prompt(notification => {
-        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-            // يمكنك محاولة عرض زر تسجيل الدخول العادي هنا
-        }
-    });
-}
-
-// معالجة استجابة تسجيل الدخول
-async function handleCredentialResponse(response) {
-    try {
-        showLoading();
+        // نظام المصادقة باستخدام Google Sign-In الجديد
+        // ============================================
         
-        // فك تشفير JWT للحصول على بيانات المستخدم
-        const token = response.credential;
-        const userData = parseJwt(token);
-        
-        console.log("تم تسجيل الدخول بنجاح:", userData);
-        
-        // إنشاء كائن مستخدم متوافق مع Firebase
-        const user = {
-            uid: userData.sub,
-            email: userData.email,
-            displayName: userData.name,
-            photoURL: userData.picture,
-            emailVerified: userData.email_verified,
-            accessToken: token
-        };
-        
-        // التحقق إذا كان المستخدم هو الإدمن
-        if (user.email === 'bo2584668@gmail.com') {
-            await createAdminUser(user);
-            showAdminPage();
-        } else {
-            await createOrUpdateUser(user);
-            showUserPage();
-        }
-        
-        hideLoading();
-    } catch (error) {
-        console.error("خطأ في تسجيل الدخول:", error);
-        hideLoading();
-        alert("حدث خطأ في تسجيل الدخول: " + error.message);
-    }
-}
-
-// فك تشفير JWT token
-function parseJwt(token) {
-    try {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-
-        return JSON.parse(jsonPayload);
-    } catch (error) {
-        console.error("خطأ في فك تشفير JWT:", error);
-        return null;
-    }
-}
-
-// إنشاء أو تحديث بيانات المستخدم في Firebase
-async function createOrUpdateUser(user) {
-    const userRef = db.collection('users').doc(user.uid);
-    const userDoc = await userRef.get();
-    
-    if (!userDoc.exists) {
-        // إنشاء مستخدم جديد
-        await userRef.set({
-            uid: user.uid,
-            email: user.email,
-            name: user.displayName || 'مستخدم جديد',
-            photoURL: user.photoURL || '',
-            points: 100, // نقاط ترحيبية
-            dailyPoints: 0,
-            dailyTasks: 0,
-            totalWithdrawals: 0,
-            totalEarned: 0,
-            totalAdsWatched: 0,
-            referralCode: generateReferralCode(),
-            referredBy: getUrlParameter('ref'),
-            referrals: [],
-            referralEarnings: 0,
-            joinDate: firebase.firestore.FieldValue.serverTimestamp(),
-            lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
-            lastGoogleSignIn: new Date().toISOString(),
-            profile: {
-                phone: '',
-                country: 'egypt',
-                city: '',
-                address: '',
-                birthDate: '',
-                gender: ''
-            },
-            settings: {
-                emailNotifications: true,
-                showProfile: true,
-                emailPromotions: true,
-                emailWithdrawal: true,
-                showEarnings: false,
-                allowMessages: true
-            },
-            penalties: 0,
-            level: 'مبتدئ',
-            accountStatus: 'active',
-            authProvider: 'google'
-        });
-        
-        // إنشاء سجل النقاط الأولي
-        await db.collection('points_history').add({
-            userId: user.uid,
-            type: 'registration',
-            points: 100,
-            balanceBefore: 0,
-            balanceAfter: 100,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-            description: 'نقاط ترحيبية للتسجيل'
-        });
-        
-        // إذا كان هناك مُحيل
-        const refCode = getUrlParameter('ref');
-        if (refCode) {
-            await processReferral(user, refCode);
-        }
-    } else {
-        // تحديث آخر دخول
-        await userRef.update({
-            lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
-            lastGoogleSignIn: new Date().toISOString()
-        });
-    }
-    
-    currentUser = user;
-    await loadUserData(user.uid);
-}
-
-// إنشاء مستخدم إدمن
-async function createAdminUser(user) {
-    const adminRef = db.collection('admins').doc(user.uid);
-    const adminDoc = await adminRef.get();
-    
-    if (!adminDoc.exists) {
-        await adminRef.set({
-            uid: user.uid,
-            email: user.email,
-            name: user.displayName || 'مدير النظام',
-            role: 'super_admin',
-            permissions: ['all'],
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-        });
-    } else {
-        await adminRef.update({
-            lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-        });
-    }
-    
-    currentUser = user;
-}
-
-// دالة مساعدة لمعالجة الإحالة
-async function processReferral(newUser, refCode) {
-    try {
-        const referrerQuery = await db.collection('users').where('referralCode', '==', refCode).limit(1).get();
-        
-        if (!referrerQuery.empty) {
-            const referrerDoc = referrerQuery.docs[0];
-            const referrerData = referrerDoc.data();
+        // تهيئة جوجل ساين إن
+        function initializeGoogleSignIn() {
+            if (typeof google === 'undefined') {
+                setTimeout(initializeGoogleSignIn, 100);
+                return;
+            }
             
-            // إضافة نقاط الإحالة للمُحيل
-            await db.collection('users').doc(referrerDoc.id).update({
-                referralEarnings: (referrerData.referralEarnings || 0) + 500,
-                referrals: firebase.firestore.FieldValue.arrayUnion({
-                    userId: newUser.uid,
-                    email: newUser.email,
-                    name: newUser.displayName || 'مستخدم جديد',
-                    date: new Date().toISOString(),
-                    points: 500
-                })
+            google.accounts.id.initialize({
+                client_id: "805966277330-9j5j1nvluj69f8uieog0kk77p0jb46q4.apps.googleusercontent.com",
+                callback: handleCredentialResponse,
+                auto_select: false,
+                cancel_on_tap_outside: true,
+                context: "signin"
             });
             
-            // إضافة نقاط للمُحيل
-            await db.collection('users').doc(referrerDoc.id).update({
-                points: firebase.firestore.FieldValue.increment(500),
-                totalEarned: firebase.firestore.FieldValue.increment(500)
-            });
-            
-            // تسجيل عملية الإحالة
-            await db.collection('points_history').add({
-                userId: referrerDoc.id,
-                type: 'referral',
-                points: 500,
-                balanceBefore: referrerData.points || 0,
-                balanceAfter: (referrerData.points || 0) + 500,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                description: `مكافأة إحالة للمستخدم ${newUser.email}`
-            });
-        }
-    } catch (error) {
-        console.error("خطأ في معالجة الإحالة:", error);
-    }
-}
-
-// توليد كود إحالة
-function generateReferralCode() {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let code = '';
-    for (let i = 0; i < 8; i++) {
-        code += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return 'ADV-' + code;
-}
-
-// الحصول على بارامتر من الرابط
-function getUrlParameter(name) {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(name);
-}
-
-// تسجيل الخروج
-async function signOut() {
-    try {
-        // محاولة تسجيل الخروج من جوجل
-        if (typeof google !== 'undefined' && google.accounts) {
-            google.accounts.id.disableAutoSelect();
-        }
-        
-        // مسح بيانات المستخدم المحلية
-        currentUser = null;
-        userData = null;
-        
-        // إعادة توجيه المستخدم
-        document.getElementById('loginPage').style.display = 'flex';
-        document.getElementById('userPage').style.display = 'none';
-        document.getElementById('adminPage').style.display = 'none';
-        
-        // إعادة تحميل الصفحة لتفعيل جوجل ساين إن من جديد
-        setTimeout(() => {
-            window.location.href = window.location.pathname;
-        }, 100);
-        
-    } catch (error) {
-        console.error("خطأ في تسجيل الخروج:", error);
-    }
-}
-
-// تهيئة التطبيق عند تحميل الصفحة
-document.addEventListener('DOMContentLoaded', function() {
-    // تهيئة Firebase (يبقى كما هو للتخزين)
-    firebase.initializeApp(firebaseConfig);
-    
-    // تهيئة جوجل ساين إن بعد تحميل المكتبة
-    const checkGoogleLoad = setInterval(() => {
-        if (typeof google !== 'undefined' && google.accounts) {
-            initializeGoogleSignIn();
-            clearInterval(checkGoogleLoad);
-        }
-    }, 100);
-    
-    // تهيئة باقي الموقع
-    calculatePoints();
-    showSection('dashboard');
-    
-    // إضافة تأثيرات للصفحة
-    setTimeout(() => {
-        document.querySelectorAll('.dashboard-card').forEach((card, index) => {
-            card.style.animationDelay = `${index * 0.1}s`;
-        });
-    }, 100);
-});
-
-// التحقق من حالة المستخدم (تعديل الدالة القديمة)
-function checkAuthState() {
-    // مع النظام الجديد، نعتمد على جوجل ساين إن مباشرة
-    // لا نحتاج للتحقق من حالة Firebase للمصادقة
-    
-    // إذا كان هناك مستخدم محفوظ في localStorage، نحمله
-    const savedUser = localStorage.getItem('advista_user');
-    if (savedUser) {
-        try {
-            const user = JSON.parse(savedUser);
-            currentUser = user;
-            loadUserData(user.uid);
-            showUserPage();
-        } catch (error) {
-            localStorage.removeItem('advista_user');
-        }
-    }
-}
-
-// حفظ بيانات المستخدم في localStorage
-function saveUserToLocalStorage(user) {
-    if (user && user.uid) {
-        localStorage.setItem('advista_user', JSON.stringify({
-            uid: user.uid,
-            email: user.email,
-            name: user.displayName,
-            photoURL: user.photoURL
-        }));
-    }
-}
-
-// مسح بيانات المستخدم من localStorage
-function clearUserFromLocalStorage() {
-    localStorage.removeItem('advista_user');
-}
-
-// تعديل دالة signOut لإزالة البيانات المحفوظة
-async function signOut() {
-    try {
-        // مسح بيانات المستخدم المحلية
-        clearUserFromLocalStorage();
-        
-        // مسح بيانات المستخدم من الذاكرة
-        currentUser = null;
-        userData = null;
-        
-        // تسجيل الخروج من جوجل
-        if (typeof google !== 'undefined' && google.accounts) {
-            google.accounts.id.disableAutoSelect();
-            google.accounts.id.revoke(currentUser?.email, () => {
-                console.log("تم تسجيل الخروج من جوجل");
-            });
-        }
-        
-        // إعادة توجيه المستخدم
-        document.getElementById('loginPage').style.display = 'flex';
-        document.getElementById('userPage').style.display = 'none';
-        document.getElementById('adminPage').style.display = 'none';
-        
-        // إعادة تحميل الصفحة
-        setTimeout(() => {
-            window.location.reload();
-        }, 500);
-        
-    } catch (error) {
-        console.error("خطأ في تسجيل الخروج:", error);
-    }
+            // عرض زر تسجيل الدخول
+            google.accounts.id.renderButton(
+                document.getElementById("buttonDiv"),
+                { 
+                    theme: "filled_blue", 
+                    size: "large",
+                    text: "signin_with",
+                    shape: "rectangular",
+                    width: "400",
+                    locale: "ar",
+                    logo_alignment: "left"
                 }
+            );
+            
+            // عرض نافذة One-Tap
+            google.accounts.id.prompt();
+        }
+        
+        // معالجة استجابة تسجيل الدخول
+        async function handleCredentialResponse(response) {
+            try {
+                showLoading();
+                
+                // فك تشفير JWT للحصول على بيانات المستخدم
+                const token = response.credential;
+                const userData = parseJwt(token);
+                
+                console.log("تم تسجيل الدخول بنجاح:", userData);
+                
+                // إنشاء كائن مستخدم
+                const user = {
+                    uid: userData.sub,
+                    email: userData.email,
+                    displayName: userData.name,
+                    photoURL: userData.picture,
+                    emailVerified: userData.email_verified,
+                    accessToken: token
+                };
+                
+                // التحقق إذا كان المستخدم هو الإدمن
+                if (user.email === 'bo2584668@gmail.com') {
+                    await createAdminUser(user);
+                    showAdminPage();
+                } else {
+                    await createOrUpdateUser(user);
+                    showUserPage();
+                }
+                
+                hideLoading();
+            } catch (error) {
+                console.error("خطأ في تسجيل الدخول:", error);
+                hideLoading();
+                showErrorMessage("حدث خطأ في تسجيل الدخول: " + error.message);
             }
         }
         
+        // فك تشفير JWT token
+        function parseJwt(token) {
+            try {
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+        
+                return JSON.parse(jsonPayload);
+            } catch (error) {
+                console.error("خطأ في فك تشفير JWT:", error);
+                return null;
+            }
+        }
+        
+        // إنشاء أو تحديث بيانات المستخدم في Firebase
         async function createOrUpdateUser(user) {
             const userRef = db.collection('users').doc(user.uid);
             const userDoc = await userRef.get();
@@ -1810,38 +1543,56 @@ async function signOut() {
                     uid: user.uid,
                     email: user.email,
                     name: user.displayName || 'مستخدم جديد',
-                    points: 0,
+                    photoURL: user.photoURL || '',
+                    points: 100, // نقاط ترحيبية
                     dailyPoints: 0,
                     dailyTasks: 0,
                     totalWithdrawals: 0,
                     totalEarned: 0,
+                    totalAdsWatched: 0,
+                    referralCode: generateReferralCode(),
+                    referrals: [],
+                    referralEarnings: 0,
                     joinDate: firebase.firestore.FieldValue.serverTimestamp(),
                     lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+                    lastGoogleSignIn: new Date().toISOString(),
                     profile: {
                         phone: '',
                         country: 'egypt',
-                        city: ''
+                        city: '',
+                        address: '',
+                        birthDate: '',
+                        gender: ''
                     },
                     settings: {
                         emailNotifications: true,
-                        showProfile: true
+                        showProfile: true,
+                        emailPromotions: true,
+                        emailWithdrawal: true,
+                        showEarnings: false,
+                        allowMessages: true
                     },
-                    penalties: 0
+                    penalties: 0,
+                    level: 'مبتدئ',
+                    accountStatus: 'active',
+                    authProvider: 'google'
                 });
                 
                 // إنشاء سجل النقاط الأولي
                 await db.collection('points_history').add({
                     userId: user.uid,
                     type: 'registration',
-                    points: 100, // نقاط ترحيبية
+                    points: 100,
                     balanceBefore: 0,
                     balanceAfter: 100,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    description: 'نقاط ترحيبية للتسجيل'
                 });
             } else {
                 // تحديث آخر دخول
                 await userRef.update({
-                    lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                    lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+                    lastGoogleSignIn: new Date().toISOString()
                 });
             }
             
@@ -1849,6 +1600,7 @@ async function signOut() {
             await loadUserData(user.uid);
         }
         
+        // إنشاء مستخدم إدمن
         async function createAdminUser(user) {
             const adminRef = db.collection('admins').doc(user.uid);
             const adminDoc = await adminRef.get();
@@ -1860,13 +1612,31 @@ async function signOut() {
                     name: user.displayName || 'مدير النظام',
                     role: 'super_admin',
                     permissions: ['all'],
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            } else {
+                await adminRef.update({
+                    lastLogin: firebase.firestore.FieldValue.serverTimestamp()
                 });
             }
             
             currentUser = user;
         }
         
+        // توليد كود إحالة
+        function generateReferralCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let code = '';
+            for (let i = 0; i < 8; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return 'ADV-' + code;
+        }
+        
+        // ============================================
+        // تحميل بيانات المستخدم
+        // ============================================
         async function loadUserData(userId) {
             const userDoc = await db.collection('users').doc(userId).get();
             if (userDoc.exists) {
@@ -1874,6 +1644,8 @@ async function signOut() {
                 updateUserUI();
                 loadUserAdsHistory(userId);
                 loadWithdrawHistory(userId);
+                loadPointsHistory(userId);
+                loadPenaltiesHistory(userId);
             }
         }
         
@@ -1909,12 +1681,16 @@ async function signOut() {
             }
         }
         
+        // ============================================
+        // إظهار وإخفاء الصفحات
+        // ============================================
         function showUserPage() {
             document.getElementById('loginPage').style.display = 'none';
             document.getElementById('userPage').style.display = 'block';
             document.getElementById('adminPage').style.display = 'none';
             loadAds();
             loadQuickAds();
+            showSection('dashboard');
         }
         
         function showAdminPage() {
@@ -1923,16 +1699,83 @@ async function signOut() {
             document.getElementById('adminPage').style.display = 'block';
             document.getElementById('adminEmail').textContent = currentUser.email;
             loadAdminDashboard();
+            showAdminSection('dashboard');
         }
         
-        function signOut() {
-            auth.signOut().then(() => {
+        function showSection(section) {
+            // إخفاء جميع الأقسام
+            document.getElementById('dashboardSection').style.display = 'none';
+            document.getElementById('adsSection').style.display = 'none';
+            document.getElementById('withdrawSection').style.display = 'none';
+            document.getElementById('historySection').style.display = 'none';
+            document.getElementById('profileSection').style.display = 'none';
+            document.getElementById('settingsSection').style.display = 'none';
+            
+            // إظهار القسم المطلوب
+            document.getElementById(section + 'Section').style.display = 'block';
+            
+            // تحديث القائمة النشطة
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            document.querySelector(`[onclick="showSection('${section}')"]`).classList.add('active');
+            
+            // تحميل البيانات إذا لزم
+            if (section === 'history' && currentUser) {
+                showHistoryTab('ads');
+            } else if (section === 'withdraw' && currentUser) {
+                loadWithdrawHistory(currentUser.uid);
+            }
+        }
+        
+        function showAdminSection(section) {
+            // إخفاء جميع الأقسام
+            document.getElementById('adminDashboard').style.display = 'none';
+            document.getElementById('adminAds').style.display = 'none';
+            document.getElementById('adminUsers').style.display = 'none';
+            document.getElementById('adminWithdrawals').style.display = 'none';
+            document.getElementById('adminReports').style.display = 'none';
+            
+            // إزالة النشط من جميع القوائم
+            document.querySelectorAll('.admin-menu a').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // إظهار القسم المطلوب
+            document.getElementById('admin' + section.charAt(0).toUpperCase() + section.slice(1)).style.display = 'block';
+            
+            // إضافة النشط للقائمة
+            event.target.classList.add('active');
+        }
+        
+        // ============================================
+        // تسجيل الخروج
+        // ============================================
+        async function signOut() {
+            try {
+                // تسجيل الخروج من جوجل
+                if (typeof google !== 'undefined' && google.accounts) {
+                    google.accounts.id.disableAutoSelect();
+                }
+                
+                // مسح البيانات المحلية
                 currentUser = null;
                 userData = null;
+                localStorage.removeItem('advista_user');
+                
+                // إعادة التوجيه
                 document.getElementById('loginPage').style.display = 'flex';
                 document.getElementById('userPage').style.display = 'none';
                 document.getElementById('adminPage').style.display = 'none';
-            });
+                
+                // إعادة تحميل الصفحة
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
+                
+            } catch (error) {
+                console.error("خطأ في تسجيل الخروج:", error);
+            }
         }
         
         // ============================================
@@ -1943,7 +1786,6 @@ async function signOut() {
                 const sortBy = document.getElementById('sortAds').value;
                 let query = db.collection('ads').where('status', '==', 'active');
                 
-                // التصنيف
                 if (sortBy === 'newest') {
                     query = query.orderBy('createdAt', 'desc');
                 } else if (sortBy === 'highest') {
@@ -1961,7 +1803,6 @@ async function signOut() {
                 displayAds();
             } catch (error) {
                 console.error("خطأ في تحميل الإعلانات:", error);
-                // عرض إعلانات افتراضية إذا لم توجد في قاعدة البيانات
                 loadDefaultAds();
             }
         }
@@ -2025,7 +1866,6 @@ async function signOut() {
                 container.appendChild(adCard);
             }
             
-            // إخفاء زر تحميل المزيد إذا لم يكن هناك المزيد
             document.getElementById('loadMoreBtn').style.display = 
                 endIndex < ads.length ? 'block' : 'none';
         }
@@ -2034,7 +1874,6 @@ async function signOut() {
             const container = document.getElementById('quickAdsContainer');
             container.innerHTML = '';
             
-            // عرض أول 4 إعلانات فقط
             const quickAds = ads.slice(0, 4);
             
             quickAds.forEach(ad => {
@@ -2107,7 +1946,7 @@ async function signOut() {
         }
         
         // ============================================
-        // نظام مشاهدة الإعلانات والعداد
+        // نظام مشاهدة الإعلانات
         // ============================================
         async function startAd(adId) {
             if (userData.dailyTasks >= 20) {
@@ -2135,7 +1974,7 @@ async function signOut() {
             currentAd = ad;
             timerValue = ad.duration;
             totalTime = ad.duration;
-            penaltyPoints = Math.floor(ad.points * 0.5); // خصم 50% من نقاط الإعلان كعقوبة
+            penaltyPoints = Math.floor(ad.points * 0.5);
             
             // فتح الإعلان في تبويب جديد
             adTab = window.open(ad.url, '_blank', 'noopener,noreferrer');
@@ -2159,7 +1998,7 @@ async function signOut() {
             window.addEventListener('focus', handleWindowFocus);
             window.addEventListener('beforeunload', handleBeforeUnload);
             
-            // بدء تتبع المشاهدة في قاعدة البيانات
+            // بدء تتبع المشاهدة
             await startAdTracking(adId);
         }
         
@@ -2174,7 +2013,6 @@ async function signOut() {
                 pointsEarned: 0
             });
             
-            // حفظ معرف التتبع
             currentAd.trackingId = trackingRef.id;
         }
         
@@ -2187,11 +2025,9 @@ async function signOut() {
                     timerValue--;
                     countdownElement.textContent = timerValue;
                     
-                    // تحديث شريط التقدم
                     const progress = ((totalTime - timerValue) / totalTime) * 100;
                     progressBar.style.width = `${progress}%`;
                     
-                    // التحقق إذا كان التبويب مازال مفتوحاً
                     if (adTab && adTab.closed) {
                         handleAdClosed();
                     }
@@ -2206,12 +2042,10 @@ async function signOut() {
         
         function handleWindowBlur() {
             isWindowFocused = false;
-            console.log("تم فقدان التركيز - العدّاد متوقف");
         }
         
         function handleWindowFocus() {
             isWindowFocused = true;
-            console.log("تم استعادة التركيز - العدّاد مستمر");
         }
         
         function handleBeforeUnload(e) {
@@ -2224,32 +2058,23 @@ async function signOut() {
         async function handleAdClosed() {
             if (timerValue > 0) {
                 clearInterval(countdownInterval);
-                
-                // تطبيق العقوبة
                 await applyPenalty();
-                
-                // إخفاء العدّاد وإظهار رسالة
                 document.getElementById('timerContainer').style.display = 'none';
                 document.getElementById('warningMessage').innerHTML = 
                     '<i class="fas fa-times-circle text-danger me-2"></i>تم إغلاق الإعلان قبل الوقت! تم خصم ' + penaltyPoints + ' نقطة';
-                
-                // تحديث سجل العقوبات
                 await recordPenalty();
             }
         }
         
         async function handleAdCompleted() {
-            // إيقاف مراقبة التركيز
             window.removeEventListener('blur', handleWindowBlur);
             window.removeEventListener('focus', handleWindowFocus);
             window.removeEventListener('beforeunload', handleBeforeUnload);
             
-            // إخفاء العدّاد وإظهار الكابتشا
             document.querySelector('.timer-container').style.display = 'none';
             document.getElementById('captchaSection').classList.remove('d-none');
             generateCaptcha();
             
-            // تحديث حالة التتبع
             if (currentAd.trackingId) {
                 await db.collection('ad_tracking').doc(currentAd.trackingId).update({
                     endTime: firebase.firestore.FieldValue.serverTimestamp(),
@@ -2276,22 +2101,16 @@ async function signOut() {
             const captchaText = document.getElementById('captchaText').textContent;
             
             if (captchaInput === captchaText) {
-                // إضافة النقاط
                 await addPoints(currentAd.points);
                 
-                // إغلاق نافذة الإعلان
                 if (adTab && !adTab.closed) {
                     adTab.close();
                 }
                 
-                // إغلاق النافذة المنبثقة
                 const timerModal = bootstrap.Modal.getInstance(document.getElementById('timerModal'));
                 timerModal.hide();
                 
-                // إعادة تعيين المتغيرات
                 resetAdSystem();
-                
-                // إظهار رسالة النجاح
                 showSuccessMessage(`تمت إضافة ${currentAd.points} نقطة إلى رصيدك!`);
             } else {
                 alert("كود التأكيد غير صحيح. حاول مرة أخرى.");
@@ -2303,7 +2122,6 @@ async function signOut() {
         async function addPoints(points) {
             if (!currentUser || !userData) return;
             
-            // تحديث نقاط المستخدم
             const newPoints = userData.points + points;
             const newDailyPoints = (userData.dailyPoints || 0) + points;
             const newDailyTasks = (userData.dailyTasks || 0) + 1;
@@ -2315,15 +2133,12 @@ async function signOut() {
                 totalEarned: (userData.totalEarned || 0) + points
             });
             
-            // تحديث بيانات المستخدم المحلية
             userData.points = newPoints;
             userData.dailyPoints = newDailyPoints;
             userData.dailyTasks = newDailyTasks;
             
-            // تحديث واجهة المستخدم
             updateUserUI();
             
-            // تسجيل عملية إضافة النقاط
             await db.collection('points_history').add({
                 userId: currentUser.uid,
                 type: 'ad_watch',
@@ -2335,7 +2150,6 @@ async function signOut() {
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             });
             
-            // تسجيل مشاهدة الإعلان
             await db.collection('ad_history').add({
                 userId: currentUser.uid,
                 adId: currentAd.id,
@@ -2344,21 +2158,11 @@ async function signOut() {
                 date: new Date().toDateString(),
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             });
-            
-            // زيادة عدد مشاهدات الإعلان
-            if (currentAd.id && currentAd.id.startsWith('ad')) {
-                // هذا إعلان افتراضي، لا نزيد المشاهدات
-            } else {
-                await db.collection('ads').doc(currentAd.id).update({
-                    views: firebase.firestore.FieldValue.increment(1)
-                });
-            }
         }
         
         async function applyPenalty() {
             if (!currentUser || !userData || penaltyPoints <= 0) return;
             
-            // خصم النقاط
             const newPoints = Math.max(0, userData.points - penaltyPoints);
             
             await db.collection('users').doc(currentUser.uid).update({
@@ -2366,17 +2170,12 @@ async function signOut() {
                 penalties: (userData.penalties || 0) + 1
             });
             
-            // تحديث بيانات المستخدم المحلية
             userData.points = newPoints;
             userData.penalties = (userData.penalties || 0) + 1;
             
-            // تحديث واجهة المستخدم
             updateUserUI();
-            
-            // تسجيل العقوبة
             await recordPenalty();
             
-            // تحديث حالة التتبع
             if (currentAd.trackingId) {
                 await db.collection('ad_tracking').doc(currentAd.trackingId).update({
                     penaltyApplied: true,
@@ -2413,7 +2212,6 @@ async function signOut() {
             document.getElementById('timerProgress').style.width = '0%';
             document.getElementById('penaltyWarning').style.display = 'none';
             
-            // إزالة مستمعي الأحداث
             window.removeEventListener('blur', handleWindowBlur);
             window.removeEventListener('focus', handleWindowFocus);
             window.removeEventListener('beforeunload', handleBeforeUnload);
@@ -2437,25 +2235,21 @@ async function signOut() {
             const points = parseInt(document.getElementById('withdrawPoints').value);
             const phone = document.getElementById('vodafoneNumber').value.trim();
             
-            // التحقق من الحد الأدنى
             if (points < 20000) {
                 alert("الحد الأدنى للسحب هو 20,000 نقطة (1 دولار)");
                 return;
             }
             
-            // التحقق من الرصيد
             if (userData.points < points) {
                 alert("رصيدك الحالي غير كافي للسحب");
                 return;
             }
             
-            // التحقق من رقم الهاتف
             if (!phone || phone.length < 10) {
                 alert("يرجى إدخال رقم هاتف صحيح لفودافون كاش");
                 return;
             }
             
-            // احتساب العمولة (5%)
             const fee = points * 0.05;
             const netPoints = points - fee;
             const amount = (points / 20000).toFixed(2);
@@ -2466,18 +2260,15 @@ async function signOut() {
             }
             
             try {
-                // خصم النقاط من رصيد المستخدم
                 const newPoints = userData.points - points;
                 await db.collection('users').doc(currentUser.uid).update({
                     points: newPoints,
                     totalWithdrawals: (userData.totalWithdrawals || 0) + parseFloat(amount)
                 });
                 
-                // تحديث بيانات المستخدم المحلية
                 userData.points = newPoints;
                 userData.totalWithdrawals = (userData.totalWithdrawals || 0) + parseFloat(amount);
                 
-                // إنشاء طلب سحب
                 await db.collection('withdrawals').add({
                     userId: currentUser.uid,
                     userName: userData.name,
@@ -2492,7 +2283,6 @@ async function signOut() {
                     adminNote: ''
                 });
                 
-                // تسجيل عملية السحب
                 await db.collection('points_history').add({
                     userId: currentUser.uid,
                     type: 'withdrawal',
@@ -2503,18 +2293,13 @@ async function signOut() {
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 
-                // تحديث واجهة المستخدم
                 updateUserUI();
                 
-                // إعادة تعيين الحقول
                 document.getElementById('vodafoneNumber').value = '';
                 document.getElementById('withdrawPoints').value = '20000';
                 document.getElementById('withdrawAmount').textContent = 'المبلغ: 1 دولار';
                 
-                // إظهار رسالة النجاح
                 showSuccessMessage("تم إرسال طلب السحب بنجاح! سيتم معالجته خلال 24-48 ساعة.");
-                
-                // تحديث جدول السحوبات
                 loadWithdrawHistory(currentUser.uid);
             } catch (error) {
                 console.error("خطأ في طلب السحب:", error);
@@ -2688,13 +2473,11 @@ async function signOut() {
         }
         
         function showHistoryTab(tabName) {
-            // تحديث الأزرار النشطة
             document.querySelectorAll('#historyTabs button').forEach(btn => {
                 btn.classList.remove('active');
             });
             event.target.classList.add('active');
             
-            // تحميل المحتوى المناسب
             switch(tabName) {
                 case 'ads':
                     if (currentUser) loadUserAdsHistory(currentUser.uid);
@@ -2726,16 +2509,13 @@ async function signOut() {
             try {
                 await db.collection('users').doc(currentUser.uid).update(profileData);
                 
-                // تحديث البيانات المحلية
                 userData.name = profileData.name;
                 if (!userData.profile) userData.profile = {};
                 userData.profile.phone = profileData.profile.phone;
                 userData.profile.country = profileData.profile.country;
                 userData.profile.city = profileData.profile.city;
                 
-                // تحديث واجهة المستخدم
                 updateUserUI();
-                
                 showSuccessMessage("تم حفظ التغييرات بنجاح!");
             } catch (error) {
                 console.error("خطأ في حفظ الملف الشخصي:", error);
@@ -2756,7 +2536,6 @@ async function signOut() {
             try {
                 await db.collection('users').doc(currentUser.uid).update(settingsData);
                 
-                // تحديث البيانات المحلية
                 if (!userData.settings) userData.settings = {};
                 userData.settings.emailNotifications = settingsData.settings.emailNotifications;
                 userData.settings.showProfile = settingsData.settings.showProfile;
@@ -2773,19 +2552,15 @@ async function signOut() {
         // ============================================
         async function loadAdminDashboard() {
             try {
-                // إحصائيات المستخدمين
                 const usersSnapshot = await db.collection('users').get();
                 document.getElementById('totalUsers').textContent = usersSnapshot.size;
                 
-                // إحصائيات الإعلانات
                 const adsSnapshot = await db.collection('ads').where('status', '==', 'active').get();
                 document.getElementById('activeAds').textContent = adsSnapshot.size;
                 
-                // طلبات السحب المعلقة
                 const withdrawalsSnapshot = await db.collection('withdrawals').where('status', '==', 'pending').get();
                 document.getElementById('pendingWithdrawals').textContent = withdrawalsSnapshot.size;
                 
-                // إجمالي النقاط في النظام
                 let totalPoints = 0;
                 usersSnapshot.forEach(doc => {
                     const user = doc.data();
@@ -2793,16 +2568,9 @@ async function signOut() {
                 });
                 document.getElementById('totalSystemPoints').textContent = totalPoints.toLocaleString();
                 
-                // تحميل المستخدمين
                 loadAdminUsers();
-                
-                // تحميل الإعلانات
                 loadAdminAds();
-                
-                // تحميل طلبات السحب
                 loadAdminWithdrawals();
-                
-                // تحميل التقارير
                 loadAdminReports();
             } catch (error) {
                 console.error("خطأ في تحميل إحصائيات الإدمن:", error);
@@ -2937,7 +2705,6 @@ async function signOut() {
         
         async function loadAdminReports() {
             try {
-                // أعلى المستخدمين ربحاً
                 const usersSnapshot = await db.collection('users')
                     .orderBy('totalEarned', 'desc')
                     .limit(10)
@@ -2984,16 +2751,10 @@ async function signOut() {
             try {
                 await db.collection('ads').add(adData);
                 
-                // إغلاق النافذة
                 const modal = bootstrap.Modal.getInstance(document.getElementById('addAdModal'));
                 modal.hide();
-                
-                // إعادة تعيين النموذج
                 document.getElementById('addAdForm').reset();
-                
-                // تحديث قائمة الإعلانات
                 loadAdminAds();
-                
                 showSuccessMessage("تمت إضافة الإعلان بنجاح!");
             } catch (error) {
                 console.error("خطأ في إضافة الإعلان:", error);
@@ -3043,12 +2804,10 @@ async function signOut() {
                 const withdrawalDoc = await db.collection('withdrawals').doc(withdrawalId).get();
                 const withdrawalData = withdrawalDoc.data();
                 
-                // إعادة النقاط للمستخدم
                 await db.collection('users').doc(withdrawalData.userId).update({
                     points: firebase.firestore.FieldValue.increment(withdrawalData.points)
                 });
                 
-                // تحديث حالة السحب
                 await db.collection('withdrawals').doc(withdrawalId).update({
                     status: 'rejected',
                     rejectedAt: firebase.firestore.FieldValue.serverTimestamp(),
@@ -3115,51 +2874,10 @@ async function signOut() {
             }
         }
         
-        function showAdminSection(section) {
-            // إخفاء جميع الأقسام
-            document.getElementById('adminDashboard').style.display = 'none';
-            document.getElementById('adminAds').style.display = 'none';
-            document.getElementById('adminUsers').style.display = 'none';
-            document.getElementById('adminWithdrawals').style.display = 'none';
-            document.getElementById('adminReports').style.display = 'none';
-            
-            // إزالة النشط من جميع القوائم
-            document.querySelectorAll('.admin-menu a').forEach(link => {
-                link.classList.remove('active');
-            });
-            
-            // إظهار القسم المطلوب
-            document.getElementById('admin' + section.charAt(0).toUpperCase() + section.slice(1)).style.display = 'block';
-            
-            // إضافة النشط للقائمة
-            event.target.classList.add('active');
-        }
-        
         // ============================================
         // وظائف مساعدة
         // ============================================
-        function showSection(section) {
-            // إخفاء جميع الأقسام
-            document.getElementById('dashboardSection').style.display = 'none';
-            document.getElementById('adsSection').style.display = 'none';
-            document.getElementById('withdrawSection').style.display = 'none';
-            document.getElementById('historySection').style.display = 'none';
-            document.getElementById('profileSection').style.display = 'none';
-            document.getElementById('settingsSection').style.display = 'none';
-            
-            // إظهار القسم المطلوب
-            document.getElementById(section + 'Section').style.display = 'block';
-            
-            // تحميل البيانات إذا لزم
-            if (section === 'history' && currentUser) {
-                loadUserAdsHistory(currentUser.uid);
-            } else if (section === 'withdraw' && currentUser) {
-                loadWithdrawHistory(currentUser.uid);
-            }
-        }
-        
         function showSuccessMessage(message) {
-            // إنشاء عنصر الرسالة
             const alertDiv = document.createElement('div');
             alertDiv.className = 'alert alert-success alert-custom position-fixed';
             alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
@@ -3168,45 +2886,51 @@ async function signOut() {
                 ${message}
             `;
             
-            // إضافة الرسالة للصفحة
             document.body.appendChild(alertDiv);
             
-            // إزالة الرسالة بعد 3 ثواني
             setTimeout(() => {
                 alertDiv.remove();
             }, 3000);
         }
         
+        function showErrorMessage(message) {
+            alert(message);
+        }
+        
+        function showLoading() {
+            // يمكنك إضافة شاشة تحميل هنا
+        }
+        
+        function hideLoading() {
+            // إزالة شاشة التحميل
+        }
+        
+        function initializeWebsite() {
+            calculatePoints();
+            showSection('dashboard');
+            
+            setTimeout(() => {
+                document.querySelectorAll('.dashboard-card').forEach((card, index) => {
+                    card.style.animationDelay = `${index * 0.1}s`;
+                });
+            }, 100);
+        }
+        
         // ============================================
         // تهيئة التطبيق
         // ============================================
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                currentUser = user;
-                
-                if (user.email === 'bo2584668@gmail.com') {
-                    showAdminPage();
-                } else {
-                    loadUserData(user.uid);
-                    showUserPage();
+        window.onload = function() {
+            firebase.initializeApp(firebaseConfig);
+            
+            const checkGoogleLoad = setInterval(() => {
+                if (typeof google !== 'undefined' && google.accounts) {
+                    initializeGoogleSignIn();
+                    clearInterval(checkGoogleLoad);
                 }
-            } else {
-                document.getElementById('loginPage').style.display = 'flex';
-                document.getElementById('userPage').style.display = 'none';
-                document.getElementById('adminPage').style.display = 'none';
-            }
-        });
-        
-        // تهيئة حاسبة النقاط
-        calculatePoints();
-        
-        // تهيئة الصفحة الأولى
-        document.addEventListener('DOMContentLoaded', function() {
-            showSection('dashboard');
-        });
-  // 1. تهيئة الاتصال بجوجل كلاود
-  
-
+            }, 100);
+            
+            initializeWebsite();
+        };
     </script>
 </body>
-                            </html>
+                                        </html>
