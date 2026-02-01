@@ -9,8 +9,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
-        
- 
         :root {
             --primary-color: #2c3e50;
             --secondary-color: #3498db;
@@ -423,30 +421,6 @@
             margin-bottom: 30px;
         }
         
-        .btn-google {
-            background-color: #4285F4;
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 50px;
-            font-weight: 600;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-        }
-        
-        .btn-google:hover {
-            background-color: #357ae8;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(66, 133, 244, 0.3);
-        }
-        
-        .btn-google i {
-            font-size: 1.5rem;
-            margin-left: 10px;
-        }
         
         /* التجاوب مع الشاشات الصغيرة */
         @media (max-width: 768px) {
@@ -1448,49 +1422,381 @@
         const storage = firebase.storage();
         
         // إعدادات Google Sign-In
-        const googleProvider = new firebase.auth.GoogleAuthProvider();
-        googleProvider.setCustomParameters({
-            client_id: '805966277330-9j5j1nvluj69f8uieog0kk77p0jb46q4.apps.googleusercontent.com',
-            prompt: 'select_account'
+        
+        // ============================================
+// نظام المصادقة باستخدام Google Sign-In الجديد
+// ============================================
+
+// تهيئة جوجل ساين إن عندما يتم تحميل الصفحة
+function initializeGoogleSignIn() {
+    if (typeof google === 'undefined') {
+        console.error("Google Identity Services library not loaded");
+        setTimeout(initializeGoogleSignIn, 100);
+        return;
+    }
+    
+    google.accounts.id.initialize({
+        client_id: "805966277330-9j5j1nvluj69f8uieog0kk77p0jb46q4.apps.googleusercontent.com",
+        callback: handleCredentialResponse,
+        auto_select: false,
+        cancel_on_tap_outside: true,
+        context: "signin"
+    });
+    
+    // عرض زر تسجيل الدخول
+    google.accounts.id.renderButton(
+        document.getElementById("buttonDiv"),
+        { 
+            theme: "filled_blue", 
+            size: "large",
+            text: "signin_with",
+            shape: "rectangular",
+            width: "400",
+            locale: "ar",
+            logo_alignment: "left"
+        }
+    );
+    
+    // عرض نافذة One-Tap الاختيارية
+    google.accounts.id.prompt(notification => {
+        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+            // يمكنك محاولة عرض زر تسجيل الدخول العادي هنا
+        }
+    });
+}
+
+// معالجة استجابة تسجيل الدخول
+async function handleCredentialResponse(response) {
+    try {
+        showLoading();
+        
+        // فك تشفير JWT للحصول على بيانات المستخدم
+        const token = response.credential;
+        const userData = parseJwt(token);
+        
+        console.log("تم تسجيل الدخول بنجاح:", userData);
+        
+        // إنشاء كائن مستخدم متوافق مع Firebase
+        const user = {
+            uid: userData.sub,
+            email: userData.email,
+            displayName: userData.name,
+            photoURL: userData.picture,
+            emailVerified: userData.email_verified,
+            accessToken: token
+        };
+        
+        // التحقق إذا كان المستخدم هو الإدمن
+        if (user.email === 'bo2584668@gmail.com') {
+            await createAdminUser(user);
+            showAdminPage();
+        } else {
+            await createOrUpdateUser(user);
+            showUserPage();
+        }
+        
+        hideLoading();
+    } catch (error) {
+        console.error("خطأ في تسجيل الدخول:", error);
+        hideLoading();
+        alert("حدث خطأ في تسجيل الدخول: " + error.message);
+    }
+}
+
+// فك تشفير JWT token
+function parseJwt(token) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+
+        return JSON.parse(jsonPayload);
+    } catch (error) {
+        console.error("خطأ في فك تشفير JWT:", error);
+        return null;
+    }
+}
+
+// إنشاء أو تحديث بيانات المستخدم في Firebase
+async function createOrUpdateUser(user) {
+    const userRef = db.collection('users').doc(user.uid);
+    const userDoc = await userRef.get();
+    
+    if (!userDoc.exists) {
+        // إنشاء مستخدم جديد
+        await userRef.set({
+            uid: user.uid,
+            email: user.email,
+            name: user.displayName || 'مستخدم جديد',
+            photoURL: user.photoURL || '',
+            points: 100, // نقاط ترحيبية
+            dailyPoints: 0,
+            dailyTasks: 0,
+            totalWithdrawals: 0,
+            totalEarned: 0,
+            totalAdsWatched: 0,
+            referralCode: generateReferralCode(),
+            referredBy: getUrlParameter('ref'),
+            referrals: [],
+            referralEarnings: 0,
+            joinDate: firebase.firestore.FieldValue.serverTimestamp(),
+            lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+            lastGoogleSignIn: new Date().toISOString(),
+            profile: {
+                phone: '',
+                country: 'egypt',
+                city: '',
+                address: '',
+                birthDate: '',
+                gender: ''
+            },
+            settings: {
+                emailNotifications: true,
+                showProfile: true,
+                emailPromotions: true,
+                emailWithdrawal: true,
+                showEarnings: false,
+                allowMessages: true
+            },
+            penalties: 0,
+            level: 'مبتدئ',
+            accountStatus: 'active',
+            authProvider: 'google'
         });
         
-        // ============================================
-        // المتغيرات العامة
-        // ============================================
-        let currentUser = null;
-        let userData = null;
-        let currentAd = null;
-        let countdownInterval = null;
-        let timerValue = 30;
-        let totalTime = 30;
-        let isWindowFocused = true;
-        let adTab = null;
-        let penaltyPoints = 0;
-        let ads = [];
-        let currentPage = 1;
-        const adsPerPage = 8;
+        // إنشاء سجل النقاط الأولي
+        await db.collection('points_history').add({
+            userId: user.uid,
+            type: 'registration',
+            points: 100,
+            balanceBefore: 0,
+            balanceAfter: 100,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            description: 'نقاط ترحيبية للتسجيل'
+        });
         
-        // ============================================
-        // نظام المصادقة
-        // ============================================
-        document.getElementById('googleSignIn').addEventListener('click', signInWithGoogle);
+        // إذا كان هناك مُحيل
+        const refCode = getUrlParameter('ref');
+        if (refCode) {
+            await processReferral(user, refCode);
+        }
+    } else {
+        // تحديث آخر دخول
+        await userRef.update({
+            lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+            lastGoogleSignIn: new Date().toISOString()
+        });
+    }
+    
+    currentUser = user;
+    await loadUserData(user.uid);
+}
+
+// إنشاء مستخدم إدمن
+async function createAdminUser(user) {
+    const adminRef = db.collection('admins').doc(user.uid);
+    const adminDoc = await adminRef.get();
+    
+    if (!adminDoc.exists) {
+        await adminRef.set({
+            uid: user.uid,
+            email: user.email,
+            name: user.displayName || 'مدير النظام',
+            role: 'super_admin',
+            permissions: ['all'],
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+        });
+    } else {
+        await adminRef.update({
+            lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+        });
+    }
+    
+    currentUser = user;
+}
+
+// دالة مساعدة لمعالجة الإحالة
+async function processReferral(newUser, refCode) {
+    try {
+        const referrerQuery = await db.collection('users').where('referralCode', '==', refCode).limit(1).get();
         
-        async function signInWithGoogle() {
-            try {
-                const result = await auth.signInWithPopup(googleProvider);
-                const user = result.user;
-                
-                // التحقق إذا كان المستخدم هو الإدمن
-                if (user.email === 'bo2584668@gmail.com') {
-                    await createAdminUser(user);
-                    showAdminPage();
-                } else {
-                    await createOrUpdateUser(user);
-                    showUserPage();
+        if (!referrerQuery.empty) {
+            const referrerDoc = referrerQuery.docs[0];
+            const referrerData = referrerDoc.data();
+            
+            // إضافة نقاط الإحالة للمُحيل
+            await db.collection('users').doc(referrerDoc.id).update({
+                referralEarnings: (referrerData.referralEarnings || 0) + 500,
+                referrals: firebase.firestore.FieldValue.arrayUnion({
+                    userId: newUser.uid,
+                    email: newUser.email,
+                    name: newUser.displayName || 'مستخدم جديد',
+                    date: new Date().toISOString(),
+                    points: 500
+                })
+            });
+            
+            // إضافة نقاط للمُحيل
+            await db.collection('users').doc(referrerDoc.id).update({
+                points: firebase.firestore.FieldValue.increment(500),
+                totalEarned: firebase.firestore.FieldValue.increment(500)
+            });
+            
+            // تسجيل عملية الإحالة
+            await db.collection('points_history').add({
+                userId: referrerDoc.id,
+                type: 'referral',
+                points: 500,
+                balanceBefore: referrerData.points || 0,
+                balanceAfter: (referrerData.points || 0) + 500,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                description: `مكافأة إحالة للمستخدم ${newUser.email}`
+            });
+        }
+    } catch (error) {
+        console.error("خطأ في معالجة الإحالة:", error);
+    }
+}
+
+// توليد كود إحالة
+function generateReferralCode() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let code = '';
+    for (let i = 0; i < 8; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return 'ADV-' + code;
+}
+
+// الحصول على بارامتر من الرابط
+function getUrlParameter(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+}
+
+// تسجيل الخروج
+async function signOut() {
+    try {
+        // محاولة تسجيل الخروج من جوجل
+        if (typeof google !== 'undefined' && google.accounts) {
+            google.accounts.id.disableAutoSelect();
+        }
+        
+        // مسح بيانات المستخدم المحلية
+        currentUser = null;
+        userData = null;
+        
+        // إعادة توجيه المستخدم
+        document.getElementById('loginPage').style.display = 'flex';
+        document.getElementById('userPage').style.display = 'none';
+        document.getElementById('adminPage').style.display = 'none';
+        
+        // إعادة تحميل الصفحة لتفعيل جوجل ساين إن من جديد
+        setTimeout(() => {
+            window.location.href = window.location.pathname;
+        }, 100);
+        
+    } catch (error) {
+        console.error("خطأ في تسجيل الخروج:", error);
+    }
+}
+
+// تهيئة التطبيق عند تحميل الصفحة
+document.addEventListener('DOMContentLoaded', function() {
+    // تهيئة Firebase (يبقى كما هو للتخزين)
+    firebase.initializeApp(firebaseConfig);
+    
+    // تهيئة جوجل ساين إن بعد تحميل المكتبة
+    const checkGoogleLoad = setInterval(() => {
+        if (typeof google !== 'undefined' && google.accounts) {
+            initializeGoogleSignIn();
+            clearInterval(checkGoogleLoad);
+        }
+    }, 100);
+    
+    // تهيئة باقي الموقع
+    calculatePoints();
+    showSection('dashboard');
+    
+    // إضافة تأثيرات للصفحة
+    setTimeout(() => {
+        document.querySelectorAll('.dashboard-card').forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+        });
+    }, 100);
+});
+
+// التحقق من حالة المستخدم (تعديل الدالة القديمة)
+function checkAuthState() {
+    // مع النظام الجديد، نعتمد على جوجل ساين إن مباشرة
+    // لا نحتاج للتحقق من حالة Firebase للمصادقة
+    
+    // إذا كان هناك مستخدم محفوظ في localStorage، نحمله
+    const savedUser = localStorage.getItem('advista_user');
+    if (savedUser) {
+        try {
+            const user = JSON.parse(savedUser);
+            currentUser = user;
+            loadUserData(user.uid);
+            showUserPage();
+        } catch (error) {
+            localStorage.removeItem('advista_user');
+        }
+    }
+}
+
+// حفظ بيانات المستخدم في localStorage
+function saveUserToLocalStorage(user) {
+    if (user && user.uid) {
+        localStorage.setItem('advista_user', JSON.stringify({
+            uid: user.uid,
+            email: user.email,
+            name: user.displayName,
+            photoURL: user.photoURL
+        }));
+    }
+}
+
+// مسح بيانات المستخدم من localStorage
+function clearUserFromLocalStorage() {
+    localStorage.removeItem('advista_user');
+}
+
+// تعديل دالة signOut لإزالة البيانات المحفوظة
+async function signOut() {
+    try {
+        // مسح بيانات المستخدم المحلية
+        clearUserFromLocalStorage();
+        
+        // مسح بيانات المستخدم من الذاكرة
+        currentUser = null;
+        userData = null;
+        
+        // تسجيل الخروج من جوجل
+        if (typeof google !== 'undefined' && google.accounts) {
+            google.accounts.id.disableAutoSelect();
+            google.accounts.id.revoke(currentUser?.email, () => {
+                console.log("تم تسجيل الخروج من جوجل");
+            });
+        }
+        
+        // إعادة توجيه المستخدم
+        document.getElementById('loginPage').style.display = 'flex';
+        document.getElementById('userPage').style.display = 'none';
+        document.getElementById('adminPage').style.display = 'none';
+        
+        // إعادة تحميل الصفحة
+        setTimeout(() => {
+            window.location.reload();
+        }, 500);
+        
+    } catch (error) {
+        console.error("خطأ في تسجيل الخروج:", error);
+    }
                 }
-            } catch (error) {
-                console.error("خطأ في تسجيل الدخول:", error);
-                alert("حدث خطأ في تسجيل الدخول: " + error.message);
             }
         }
         
