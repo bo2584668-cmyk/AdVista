@@ -1432,73 +1432,75 @@
         // إعدادات Firebase
         // ============================================
         // 1. إعدادات فيربيس (تأكد من صحتها)
+
+// إعدادات فيربيس
 const firebaseConfig = {
-  apiKey: "AIzaSyC4fZQ-BTUeHsN9nQtMGmnjJz-NKdcUgkc",
-  authDomain: "advista-b64ab.firebaseapp.com",
-  projectId: "advista-b64ab",
-  storageBucket: "advista-b64ab.firebasestorage.app",
-  messagingSenderId: "509713648189",
-  appId: "1:509713648189:web:0ccd6ada1f4e07f85d3854"
+    apiKey: "AIzaSyC4fZQ-BTUeHsN9nQtMGmnjJz-NKdcUgkc",
+    authDomain: "advista-b64ab.firebaseapp.com",
+    projectId: "advista-b64ab",
+    storageBucket: "advista-b64ab.firebasestorage.app",
+    messagingSenderId: "509713648189",
+    appId: "1:509713648189:web:0ccd6ada1f4e07f85d3854"
 };
 
 // تهيئة فيربيس
-firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
 const db = firebase.firestore();
 
-// 2. دالة فك التشفير
-function parseJwt(token) {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    return JSON.parse(window.atob(base64));
+// دالة البدء (تحل مشكلة عدم الظهور وتضمن التوجيه)
+function startApp() {
+    google.accounts.id.initialize({
+        client_id: "805966277330-9j5j1nvluj69f8uieog0kk77p0jb46q4.apps.googleusercontent.com",
+        callback: async (response) => {
+            // فك التشفير
+            const payload = JSON.parse(atob(response.credential.split('.')[1]));
+            const uid = payload.sub;
+
+            try {
+                // حفظ في فيربيس
+                const userRef = db.collection("users").doc(uid);
+                const userDoc = await userRef.get();
+
+                let userData;
+                if (!userDoc.exists) {
+                    userData = {
+                        uid: uid,
+                        email: payload.email,
+                        points: 0,
+                        totalEarned: 0,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    };
+                    await userRef.set(userData);
+                } else {
+                    userData = userDoc.data();
+                }
+
+                // حفظ محلي والتوجيه القسري
+                localStorage.setItem("user", JSON.stringify(userData));
+                alert("تم تسجيل الدخول!");
+                
+                // التوجيه (جرب كل الطرق لضمان العمل)
+                window.location.href = "/#home";
+                location.reload(); 
+
+            } catch (err) {
+                console.error("Firebase Error:", err);
+            }
+        }
+    });
+
+    // رسم الزر في مكانه
+    google.accounts.id.renderButton(
+        document.getElementById("buttonDiv"),
+        { theme: "filled_blue", size: "large", width: "250" }
+    );
 }
 
-// 3. دالة استلام استجابة جوجل والحفظ في فيربيس
-async function handleCredentialResponse(response) {
-    try {
-        const userData = parseJwt(response.credential);
-        const uid = userData.sub;
+// تشغيل بعد ثانية لضمان تحميل الصفحة
+setTimeout(startApp, 1000);
 
-        // مرجع المستخدم في فيربيس
-        const userRef = db.collection("users").doc(uid);
-        const doc = await userRef.get();
-
-        let currentUser;
-
-        if (!doc.exists) {
-            // مستخدم جديد
-            currentUser = {
-                uid: uid,
-                email: userData.email,
-                points: 0,
-                totalEarned: 0,
-                dailyStats: {},
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            };
-            await userRef.set(currentUser);
-            console.log("تم حفظ مستخدم جديد");
-        } else {
-            // مستخدم موجود
-            currentUser = doc.data();
-            console.log("مستخدم قديم");
-        }
-
-        // حفظ في الذاكرة المحلية للتنقل
-        localStorage.setItem("user", JSON.stringify(currentUser));
-
-        // التوجيه
-        if (userData.email === 'bo2584668@gmail.com') {
-            window.location.hash = "#admin";
-        } else {
-            window.location.hash = "#home";
-        }
-        
-        location.reload(); // إعادة تحميل بسيطة لتنشيط الحالة
-
-    } catch (error) {
-        console.error("خطأ في فيربيس:", error);
-        alert("فشل الحفظ في قاعدة البيانات: " + error.message);
-    }
-}
 
 }
 
