@@ -1464,40 +1464,70 @@
         // ============================================
         
 // دالة استلام البيانات (لازم يكون اسمها مطابق للـ data-callback فوق)
-function handleCredentialResponse(response) {
-    const userData = parseJwt(response.credential);
-    
-    const currentUser = {
-        uid: userData.sub,
-        email: userData.email,
-        points: 0,
-        totalEarned: 0,
-        dailyStats: {
-            date: new Date().toISOString().split('T')[0],
-            adsWatched: 0,
-            pointsEarned: 0
-        },
-        createdAt: new Date().toISOString()
-    };
 
-    console.log("تم تسجيل الدخول بنجاح:", currentUser);
-    
-    if (currentUser.email === 'bo2584668@gmail.com') {
-        alert("مرحباً بالأدمن");
-        // كود توجيه للأدمن
-    } else {
-        alert("مرحباً بالمستخدم");
+
+    // 1. دالة فك التشفير (JWT)
+function parseJwt(token) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        return JSON.parse(window.atob(base64));
+    } catch (e) {
+        console.error("خطأ في فك التشفير:", e);
+        return null;
     }
 }
 
-// دالة فك التشفير الضرورية
-function parseJwt(token) {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    return JSON.parse(window.atob(base64));
+// 2. دالة استلام البيانات والحفظ في فيربيس
+async function handleCredentialResponse(response) {
+    const userData = parseJwt(response.credential);
+    if (!userData) return;
+
+    const uid = userData.sub;
+
+    try {
+        // الاتصال بمجموعة users في فيربيس
+        const userRef = doc(db, "users", uid);
+        const userSnap = await getDoc(userRef);
+
+        let currentUser;
+
+        if (!userSnap.exists()) {
+            // إنشاء بيانات المستخدم الجديد
+            currentUser = {
+                uid: uid,
+                email: userData.email,
+                points: 0,
+                totalEarned: 0,
+                dailyStats: {}, // سيبدأ فارغاً للأيام القادمة
+                createdAt: serverTimestamp() 
+            };
+            await setDoc(userRef, currentUser);
+            console.log("تم إنشاء حساب جديد في Firestore");
+        } else {
+            // جلب بيانات المستخدم الحالي
+            currentUser = userSnap.data();
+            console.log("مرحباً بعودتك، نقاطك:", currentUser.points);
+        }
+
+        // حفظ البيانات مؤقتاً في المتصفح لسرعة الوصول
+        localStorage.setItem("user", JSON.stringify(currentUser));
+
+        // 3. التوجيه بناءً على نوع المستخدم
+        if (userData.email === 'bo2584668@gmail.com') {
+            alert("مرحباً بالأدمن");
+            window.location.hash = "#admin"; // وجهه للوحة التحكم
+        } else {
+            alert("تم تسجيل الدخول بنجاح");
+            window.location.hash = "#home"; // وجهه للرئيسية
+        }
+
+    } catch (error) {
+        console.error("خطأ أثناء التعامل مع Firestore:", error);
+        alert("حدث خطأ في الاتصال بقاعدة البيانات");
+    }
 }
 
-    
     }
 }
 
