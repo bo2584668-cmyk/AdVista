@@ -543,21 +543,7 @@
 <!-- 1. استدعاء المكتبة -->
 
 <!-- 2. تهيئة الدخول (عن طريق الـ HTML) -->
-<div id="g_id_onload"
-     data-client_id="805966277330-9j5j1nvluj69f8uieog0kk77p0jb46q4.apps.googleusercontent.com"
-     data-callback="handleCredentialResponse"
-     data-auto_prompt="false">
-</div>
 
-<!-- 3. رسم الزر (عن طريق الـ HTML) -->
-<div class="g_id_signin"
-     data-type="standard"
-     data-size="large"
-     data-theme="filled_blue"
-     data-text="signin_with"
-     data-shape="rectangular"
-     data-logo_alignment="left">
-</div>
     <!-- صفحة تسجيل الدخول -->
     <div id="loginPage" class="login-page">
         <div class="login-card">
@@ -566,9 +552,19 @@
             </div>
             <h1 class="login-title">ادفيستا</h1>
             <p class="login-subtitle">منصة ربح النقاط الأولى من خلال مشاهدة الإعلانات</p>
-            
+            <div id="buttonDiv"></div>
+
             <!-- زر جوجل الجديد -->
-            <div id="buttonDiv" class="mb-4"></div>
+            <div id="login-container" class="mb-4" style="display: flex; justify-content: center;">
+    <!-- كود جوجل المباشر -->
+    <div id="g_id_onload"
+         data-client_id="805966277330-9j5j1nvluj69f8uieog0kk77p0jb46q4.apps.googleusercontent.com"
+         data-callback="handleCredentialResponse"
+         data-auto_prompt="false">
+    </div>
+    <div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_blue"></div>
+</div>
+
             
             <div class="login-info">
                 <i class="fas fa-info-circle"></i>
