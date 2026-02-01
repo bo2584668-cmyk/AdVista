@@ -1452,52 +1452,42 @@ if (!firebase.apps.length) {
 const db = firebase.firestore();
 
 // دالة البدء (تحل مشكلة عدم الظهور وتضمن التوجيه)
-function startApp() {
-async function handleCredentialResponse(response) {
-    console.log("تم استلام الاستجابة من جوجل..."); // للتأكد في الـ Console
-    
+window.handleCredentialResponse = async (response) => {
     try {
-        // 1. فك تشفير البيانات (طريقة سريعة ومضمونة)
         const payload = JSON.parse(atob(response.credential.split('.')[1]));
-        console.log("بيانات المستخدم:", payload.email);
+        console.log("تم الدخول بنجاح:", payload.email);
 
-        // 2. محاولة الحفظ في فيربيس (Firestore)
-        // ملاحظة: لو فيربيس فيه مشكلة، الكود سيكمل للتوجيه بسبب الـ try/catch
-        try {
-            const userRef = db.collection("users").doc(payload.sub);
-            await userRef.set({
-                uid: payload.sub,
-                email: payload.email,
-                points: 0,
-                totalEarned: 0,
-                lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-            }, { merge: true }); // merge عشان ميمسحش النقاط القديمة لو موجود
-            console.log("تم تحديث البيانات في فيربيس");
-        } catch (dbError) {
-            console.error("فشل الحفظ في فيربيس لكن سأكمل التوجيه:", dbError);
-        }
-
-        // 3. حفظ الحالة محلياً (ضروري جداً لدوام تسجيل الدخول)
+        // حفظ البيانات في المتصفح
         localStorage.setItem("user", JSON.stringify({
             uid: payload.sub,
-            email: payload.email
+            email: payload.email,
+            name: payload.name
         }));
 
-        // 4. التوجيه القسري (Redirect)
-        console.log("جاري التوجيه للرئيسية...");
+        // --- الحل السحري للتوجيه في موقعك ---
         
-        // جرب كل طرق التوجيه مع بعض لضمان النجاح
+        // 1. إخفاء قسم التسجيل وإظهار القسم الرئيسي يدوياً (لأن موقعك SPA)
+        const loginSection = document.getElementById('login-section'); // تأكد من اسم الـ ID عندك
+        const homeSection = document.getElementById('home-section');   // تأكد من اسم الـ ID عندك
+
+        if (loginSection && homeSection) {
+            loginSection.style.display = 'none';
+            homeSection.style.display = 'block';
+        }
+
+        // 2. تغيير الرابط
         window.location.hash = "#home"; 
-        window.location.href = "/#home";
         
-        // لو موقعك مش SPA (صفحة واحدة)، استخدم الرابط المباشر:
-        // window.location.href = "home.html";
+        // 3. تحديث الصفحة لضمان تحميل البيانات الجديدة
+        setTimeout(() => {
+            window.location.reload();
+        }, 100);
 
     } catch (error) {
-        console.error("خطأ حرج في الدالة:", error);
-        alert("حدث خطأ أثناء تسجيل الدخول");
+        console.error("خطأ في التوجيه:", error);
     }
-}
+};
+
 
 }
 
