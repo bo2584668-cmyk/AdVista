@@ -1446,67 +1446,92 @@
         // ============================================
         
         // تهيئة جوجل ساين إن
-        function initializeGoogleSignIn() {
-            if (typeof google === 'undefined') {
-                setTimeout(initializeGoogleSignIn, 100);
-                return;
-            }
-            
-            google.accounts.id.initialize({
-                client_id: "805966277330-9j5j1nvluj69f8uieog0kk77p0jb46q4.apps.googleusercontent.com",
-                callback: handleCredentialResponse,
-                auto_select: false,
-                cancel_on_tap_outside: true,
-                context: "signin"
-            });
-            
-            // عرض زر تسجيل الدخول
-            google.accounts.id.renderButton(
-                document.getElementById("buttonDiv"),
-                { 
-                    theme: "filled_blue", 
-                    size: "large",
-                    text: "signin_with",
-                    shape: "rectangular",
-                    width: "400",
-                    locale: "ar",
-                    logo_alignment: "left"
-                }
-            );
-            
-            // عرض نافذة One-Tap
-            google.accounts.id.prompt();
-        }
         
-        // معالجة استجابة تسجيل الدخول
-        async function handleCredentialResponse(response) {
-            try {
-                showLoading();
-                
-                // فك تشفير JWT للحصول على بيانات المستخدم
-                const token = response.credential;
-                const userData = parseJwt(token);
-                
-                console.log("تم تسجيل الدخول بنجاح:", userData);
-                
-                // إنشاء كائن مستخدم
-                const user = {
-                    uid: userData.sub,
-                    email: userData.email,
-                    displayName: userData.name,
-                    photoURL: userData.picture,
-                    emailVerified: userData.email_verified,
-                    accessToken: token
-                };
-                
-                // التحقق إذا كان المستخدم هو الإدمن
-                if (user.email === 'bo2584668@gmail.com') {
-                    await createAdminUser(user);
-                    showAdminPage();
-                } else {
-                    await createOrUpdateUser(user);
-                    showUserPage();
-                }
+                // تهيئة تسجيل دخول جوجل
+function initializeGoogleSignIn() {
+    if (typeof google === 'undefined') {
+        setTimeout(initializeGoogleSignIn, 100);
+        return;
+    }
+    
+    google.accounts.id.initialize({
+        client_id: "805966277330-9j5j1nvluj69f8uieog0kk77p0jb46q4.apps.googleusercontent.com",
+        callback: handleCredentialResponse,
+        auto_select: false,
+        cancel_on_tap_outside: true,
+        context: "signin"
+    });
+    
+    // عرض زر تسجيل الدخول
+    google.accounts.id.renderButton(
+        document.getElementById("buttonDiv"),
+        { 
+            theme: "filled_blue", 
+            size: "large",
+            text: "signin_with",
+            shape: "rectangular",
+            width: "250", // يمكنك تعديله حسب الرغبة
+            locale: "ar",
+            logo_alignment: "left"
+        }
+    );
+    
+    google.accounts.id.prompt();
+}
+
+// معالجة الاستجابة والبيانات
+async function handleCredentialResponse(response) {
+    try {
+        // فك تشفير التوكن للحصول على البيانات
+        const userData = parseJwt(response.credential);
+        
+        // إنشاء كائن المستخدم بالبيانات التي طلبتها
+        const user = {
+            uid: userData.sub,
+            email: userData.email,
+            points: 0,           // النقاط الحالية
+            totalEarned: 0,      // إجمالي النقاط
+            dailyStats: {},      // إحصائيات يومية
+            createdAt: new Date().toISOString() // تاريخ التسجيل
+        };
+
+        console.log("تم تسجيل الدخول بنجاح للمستخدم:", user.email);
+
+        // التحقق من الأدمن أو المستخدم العادي
+        if (user.email === 'bo2584668@gmail.com') {
+            // كود توجيه الأدمن
+            console.log("مرحباً أيها المسؤول");
+            // showAdminPage(); 
+        } else {
+            // كود توجيه المستخدم العادي
+            console.log("مرحباً بالمستخدم الجديد");
+            // await saveUserToFirestore(user); // إذا كنت ستستخدم دالة الحفظ لاحقاً
+        }
+
+    } catch (error) {
+        console.error("حدث خطأ أثناء معالجة بيانات جوجل:", error);
+    }
+}
+
+// وظيفة فك تشفير JWT (جاهزة ومجربة)
+function parseJwt(token) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+
+        return JSON.parse(jsonPayload);
+    } catch (error) {
+        console.error("JWT Error:", error);
+        return null;
+    }
+}
+
+// استدعاء التشغيل
+initializeGoogleSignIn();
+
                 
                 
         }
