@@ -2898,43 +2898,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             showSection('dashboard');
         });
-        window.onload = function () {
   // 1. تهيئة الاتصال بجوجل كلاود
-  google.accounts.id.initialize({
-    client_id: "805966277330-9j5j1nvluj69f8uieog0kk77p0jb46q4.apps.googleusercontent.com",
-    callback: handleCredentialResponse // الدالة التي ستستلم البيانات
-  });
-
-  // 2. تخصيص ورسم زر تسجيل الدخول
-  google.accounts.id.renderButton(
-    document.getElementById("buttonDiv"),
-    { 
-      theme: "outline", 
-      size: "large", 
-      text: "signin_with", 
-      shape: "rectangular" 
-    }
-  );
-
-  // اختياري: إظهار نافذة الاختيار التلقائي (One Tap)
-  google.accounts.id.prompt(); 
-};
-
-// 3. الدالة التي تعمل فور اختيار المستخدم لحسابه
-function handleCredentialResponse(response) {
-  // فك تشفير الـ Token المستلم (JWT) للحصول على بيانات المستخدم
-  const base64Url = response.credential.split('.')[1];
-  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-  const payload = JSON.parse(window.atob(base64));
-
-  console.log("تم تسجيل الدخول بنجاح!");
-  console.log("ID المستخدم (uid): " + payload.sub);
-  console.log("البريد الإلكتروني: " + payload.email);
-  console.log("الاسم: " + payload.name);
-  console.log("الصورة: " + payload.picture);
   
-  // هنا بيانات المستخدم أصبحت معك في المتغير payload
-}
 
     </script>
 </body>
