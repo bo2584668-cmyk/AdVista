@@ -21,98 +21,46 @@ let currentUser = null;
 let currentAd = null;
 let adTimerInterval = null;
 let timerPausedAt = null;
+let userBalance = 0;
 
 // DOM Content Loaded
 document.addEventListener('DOMContentLoaded', function() {
     initUI();
+    initGoogleSignIn();
     checkGoogleAuthState();
     loadGlobalStats();
     loadPublicAds();
 });
 
-// Initialize UI
-function initUI() {
-    // Navigation
-    const mobileToggle = document.getElementById('mobileToggle');
-    const navMenu = document.querySelector('.nav-menu');
-    
-    if (mobileToggle) {
-        mobileToggle.addEventListener('click', function() {
-            navMenu.classList.toggle('active');
-            this.innerHTML = navMenu.classList.contains('active') 
-                ? '<i class="fas fa-times"></i>' 
-                : '<i class="fas fa-bars"></i>';
+// Initialize Google Sign-In
+function initGoogleSignIn() {
+    // Wait for Google script to load
+    if (typeof google !== 'undefined') {
+        google.accounts.id.initialize({
+            client_id: GOOGLE_CLIENT_ID,
+            callback: handleGoogleSignInResponse,
+            auto_select: false,
+            cancel_on_tap_outside: true
         });
-    }
-    
-    // Close menu when clicking on links
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.addEventListener('click', function() {
-            navMenu.classList.remove('active');
-            mobileToggle.innerHTML = '<i class="fas fa-bars"></i>';
-        });
-    });
-    
-    // Login button
-    document.getElementById('loginBtn').addEventListener('click', function() {
-        triggerGoogleSignIn();
-    });
-    
-    // Dashboard login button
-    document.getElementById('dashboardLoginBtn')?.addEventListener('click', function() {
-        triggerGoogleSignIn();
-    });
-    
-    // Logout button
-    document.getElementById('logoutBtn')?.addEventListener('click', signOut);
-    
-    // Start earning button
-    document.getElementById('startEarningBtn').addEventListener('click', function() {
-        document.getElementById('ads').scrollIntoView({ behavior: 'smooth' });
-    });
-    
-    // Ad filter buttons
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            filterAds(this.dataset.filter);
-        });
-    });
-    
-    // Timer close button
-    document.getElementById('closeTimerBtn').addEventListener('click', closeAdTimer);
-    
-    // Claim points button
-    document.getElementById('claimPointsBtn').addEventListener('click', claimAdPoints);
-}
-
-// Trigger Google Sign-In
-function triggerGoogleSignIn() {
-    // Initialize Google Sign-In if not already initialized
-    if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
-        google.accounts.id.prompt();
-    } else {
-        // Load Google Sign-In script
-        const script = document.createElement('script');
-        script.src = 'https://accounts.google.com/gsi/client';
-        script.async = true;
-        script.defer = true;
-        script.onload = function() {
-            google.accounts.id.initialize({
-                client_id: GOOGLE_CLIENT_ID,
-                callback: handleGoogleSignIn,
-                auto_select: false,
-                cancel_on_tap_outside: true
+        
+        // Show Google Sign-In button
+        const googleSignInBtn = document.getElementById('g_id_signin');
+        if (googleSignInBtn) {
+            google.accounts.id.renderButton(googleSignInBtn, {
+                type: 'standard',
+                theme: 'filled_blue',
+                size: 'medium',
+                text: 'signin_with',
+                shape: 'rectangular',
+                logo_alignment: 'left',
+                width: '200'
             });
-            google.accounts.id.prompt();
-        };
-        document.head.appendChild(script);
+        }
     }
 }
 
-// Handle Google Sign-In Response
-function handleGoogleSignIn(response) {
+// Handle Google Sign-In Response (global function)
+window.handleGoogleSignInResponse = function(response) {
     console.log("Google Sign-In Response:", response);
     
     try {
@@ -142,7 +90,7 @@ function handleGoogleSignIn(response) {
         console.error("Error handling Google Sign-In:", error);
         showNotification('حدث خطأ أثناء تسجيل الدخول', 'error');
     }
-}
+};
 
 // Decode JWT token
 function decodeJWT(token) {
@@ -157,6 +105,88 @@ function decodeJWT(token) {
     } catch (error) {
         console.error("Error decoding JWT:", error);
         throw error;
+    }
+}
+
+// Initialize UI
+function initUI() {
+    // Navigation Menu Toggle
+    const mobileToggle = document.getElementById('mobileToggle');
+    const navMenu = document.querySelector('.nav-menu');
+    
+    if (mobileToggle) {
+        mobileToggle.addEventListener('click', function() {
+            navMenu.classList.toggle('active');
+            document.body.classList.toggle('menu-open');
+            this.classList.toggle('active');
+        });
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!navMenu.contains(event.target) && !mobileToggle.contains(event.target)) {
+                navMenu.classList.remove('active');
+                mobileToggle.classList.remove('active');
+                document.body.classList.remove('menu-open');
+            }
+        });
+    }
+    
+    // Close menu when clicking on links
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', function() {
+            navMenu.classList.remove('active');
+            mobileToggle.classList.remove('active');
+            document.body.classList.remove('menu-open');
+        });
+    });
+    
+    // Login button
+    document.getElementById('loginBtn').addEventListener('click', triggerGoogleSignIn);
+    document.getElementById('dashboardLoginBtn')?.addEventListener('click', triggerGoogleSignIn);
+    document.getElementById('withdrawLoginBtn')?.addEventListener('click', triggerGoogleSignIn);
+    
+    // Logout button
+    document.getElementById('logoutBtn')?.addEventListener('click', signOut);
+    
+    // Start earning button
+    document.getElementById('startEarningBtn').addEventListener('click', function() {
+        document.getElementById('ads').scrollIntoView({ behavior: 'smooth' });
+    });
+    
+    // Ad filter buttons
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            filterAds(this.dataset.filter);
+        });
+    });
+    
+    // Timer close button
+    document.getElementById('closeTimerBtn').addEventListener('click', closeAdTimer);
+    
+    // Claim points button
+    document.getElementById('claimPointsBtn').addEventListener('click', claimAdPoints);
+    
+    // Withdraw modal
+    document.getElementById('closeWithdrawModal').addEventListener('click', closeWithdrawModal);
+    document.getElementById('closeConfirmModal').addEventListener('click', closeConfirmModal);
+    document.getElementById('closeConfirmBtn').addEventListener('click', closeConfirmModal);
+    
+    // Withdraw form
+    document.getElementById('withdrawForm')?.addEventListener('submit', handleWithdrawRequest);
+    
+    // Withdraw amount input
+    document.getElementById('withdrawAmount')?.addEventListener('input', updateWithdrawSummary);
+}
+
+// Trigger Google Sign-In
+function triggerGoogleSignIn() {
+    if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
+        google.accounts.id.prompt();
+    } else {
+        // If Google script not loaded, reload page
+        location.reload();
     }
 }
 
@@ -176,8 +206,7 @@ function checkGoogleAuthState() {
                 const user = JSON.parse(userData);
                 currentUser = user;
                 updateUIForLoggedInUser(user);
-                loadUserAds();
-                loadDashboard();
+                loadUserData();
                 return;
             } else {
                 // Token expired
@@ -193,6 +222,15 @@ function checkGoogleAuthState() {
     
     // Not logged in
     updateUIForLoggedOutUser();
+}
+
+// Load User Data
+async function loadUserData() {
+    if (!currentUser) return;
+    
+    await loadUserAds();
+    await loadDashboard();
+    await loadWithdrawSection();
 }
 
 // Sign Out
@@ -211,6 +249,7 @@ function signOut() {
     
     // Update UI
     currentUser = null;
+    userBalance = 0;
     updateUIForLoggedOutUser();
     showNotification('تم تسجيل الخروج بنجاح', 'success');
     
@@ -240,6 +279,7 @@ async function initializeUserData(user) {
                 ...userData,
                 balance: 0,
                 totalEarned: 0,
+                totalWithdrawn: 0,
                 dailyStats: {
                     adsWatched: 0,
                     pointsEarned: 0,
@@ -268,8 +308,7 @@ async function initializeUserData(user) {
         // Update UI
         currentUser = user;
         updateUIForLoggedInUser(user);
-        loadUserAds();
-        loadDashboard();
+        loadUserData();
         showNotification(`مرحباً ${user.displayName}!`, 'success');
         
     } catch (error) {
@@ -281,6 +320,7 @@ async function initializeUserData(user) {
 // Update UI for Logged In User
 function updateUIForLoggedInUser(user) {
     document.getElementById('loginBtn').style.display = 'none';
+    document.getElementById('g_id_signin').style.display = 'none';
     document.getElementById('userProfile').style.display = 'flex';
     document.getElementById('userBalance').style.display = 'flex';
     
@@ -294,14 +334,12 @@ function updateUIForLoggedInUser(user) {
     }
     
     userName.textContent = user.displayName || user.email;
-    
-    // Load user balance
-    loadUserBalance(user.uid);
 }
 
 // Update UI for Logged Out User
 function updateUIForLoggedOutUser() {
     document.getElementById('loginBtn').style.display = 'block';
+    document.getElementById('g_id_signin').style.display = 'block';
     document.getElementById('userProfile').style.display = 'none';
     document.getElementById('userBalance').style.display = 'none';
     
@@ -322,19 +360,42 @@ function updateUIForLoggedOutUser() {
         // Re-attach event listener
         document.getElementById('dashboardLoginBtn').addEventListener('click', triggerGoogleSignIn);
     }
+    
+    // Reset withdraw section
+    const withdrawContainer = document.getElementById('withdrawContainer');
+    if (withdrawContainer) {
+        withdrawContainer.innerHTML = `
+            <div class="login-required">
+                <i class="fas fa-lock"></i>
+                <h3>يجب تسجيل الدخول لعرض قسم السحب</h3>
+                <p>سجل الدخول باستخدام حساب جوجل لطلب سحب أرباحك</p>
+                <button class="btn btn-primary" id="withdrawLoginBtn">
+                    <i class="fab fa-google"></i> تسجيل الدخول الآن
+                </button>
+            </div>
+        `;
+        
+        // Re-attach event listener
+        document.getElementById('withdrawLoginBtn').addEventListener('click', triggerGoogleSignIn);
+    }
 }
 
 // Load User Balance
-async function loadUserBalance(userId) {
+async function loadUserBalance() {
+    if (!currentUser) return 0;
+    
     try {
-        const userDoc = await db.collection('users').doc(userId).get();
+        const userDoc = await db.collection('users').doc(currentUser.uid).get();
         if (userDoc.exists) {
             const userData = userDoc.data();
-            document.getElementById('balance').textContent = userData.balance || 0;
+            userBalance = userData.balance || 0;
+            document.getElementById('balance').textContent = userBalance.toLocaleString();
+            return userBalance;
         }
     } catch (error) {
         console.error('Error loading user balance:', error);
     }
+    return 0;
 }
 
 // Load Global Stats
@@ -342,16 +403,16 @@ async function loadGlobalStats() {
     try {
         // Count users
         const usersSnapshot = await db.collection('users').get();
-        document.getElementById('totalUsers').textContent = usersSnapshot.size;
+        document.getElementById('totalUsers').textContent = usersSnapshot.size.toLocaleString();
         
         // Count active ads
         const adsSnapshot = await db.collection('ads').where('status', '==', 'active').get();
-        document.getElementById('totalAds').textContent = adsSnapshot.size;
+        document.getElementById('totalAds').textContent = adsSnapshot.size.toLocaleString();
         
         // Calculate total payouts
         const usersData = await Promise.all(usersSnapshot.docs.map(doc => doc.data()));
         const totalPayouts = usersData.reduce((sum, user) => sum + (user.totalEarned || 0), 0);
-        document.getElementById('totalPayouts').textContent = totalPayouts;
+        document.getElementById('totalPayouts').textContent = (totalPayouts / 20000).toFixed(2);
     } catch (error) {
         console.error('Error loading global stats:', error);
     }
@@ -519,7 +580,7 @@ function displayAds(adDocs, watchedAds = new Set()) {
                 <div class="ad-details">
                     <div class="ad-points">
                         <i class="fas fa-coins"></i>
-                        <span>${ad.points} نقطة</span>
+                        <span>${ad.points.toLocaleString()} نقطة</span>
                     </div>
                     <div class="ad-time">
                         <i class="fas fa-clock"></i>
@@ -755,15 +816,15 @@ async function claimAdPoints() {
         });
         
         // Update UI
-        updateBalance(currentAd.points);
-        showNotification(`مبروك! لقد ربحت ${currentAd.points} نقطة`, 'success');
+        userBalance += currentAd.points;
+        document.getElementById('balance').textContent = userBalance.toLocaleString();
+        showNotification(`مبروك! لقد ربحت ${currentAd.points.toLocaleString()} نقطة`, 'success');
         
         // Close timer
         closeAdTimer();
         
-        // Reload ads to update status
-        loadUserAds();
-        loadDashboard();
+        // Reload user data
+        loadUserData();
         
         console.log("تمت إضافة النقاط:", currentAd.points);
         
@@ -814,6 +875,7 @@ async function loadDashboard() {
     try {
         const userDoc = await db.collection('users').doc(currentUser.uid).get();
         const userData = userDoc.data();
+        userBalance = userData.balance || 0;
         
         const dashboard = document.getElementById('userDashboard');
         dashboard.innerHTML = `
@@ -822,10 +884,10 @@ async function loadDashboard() {
                     <i class="fas fa-wallet"></i>
                 </div>
                 <h3>رصيدك الحالي</h3>
-                <p class="balance-amount">${userData.balance || 0} نقطة</p>
-                <p class="balance-value">≈ $${((userData.balance || 0) / 100).toFixed(2)}</p>
-                <button class="btn btn-small" id="withdrawBtn" ${(userData.balance || 0) < 500 ? 'disabled' : ''}>
-                    ${(userData.balance || 0) < 500 ? 'الحد الأدنى للسحب 500 نقطة' : 'سحب الأرباح'}
+                <p class="balance-amount">${userBalance.toLocaleString()} نقطة</p>
+                <p class="balance-value">≈ $${(userBalance / 20000).toFixed(2)}</p>
+                <button class="btn btn-small" id="withdrawBtn" ${userBalance < 20000 ? 'disabled' : ''}>
+                    ${userBalance < 20000 ? 'الحد الأدنى للسحب 20,000 نقطة' : 'سحب الأرباح'}
                 </button>
             </div>
             
@@ -878,19 +940,19 @@ async function loadDashboard() {
                 <h3>المكافآت</h3>
                 <div class="rewards-list">
                     <div class="reward-item">
-                        <span>500 نقطة</span>
+                        <span>20,000 نقطة</span>
+                        <span>$1</span>
+                    </div>
+                    <div class="reward-item">
+                        <span>100,000 نقطة</span>
                         <span>$5</span>
                     </div>
                     <div class="reward-item">
-                        <span>1,000 نقطة</span>
+                        <span>200,000 نقطة</span>
                         <span>$10</span>
                     </div>
                     <div class="reward-item">
-                        <span>2,500 نقطة</span>
-                        <span>$25</span>
-                    </div>
-                    <div class="reward-item">
-                        <span>5,000 نقطة</span>
+                        <span>1,000,000 نقطة</span>
                         <span>$50</span>
                     </div>
                 </div>
@@ -899,10 +961,10 @@ async function loadDashboard() {
         `;
         
         // Update balance in navbar
-        document.getElementById('balance').textContent = userData.balance || 0;
+        document.getElementById('balance').textContent = userBalance.toLocaleString();
         
         // Add event listeners
-        document.getElementById('withdrawBtn')?.addEventListener('click', handleWithdraw);
+        document.getElementById('withdrawBtn')?.addEventListener('click', openWithdrawModal);
         document.getElementById('redeemBtn')?.addEventListener('click', handleRedeem);
         
     } catch (error) {
@@ -910,17 +972,318 @@ async function loadDashboard() {
     }
 }
 
-// Update Balance
-function updateBalance(pointsEarned) {
-    const balanceElement = document.getElementById('balance');
-    const currentBalance = parseInt(balanceElement.textContent) || 0;
-    const newBalance = currentBalance + pointsEarned;
-    balanceElement.textContent = newBalance;
+// Load Withdraw Section
+async function loadWithdrawSection() {
+    if (!currentUser) return;
+    
+    try {
+        const userDoc = await db.collection('users').doc(currentUser.uid).get();
+        const userData = userDoc.data();
+        userBalance = userData.balance || 0;
+        
+        // Get user's withdrawal requests
+        const withdrawRequests = await getUserWithdrawRequests();
+        
+        const withdrawContainer = document.getElementById('withdrawContainer');
+        withdrawContainer.innerHTML = `
+            <div class="withdraw-info">
+                <h3><i class="fas fa-info-circle"></i> معلومات السحب</h3>
+                <div class="withdraw-rules">
+                    <ul>
+                        <li><i class="fas fa-exclamation-circle"></i> الحد الأدنى للسحب: 20,000 نقطة (1 دولار)</li>
+                        <li><i class="fas fa-exclamation-circle"></i> نسبة التحويل: 20,000 نقطة = 1 دولار</li>
+                        <li><i class="fas fa-exclamation-circle"></i> يجب أن يكون لديك حساب فودافون كاش</li>
+                        <li><i class="fas fa-exclamation-circle"></i> تتم المراجعة والتحويل خلال 24-48 ساعة</li>
+                        <li><i class="fas fa-exclamation-circle"></i> يمكنك تتبع حالة طلب السحب أدناه</li>
+                    </ul>
+                </div>
+                
+                <div class="withdraw-stats">
+                    <div class="withdraw-stat">
+                        <h4>رصيدك الحالي</h4>
+                        <p>${userBalance.toLocaleString()} نقطة</p>
+                    </div>
+                    <div class="withdraw-stat">
+                        <h4>القيمة بالدولار</h4>
+                        <p>$${(userBalance / 20000).toFixed(2)}</p>
+                    </div>
+                    <div class="withdraw-stat">
+                        <h4>المسحوب سابقاً</h4>
+                        <p>${(userData.totalWithdrawn || 0).toLocaleString()} نقطة</p>
+                    </div>
+                    <div class="withdraw-stat">
+                        <h4>المجموع المكتسب</h4>
+                        <p>${(userData.totalEarned || 0).toLocaleString()} نقطة</p>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary btn-large" id="requestWithdrawBtn" ${userBalance < 20000 ? 'disabled' : ''}>
+                    <i class="fas fa-money-bill-wave"></i> طلب سحب جديد
+                </button>
+            </div>
+            
+            <div class="withdraw-requests">
+                <h3><i class="fas fa-history"></i> طلبات السحب السابقة</h3>
+                ${withdrawRequests.length > 0 ? 
+                    withdrawRequests.map(request => `
+                        <div class="request-item">
+                            <div class="request-info">
+                                <h4>طلب سحب #${request.requestId}</h4>
+                                <div class="request-details">
+                                    <span><i class="fas fa-calendar"></i> ${request.requestDate}</span>
+                                    <span><i class="fas fa-coins"></i> ${request.amount.toLocaleString()} نقطة</span>
+                                    <span><i class="fas fa-dollar-sign"></i> $${(request.amount / 20000).toFixed(2)}</span>
+                                </div>
+                            </div>
+                            <div class="request-status status-${request.status}">
+                                ${getStatusText(request.status)}
+                            </div>
+                        </div>
+                    `).join('') : 
+                    `<div class="no-requests">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <h4>لا توجد طلبات سحب سابقة</h4>
+                        <p>يمكنك طلب سحب أرباحك بمجرد وصول رصيدك إلى 20,000 نقطة</p>
+                    </div>`
+                }
+            </div>
+        `;
+        
+        // Add event listener for withdraw button
+        document.getElementById('requestWithdrawBtn')?.addEventListener('click', openWithdrawModal);
+        
+    } catch (error) {
+        console.error('Error loading withdraw section:', error);
+    }
 }
 
-// Handle Withdraw
-function handleWithdraw() {
-    showNotification('سيتم تفعيل نظام السحب قريباً', 'info');
+// Get User Withdraw Requests
+async function getUserWithdrawRequests() {
+    if (!currentUser) return [];
+    
+    try {
+        const requestsSnapshot = await db.collection('withdrawals')
+            .where('userId', '==', currentUser.uid)
+            .orderBy('createdAt', 'desc')
+            .limit(10)
+            .get();
+        
+        const requests = [];
+        requestsSnapshot.forEach(doc => {
+            const data = doc.data();
+            const requestDate = data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleDateString('ar-SA') : 'غير معروف';
+            
+            requests.push({
+                requestId: doc.id.substring(0, 8),
+                amount: data.amount || 0,
+                status: data.status || 'pending',
+                requestDate: requestDate
+            });
+        });
+        
+        return requests;
+    } catch (error) {
+        console.error('Error getting withdraw requests:', error);
+        return [];
+    }
+}
+
+// Get Status Text
+function getStatusText(status) {
+    switch(status) {
+        case 'pending': return 'قيد المراجعة';
+        case 'approved': return 'تم الموافقة';
+        case 'rejected': return 'مرفوض';
+        case 'completed': return 'تم التحويل';
+        default: return 'غير معروف';
+    }
+}
+
+// Open Withdraw Modal
+function openWithdrawModal() {
+    if (!currentUser) {
+        showNotification('يجب تسجيل الدخول أولاً', 'error');
+        return;
+    }
+    
+    if (userBalance < 20000) {
+        showNotification('الحد الأدنى للسحب هو 20,000 نقطة', 'error');
+        return;
+    }
+    
+    // Update summary
+    document.getElementById('currentBalanceSummary').textContent = `${userBalance.toLocaleString()} نقطة`;
+    document.getElementById('withdrawAmount').value = 20000;
+    document.getElementById('withdrawAmount').min = 20000;
+    document.getElementById('withdrawAmount').max = userBalance;
+    
+    updateWithdrawSummary();
+    
+    // Show modal
+    document.getElementById('withdrawModal').style.display = 'flex';
+}
+
+// Close Withdraw Modal
+function closeWithdrawModal() {
+    document.getElementById('withdrawModal').style.display = 'none';
+}
+
+// Close Confirm Modal
+function closeConfirmModal() {
+    document.getElementById('confirmModal').style.display = 'none';
+    closeWithdrawModal();
+}
+
+// Update Withdraw Summary
+function updateWithdrawSummary() {
+    const amountInput = document.getElementById('withdrawAmount');
+    if (!amountInput) return;
+    
+    const amount = parseInt(amountInput.value) || 0;
+    const maxAmount = Math.min(userBalance, 1000000); // Limit to 1,000,000 points max per request
+    
+    // Validate amount
+    if (amount < 20000) {
+        amountInput.value = 20000;
+        updateWithdrawSummary();
+        return;
+    }
+    
+    if (amount > maxAmount) {
+        amountInput.value = maxAmount;
+        updateWithdrawSummary();
+        return;
+    }
+    
+    // Calculate dollar value
+    const dollarValue = amount / 20000;
+    const remainingBalance = userBalance - amount;
+    
+    // Update UI
+    document.getElementById('amountInDollars').textContent = `= $${dollarValue.toFixed(2)}`;
+    document.getElementById('requestedAmount').textContent = `${amount.toLocaleString()} نقطة`;
+    document.getElementById('amountInDollar').textContent = `$${dollarValue.toFixed(2)}`;
+    document.getElementById('remainingBalance').textContent = `${remainingBalance.toLocaleString()} نقطة`;
+}
+
+// Handle Withdraw Request
+async function handleWithdrawRequest(e) {
+    e.preventDefault();
+    
+    if (!currentUser) {
+        showNotification('يجب تسجيل الدخول أولاً', 'error');
+        return;
+    }
+    
+    const amount = parseInt(document.getElementById('withdrawAmount').value);
+    const vodafoneNumber = document.getElementById('vodafoneNumber').value;
+    const notes = document.getElementById('withdrawNotes').value;
+    
+    // Validate amount
+    if (amount < 20000) {
+        showNotification('الحد الأدنى للسحب هو 20,000 نقطة', 'error');
+        return;
+    }
+    
+    if (amount > userBalance) {
+        showNotification('رصيدك غير كافي', 'error');
+        return;
+    }
+    
+    // Validate Vodafone number
+    if (!vodafoneNumber || !/^01[0-9]{9}$/.test(vodafoneNumber)) {
+        showNotification('يرجى إدخال رقم فودافون كاش صحيح (11 رقم)', 'error');
+        return;
+    }
+    
+    try {
+        // Start transaction
+        await db.runTransaction(async (transaction) => {
+            // Get user data
+            const userRef = db.collection('users').doc(currentUser.uid);
+            const userDoc = await transaction.get(userRef);
+            const userData = userDoc.data();
+            
+            // Check if user has enough balance
+            if ((userData.balance || 0) < amount) {
+                throw new Error('رصيدك غير كافي');
+            }
+            
+            // Create withdrawal request
+            const withdrawalRef = db.collection('withdrawals').doc();
+            const withdrawalData = {
+                withdrawalId: withdrawalRef.id,
+                userId: currentUser.uid,
+                userEmail: currentUser.email,
+                userName: currentUser.displayName,
+                amount: amount,
+                dollarValue: amount / 20000,
+                vodafoneNumber: vodafoneNumber,
+                notes: notes || '',
+                status: 'pending',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            // Update user balance
+            const newBalance = (userData.balance || 0) - amount;
+            const totalWithdrawn = (userData.totalWithdrawn || 0) + amount;
+            
+            transaction.set(withdrawalRef, withdrawalData);
+            transaction.update(userRef, {
+                balance: newBalance,
+                totalWithdrawn: totalWithdrawn
+            });
+        });
+        
+        // Update local balance
+        userBalance -= amount;
+        document.getElementById('balance').textContent = userBalance.toLocaleString();
+        
+        // Show success message
+        document.getElementById('withdrawModal').style.display = 'none';
+        document.getElementById('confirmModal').style.display = 'flex';
+        
+        // Reset form
+        document.getElementById('withdrawForm').reset();
+        
+        // Reload user data
+        loadUserData();
+        
+        // Send notification to admin
+        await sendAdminNotification(amount, vodafoneNumber);
+        
+    } catch (error) {
+        console.error('Error processing withdraw request:', error);
+        showNotification(error.message || 'حدث خطأ في معالجة طلب السحب', 'error');
+    }
+}
+
+// Send Notification to Admin
+async function sendAdminNotification(amount, vodafoneNumber) {
+    try {
+        const notificationRef = db.collection('adminNotifications').doc();
+        const notificationData = {
+            type: 'withdrawal_request',
+            title: 'طلب سحب جديد',
+            message: `طلب سحب جديد من ${currentUser.displayName || currentUser.email}`,
+            details: {
+                userId: currentUser.uid,
+                userName: currentUser.displayName,
+                userEmail: currentUser.email,
+                amount: amount,
+                dollarValue: amount / 20000,
+                vodafoneNumber: vodafoneNumber
+            },
+            isRead: false,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        
+        await notificationRef.set(notificationData);
+        console.log('تم إرسال إشعار للمشرف');
+    } catch (error) {
+        console.error('Error sending admin notification:', error);
+    }
 }
 
 // Handle Redeem
@@ -975,4 +1338,19 @@ window.addEventListener('online', function() {
 
 window.addEventListener('offline', function() {
     showNotification('فقدت الاتصال بالإنترنت', 'warning');
+});
+
+// Initialize Google Sign-In on window load
+window.addEventListener('load', function() {
+    if (typeof google !== 'undefined') {
+        google.accounts.id.initialize({
+            client_id: GOOGLE_CLIENT_ID,
+            callback: handleGoogleSignInResponse,
+            auto_select: false,
+            cancel_on_tap_outside: true
+        });
+        
+        // Try to auto sign-in
+        google.accounts.id.prompt();
+    }
 });
