@@ -1445,53 +1445,74 @@ const firebaseConfig = {
     appId: "1:509713648189:web:0ccd6ada1f4e07f85d3854"
 };
 
-// تهيئة فيربيس
+// 1. تهيئة فيربيس
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
 const db = firebase.firestore();
 
-// دالة البدء (تحل مشكلة عدم الظهور وتضمن التوجيه)
+// 2. الدالة الأساسية لاستقبال بيانات جوجل
 window.handleCredentialResponse = async (response) => {
     try {
-        const payload = JSON.parse(atob(response.credential.split('.')[1]));
-        console.log("تم الدخول بنجاح:", payload.email);
+        console.log("تم استلام الاستجابة من جوجل...");
+        const payload = parseJwt(response.credential); // استخدام دالة فك التشفير
+        
+        if (!payload) return;
 
-        // حفظ البيانات في المتصفح
-        localStorage.setItem("user", JSON.stringify({
+        // تجهيز بيانات المستخدم
+        const user = {
             uid: payload.sub,
             email: payload.email,
-            name: payload.name
-        }));
+            displayName: payload.name,
+            photoURL: payload.picture
+        };
 
-        // --- الحل السحري للتوجيه في موقعك ---
+        // 3. حفظ/تحديث البيانات في فيربيس (الدالة موجودة تحت)
+        await createOrUpdateUser(user);
+
+        // 4. حفظ الحالة في المتصفح
+        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("isLoggedIn", "true");
+
+        console.log("تم الحفظ في فيربيس، جاري التوجيه...");
+
+        // 5. التوجيه القسري
+        window.location.hash = "#home";
         
-        // 1. إخفاء قسم التسجيل وإظهار القسم الرئيسي يدوياً (لأن موقعك SPA)
-        const loginSection = document.getElementById('login-section'); // تأكد من اسم الـ ID عندك
-        const homeSection = document.getElementById('home-section');   // تأكد من اسم الـ ID عندك
-
-        if (loginSection && homeSection) {
-            loginSection.style.display = 'none';
-            homeSection.style.display = 'block';
-        }
-
-        // 2. تغيير الرابط
-        window.location.hash = "#home"; 
-        
-        // 3. تحديث الصفحة لضمان تحميل البيانات الجديدة
+        // تحديث بسيط لضمان ظهور الصفحة الرئيسية
         setTimeout(() => {
             window.location.reload();
-        }, 100);
+        }, 300);
 
     } catch (error) {
-        console.error("خطأ في التوجيه:", error);
+        console.error("خطأ حرج في التوجيه أو الحفظ:", error);
     }
 };
 
-
+// 4. إنشاء أو تحديث بيانات المستخدم في Firebase
+async function createOrUpdateUser(user) {
+    const userRef = db.collection('users').doc(user.uid);
+    const userDoc = await userRef.get();
+    
+    if (!userDoc.exists) {
+        // إنشاء مستخدم جديد بالبيانات اللي طلبتها
+        await userRef.set({
+            uid: user.uid,
+            email: user.email,
+            name: user.displayName || 'مستخدم جديد',
+            photoURL: user.photoURL || '',
+            points: 0, 
+            totalEarned: 0,
+            dailyStats: {},
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        console.log("تم إنشاء مستخدم جديد بنجاح");
+    } else {
+        console.log("المستخدم موجود بالفعل");
+    }
 }
 
-// وظيفة فك تشفير JWT (جاهزة ومجربة)
+// 5. وظيفة فك تشفير JWT (نسخة واحدة صحيحة)
 function parseJwt(token) {
     try {
         const base64Url = token.split('.')[1];
@@ -1502,32 +1523,13 @@ function parseJwt(token) {
 
         return JSON.parse(jsonPayload);
     } catch (error) {
-        console.error("JWT Error:", error);
+        console.error("خطأ في فك تشفير JWT:", error);
         return null;
     }
 }
 
-// استدعاء التشغيل
-initializeGoogleSignIn();
 
-                
-                
-        }
-        
-        // فك تشفير JWT token
-        function parseJwt(token) {
-            try {
-                const base64Url = token.split('.')[1];
-                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-                const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-                }).join(''));
-        
-                return JSON.parse(jsonPayload);
-            } catch (error) {
-                console.error("خطأ في فك تشفير JWT:", error);
-                return null;
-            }
+        // 
         }
         
         // إنشاء أو تحديث بيانات المستخدم في Firebase
