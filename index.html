@@ -7,7 +7,9 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/x-icon" href="https://img.icons8.com/color/96/000000/money-bag.png">
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
     <!-- شريط التنقل -->
@@ -26,16 +28,20 @@
             </div>
             
             <div class="nav-buttons">
-                <div class="user-balance" id="userBalance">
+                <div class="user-balance" id="userBalance" style="display: none;">
                     <i class="fas fa-coins"></i>
                     <span id="balance">0</span> نقطة
                 </div>
                 <button class="btn btn-login" id="loginBtn">
                     <i class="fab fa-google"></i> تسجيل الدخول
                 </button>
-                <button class="btn btn-logout" id="logoutBtn" style="display: none;">
-                    <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
-                </button>
+                <div class="user-profile" id="userProfile" style="display: none;">
+                    <img id="userAvatar" src="" alt="صورة المستخدم" class="user-avatar">
+                    <span id="userName"></span>
+                    <button class="btn btn-logout" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> خروج
+                    </button>
+                </div>
                 <button class="mobile-toggle" id="mobileToggle">
                     <i class="fas fa-bars"></i>
                 </button>
@@ -53,15 +59,15 @@
                 </p>
                 <div class="hero-stats">
                     <div class="stat">
-                        <h3>+<span id="totalUsers">25,000</span></h3>
+                        <h3>+<span id="totalUsers">0</span></h3>
                         <p>مستخدم نشط</p>
                     </div>
                     <div class="stat">
-                        <h3>$<span id="totalPayouts">500,000</span>+</h3>
+                        <h3>$<span id="totalPayouts">0</span>+</h3>
                         <p>تم دفعها</p>
                     </div>
                     <div class="stat">
-                        <h3><span id="totalAds">10,000</span>+</h3>
+                        <h3><span id="totalAds">0</span>+</h3>
                         <p>إعلان نشط</p>
                     </div>
                 </div>
@@ -85,71 +91,14 @@
         <div class="container">
             <h2 class="section-title"><i class="fas fa-chart-line"></i> لوحة التحكم</h2>
             <div class="dashboard-grid" id="userDashboard">
-                <div class="dashboard-card balance-card">
-                    <div class="card-icon">
-                        <i class="fas fa-wallet"></i>
-                    </div>
-                    <h3>رصيدك الحالي</h3>
-                    <p class="balance-amount" id="currentBalance">0 نقطة</p>
-                    <p class="balance-value">≈ $0.00</p>
-                    <button class="btn btn-small" id="withdrawBtn">سحب الأرباح</button>
-                </div>
-                
-                <div class="dashboard-card stats-card">
-                    <div class="card-icon">
-                        <i class="fas fa-chart-bar"></i>
-                    </div>
-                    <h3>إحصائيات اليوم</h3>
-                    <div class="stats-list">
-                        <div class="stat-item">
-                            <span>الإعلانات المشاهدة</span>
-                            <span id="todayAds">0</span>
-                        </div>
-                        <div class="stat-item">
-                            <span>النقاط المكتسبة</span>
-                            <span id="todayPoints">0</span>
-                        </div>
-                        <div class="stat-item">
-                            <span>الدقائق المستثمرة</span>
-                            <span id="todayMinutes">0</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="dashboard-card tasks-card">
-                    <div class="card-icon">
-                        <i class="fas fa-tasks"></i>
-                    </div>
-                    <h3>المهام المتاحة</h3>
-                    <div class="tasks-list" id="availableTasks">
-                        <p>يجب تسجيل الدخول لعرض المهام</p>
-                    </div>
-                </div>
-                
-                <div class="dashboard-card rewards-card">
-                    <div class="card-icon">
-                        <i class="fas fa-gift"></i>
-                    </div>
-                    <h3>المكافآت</h3>
-                    <div class="rewards-list">
-                        <div class="reward-item">
-                            <span>500 نقطة</span>
-                            <span>$5</span>
-                        </div>
-                        <div class="reward-item">
-                            <span>1,000 نقطة</span>
-                            <span>$10</span>
-                        </div>
-                        <div class="reward-item">
-                            <span>2,500 نقطة</span>
-                            <span>$25</span>
-                        </div>
-                        <div class="reward-item">
-                            <span>5,000 نقطة</span>
-                            <span>$50</span>
-                        </div>
-                    </div>
-                    <button class="btn btn-small" id="redeemBtn">استبدال النقاط</button>
+                <!-- سيتم ملؤها بالجافاسكريبت -->
+                <div class="login-required">
+                    <i class="fas fa-lock"></i>
+                    <h3>يجب تسجيل الدخول لعرض لوحة التحكم</h3>
+                    <p>سجل الدخول باستخدام حساب جوجل لمشاهدة رصيدك وإحصائياتك</p>
+                    <button class="btn btn-primary" id="dashboardLoginBtn">
+                        <i class="fab fa-google"></i> تسجيل الدخول الآن
+                    </button>
                 </div>
             </div>
         </div>
@@ -251,81 +200,6 @@
                     <p>بعد انتهاء العداد، احصل على نقاطك التي يمكن استبدالها بأموال حقيقية.</p>
                 </div>
             </div>
-            
-            <div class="rules-section">
-                <h3><i class="fas fa-exclamation-circle"></i> قواعد هامة</h3>
-                <div class="rules-list">
-                    <div class="rule">
-                        <i class="fas fa-ban"></i>
-                        <p>يحظر استخدام أي برامج أو سكريبتات لأتمتة المشاهدة.</p>
-                    </div>
-                    <div class="rule">
-                        <i class="fas fa-window-close"></i>
-                        <p>إغلاق نافذة الإعلان قبل انتهاء الوقت يؤدي إلى فقدان النقاط.</p>
-                    </div>
-                    <div class="rule">
-                        <i class="fas fa-user-times"></i>
-                        <p>المستخدمون الذين ينتهكون القواعد يتعرضون للخصم من رصيدهم أو الحظر.</p>
-                    </div>
-                    <div class="rule">
-                        <i class="fas fa-clock"></i>
-                        <p>يجب أن تكون نافذة الإعلان مرئية ونشطة طوال مدة المشاهدة.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- قسم المكافآت -->
-    <section class="rewards-section" id="rewards">
-        <div class="container">
-            <h2 class="section-title"><i class="fas fa-gift"></i> طرق الاستبدال</h2>
-            <div class="rewards-grid">
-                <div class="reward-card">
-                    <div class="reward-icon">
-                        <i class="fas fa-money-bill-wave"></i>
-                    </div>
-                    <h3>PayPal</h3>
-                    <p>استبدل نقاطك بأموال حقيقية عبر PayPal</p>
-                    <div class="reward-rate">
-                        <span>500 نقطة = $5</span>
-                    </div>
-                    <button class="btn btn-small">استبدال الآن</button>
-                </div>
-                <div class="reward-card">
-                    <div class="reward-icon">
-                        <i class="fas fa-credit-card"></i>
-                    </div>
-                    <h3>بطاقات هدايا</h3>
-                    <p>احصل على بطاقات هدايا لأشهر المتاجر</p>
-                    <div class="reward-rate">
-                        <span>600 نقطة = $5</span>
-                    </div>
-                    <button class="btn btn-small">استبدال الآن</button>
-                </div>
-                <div class="reward-card">
-                    <div class="reward-icon">
-                        <i class="fas fa-mobile-alt"></i>
-                    </div>
-                    <h3>رصيد جوال</h3>
-                    <p>اشحن رصيد جوالك بسهولة</p>
-                    <div class="reward-rate">
-                        <span>550 نقطة = $5</span>
-                    </div>
-                    <button class="btn btn-small">استبدال الآن</button>
-                </div>
-                <div class="reward-card">
-                    <div class="reward-icon">
-                        <i class="fas fa-donate"></i>
-                    </div>
-                    <h3>تبرع</h3>
-                    <p>تبرع بنقاطك للجمعيات الخيرية</p>
-                    <div class="reward-rate">
-                        <span>500 نقطة = $5</span>
-                    </div>
-                    <button class="btn btn-small">تبرع الآن</button>
-                </div>
-            </div>
         </div>
     </section>
 
@@ -360,9 +234,9 @@
                 </div>
                 <div class="footer-col">
                     <h3>تواصل معنا</h3>
-                    <p><i class="fas fa-envelope"></i> bo2584668@gmail.com</p>
-                    <p><i class="fas fa-phone"></i> +201273740256</p>
-                    <p><i class="fas fa-map-marker-alt"></i>جمهويه مصر العربيه </p>
+                    <p><i class="fas fa-envelope"></i> info@advista.com</p>
+                    <p><i class="fas fa-phone"></i> +966 12 345 6789</p>
+                    <p><i class="fas fa-map-marker-alt"></i> المملكة العربية السعودية</p>
                 </div>
             </div>
             <div class="footer-bottom">
@@ -373,10 +247,6 @@
     </footer>
 
     <!-- روابط JavaScript -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <script src="firebase-config.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
