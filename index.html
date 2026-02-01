@@ -1508,12 +1508,7 @@
                     showUserPage();
                 }
                 
-                hideLoading();
-            } catch (error) {
-                console.error("خطأ في تسجيل الدخول:", error);
-                hideLoading();
-                showErrorMessage("حدث خطأ في تسجيل الدخول: " + error.message);
-            }
+                
         }
         
         // فك تشفير JWT token
