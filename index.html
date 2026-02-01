@@ -23,8 +23,8 @@
                 <a href="#home" class="nav-link active"><i class="fas fa-home"></i> الرئيسية</a>
                 <a href="#ads" class="nav-link"><i class="fas fa-ad"></i> الإعلانات</a>
                 <a href="#dashboard" class="nav-link"><i class="fas fa-chart-line"></i> لوحتي</a>
+                <a href="#withdraw" class="nav-link"><i class="fas fa-money-bill-wave"></i> سحب الأرباح</a>
                 <a href="#how-it-works" class="nav-link"><i class="fas fa-question-circle"></i> طريقة العمل</a>
-                <a href="#rewards" class="nav-link"><i class="fas fa-gift"></i> المكافآت</a>
             </div>
             
             <div class="nav-buttons">
@@ -32,6 +32,9 @@
                     <i class="fas fa-coins"></i>
                     <span id="balance">0</span> نقطة
                 </div>
+                
+                <!-- Google Sign-In Button Container -->
+                <div id="g_id_signin" class="g_id_signin" style="display: none;"></div>
                 
                 <button class="btn btn-login" id="loginBtn">
                     <i class="fab fa-google"></i> تسجيل الدخول
@@ -99,6 +102,23 @@
                     <h3>يجب تسجيل الدخول لعرض لوحة التحكم</h3>
                     <p>سجل الدخول باستخدام حساب جوجل لمشاهدة رصيدك وإحصائياتك</p>
                     <button class="btn btn-primary" id="dashboardLoginBtn">
+                        <i class="fab fa-google"></i> تسجيل الدخول الآن
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- قسم السحب -->
+    <section class="withdraw-section" id="withdraw">
+        <div class="container">
+            <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> سحب الأرباح</h2>
+            <div class="withdraw-container" id="withdrawContainer">
+                <div class="login-required">
+                    <i class="fas fa-lock"></i>
+                    <h3>يجب تسجيل الدخول لعرض قسم السحب</h3>
+                    <p>سجل الدخول باستخدام حساب جوجل لطلب سحب أرباحك</p>
+                    <button class="btn btn-primary" id="withdrawLoginBtn">
                         <i class="fab fa-google"></i> تسجيل الدخول الآن
                     </button>
                 </div>
@@ -223,8 +243,8 @@
                     <a href="#home">الرئيسية</a>
                     <a href="#ads">الإعلانات</a>
                     <a href="#dashboard">لوحة التحكم</a>
+                    <a href="#withdraw">سحب الأرباح</a>
                     <a href="#how-it-works">طريقة العمل</a>
-                    <a href="#rewards">المكافآت</a>
                 </div>
                 <div class="footer-col">
                     <h3>الشروط والسياسات</h3>
@@ -235,7 +255,7 @@
                 </div>
                 <div class="footer-col">
                     <h3>تواصل معنا</h3>
-                    <p><i class="fas fa-envelope"></i> bo2584668@gmail.com</p>
+                    <p><i class="fas fa-envelope"></i> info@advista.com</p>
                     <p><i class="fas fa-phone"></i> +966 12 345 6789</p>
                     <p><i class="fas fa-map-marker-alt"></i> المملكة العربية السعودية</p>
                 </div>
@@ -247,15 +267,122 @@
         </div>
     </footer>
 
-    <!-- نافذة تسجيل الدخول -->
-    <div id="g_id_onload"
-         data-client_id="805966277330-9j5j1nvluj69f8uieog0kk77p0jb46q4.apps.googleusercontent.com"
-         data-context="signin"
-         data-ux_mode="popup"
-         data-callback="handleGoogleSignIn"
-         data-auto_prompt="false"
-         style="display: none;">
+    <!-- نموذج طلب السحب -->
+    <div class="modal-overlay" id="withdrawModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3><i class="fas fa-money-bill-wave"></i> طلب سحب الأرباح</h3>
+                <button class="modal-close" id="closeWithdrawModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="withdrawForm">
+                    <div class="form-group">
+                        <label for="withdrawAmount">مبلغ السحب (بالنقاط)</label>
+                        <input type="number" id="withdrawAmount" class="form-control" min="20000" step="1000" placeholder="أدخل المبلغ المراد سحبه" required>
+                        <small class="form-text">الحد الأدنى للسحب: 20,000 نقطة (1 دولار)</small>
+                        <small class="form-text" id="amountInDollars"></small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="vodafoneNumber">رقم فودافون كاش</label>
+                        <input type="tel" id="vodafoneNumber" class="form-control" pattern="[0-9]{11}" placeholder="أدخل رقم فودافون كاش (11 رقم)" required>
+                        <small class="form-text">مثال: 01012345678</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="withdrawNotes">ملاحظات (اختياري)</label>
+                        <textarea id="withdrawNotes" class="form-control" rows="3" placeholder="أضف أي ملاحظات تريد إبلاغها للإدارة"></textarea>
+                    </div>
+                    
+                    <div class="withdraw-summary">
+                        <h4>ملخص الطلب:</h4>
+                        <div class="summary-item">
+                            <span>رصيدك الحالي:</span>
+                            <span id="currentBalanceSummary">0 نقطة</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>المبلغ المطلوب:</span>
+                            <span id="requestedAmount">0 نقطة</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>القيمة بالدولار:</span>
+                            <span id="amountInDollar">$0.00</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>الرصيد المتبقي:</span>
+                            <span id="remainingBalance">0 نقطة</span>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-paper-plane"></i> إرسال طلب السحب
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
+
+    <!-- نافذة تأكيد السحب -->
+    <div class="modal-overlay" id="confirmModal" style="display: none;">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3><i class="fas fa-check-circle"></i> تأكيد طلب السحب</h3>
+                <button class="modal-close" id="closeConfirmModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="confirmation-message">
+                    <i class="fas fa-check-circle success-icon"></i>
+                    <h4>تم إرسال طلب السحب بنجاح!</h4>
+                    <p>سيتم مراجعة طلبك من قبل الإدارة خلال 24-48 ساعة</p>
+                    <p>يمكنك متابعة حالة الطلب من قسم سحب الأرباح</p>
+                </div>
+                <button class="btn btn-success btn-block" id="closeConfirmBtn">
+                    <i class="fas fa-check"></i> تم الفهم
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Google Sign-In Script -->
+    <script>
+        // Initialize Google Sign-In
+        function initGoogleSignIn() {
+            if (typeof google !== 'undefined') {
+                google.accounts.id.initialize({
+                    client_id: '805966277330-9j5j1nvluj69f8uieog0kk77p0jb46q4.apps.googleusercontent.com',
+                    callback: handleGoogleSignIn,
+                    auto_select: false,
+                    cancel_on_tap_outside: true
+                });
+                
+                // Render button
+                google.accounts.id.renderButton(
+                    document.getElementById('g_id_signin'),
+                    {
+                        type: 'standard',
+                        theme: 'filled_blue',
+                        size: 'medium',
+                        text: 'signin_with',
+                        shape: 'rectangular',
+                        logo_alignment: 'left',
+                        width: '200'
+                    }
+                );
+            }
+        }
+        
+        // Handle Google Sign-In callback
+        function handleGoogleSignIn(response) {
+            window.handleGoogleSignInResponse(response);
+        }
+        
+        // Load Google Sign-In when script is ready
+        window.addEventListener('load', function() {
+            if (typeof google !== 'undefined') {
+                initGoogleSignIn();
+            }
+        });
+    </script>
 
     <!-- روابط JavaScript -->
     <script src="script.js"></script>
