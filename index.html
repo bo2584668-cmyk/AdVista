@@ -388,6 +388,63 @@
             margin-bottom: 30px;
         }
         
+        /* صفحة تسجيل الدخول */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 20px;
+        }
+        
+        .login-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+        
+        .login-logo {
+            font-size: 3rem;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+        }
+        
+        .login-title {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+        
+        .btn-google {
+            background-color: #4285F4;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 50px;
+            font-weight: 600;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .btn-google:hover {
+            background-color: #357ae8;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(66, 133, 244, 0.3);
+        }
+        
+        .btn-google i {
+            font-size: 1.5rem;
+            margin-left: 10px;
+        }
+        
         /* التجاوب مع الشاشات الصغيرة */
         @media (max-width: 768px) {
             .card-value {
@@ -400,6 +457,10 @@
             
             .navbar-brand {
                 font-size: 1.4rem;
+            }
+            
+            .login-card {
+                padding: 30px 20px;
             }
         }
         
@@ -435,206 +496,758 @@
             background-color: var(--accent-color);
             border-color: var(--accent-color);
         }
+        
+        .table th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        /* تصميم قسم العقوبات */
+        .penalty-badge {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        /* تحسينات للواجهة */
+        .progress-bar-custom {
+            background-color: var(--secondary-color);
+        }
     </style>
 </head>
 <body>
-    <!-- شريط التنقل -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                <i class="fas fa-ad me-2"></i>ادفيستا
-            </a>
+    <!-- صفحة تسجيل الدخول (الواجهة الافتراضية) -->
+    <div id="loginPage" class="login-container">
+        <div class="login-card">
+            <div class="login-logo">
+                <i class="fas fa-ad"></i>
+            </div>
+            <h1 class="login-title">مرحباً بك في ادفيستا</h1>
+            <p class="text-muted mb-4">منصة ربح النقاط الأولى من خلال مشاهدة الإعلانات</p>
             
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+            <div class="mb-4">
+                <button id="googleSignIn" class="btn-google">
+                    <i class="fab fa-google"></i>
+                    تسجيل الدخول بواسطة جوجل
+                </button>
+            </div>
             
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">
-                            <i class="fas fa-home me-1"></i> الرئيسية
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-ad me-1"></i> الإعلانات
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-history me-1"></i> السحوبات
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-question-circle me-1"></i> المساعدة
-                        </a>
-                    </li>
-                </ul>
-                
-                <div class="d-flex align-items-center">
-                    <div class="user-info me-3">
-                        <span class="me-2">أهلاً، محمد</span>
-                        <span class="user-points">
-                            <i class="fas fa-coins me-1"></i> 45,200
-                        </span>
-                    </div>
-                    
-                    <div class="dropdown">
-                        <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user-circle me-1"></i> الحساب
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> الملف الشخصي</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> الإعدادات</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-sign-out-alt me-2"></i> تسجيل الخروج</a></li>
-                        </ul>
-                    </div>
-                </div>
+            <div class="alert alert-info alert-custom">
+                <i class="fas fa-info-circle me-2"></i>
+                يجب أن يكون حسابك على جوجل مفعل لدخول الموقع
+            </div>
+            
+            <hr class="my-4">
+            
+            <h5 class="fw-bold mb-3">معلومات التواصل</h5>
+            <div class="social-icons d-flex justify-content-center">
+                <a href="https://wa.me/201273740256" target="_blank" title="واتساب">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+                <a href="https://www.instagram.com/Baraa___offical" target="_blank" title="انستجرام">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://www.tiktok.com/@Baraa_offical" target="_blank" title="تيك توك">
+                    <i class="fab fa-tiktok"></i>
+                </a>
+                <a href="https://www.facebook.com/baraa_omar_talaat" target="_blank" title="فيسبوك">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
             </div>
         </div>
-    </nav>
+    </div>
 
-    <!-- المحتوى الرئيسي -->
-    <div class="container main-container">
-        <!-- لوحة الإحصائيات -->
-        <div class="row mb-4">
-            <div class="col-lg-3 col-md-6 mb-3">
-                <div class="dashboard-card points-card">
-                    <div class="card-icon">
-                        <i class="fas fa-coins"></i>
-                    </div>
-                    <h5 class="card-title">رصيد النقاط</h5>
-                    <div class="card-value">
-                        <span class="card-unit">نقطة</span>45,200
-                    </div>
-                    <p class="text-muted mt-2">ما يعادل: 2.26 دولار</p>
-                </div>
-            </div>
-            
-            <div class="col-lg-3 col-md-6 mb-3">
-                <div class="dashboard-card tasks-card">
-                    <div class="card-icon">
-                        <i class="fas fa-tasks"></i>
-                    </div>
-                    <h5 class="card-title">المهام اليومية</h5>
-                    <div class="card-value">
-                        <span class="card-unit">مهمة</span>8/20
-                    </div>
-                    <p class="text-muted mt-2">+4,000 نقطة اليوم</p>
-                </div>
-            </div>
-            
-            <div class="col-lg-3 col-md-6 mb-3">
-                <div class="dashboard-card withdraw-card">
-                    <div class="card-icon">
-                        <i class="fas fa-wallet"></i>
-                    </div>
-                    <h5 class="card-title">السحوبات</h5>
-                    <div class="card-value">
-                        <span class="card-unit">مرة</span>3
-                    </div>
-                    <p class="text-muted mt-2">إجمالي السحوبات: 5 دولار</p>
-                </div>
-            </div>
-            
-            <div class="col-lg-3 col-md-6 mb-3">
-                <div class="dashboard-card stats-card">
-                    <div class="card-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <h5 class="card-title">الأرباح الشهرية</h5>
-                    <div class="card-value">
-                        <span class="card-unit">دولار</span>12.5
-                    </div>
-                    <p class="text-muted mt-2">+250,000 نقطة</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- قسم الإعلانات -->
-        <div class="ads-container">
-            <h3 class="section-title">
-                <i class="fas fa-ad me-2"></i>الإعلانات المتاحة
-            </h3>
-            
-            <div class="row" id="adsContainer">
-                <!-- الإعلانات سيتم إضافتها هنا عبر JavaScript -->
-            </div>
-        </div>
-        
-        <!-- قسم طلب السحب -->
-        <div class="row mt-5">
-            <div class="col-lg-6">
-                <div class="dashboard-card">
-                    <h5 class="card-title">
-                        <i class="fas fa-money-bill-wave me-2"></i>طلب سحب الأرباح
-                    </h5>
-                    <p class="text-muted mb-3">الحد الأدنى للسحب: 1 دولار (20,000 نقطة)</p>
+    <!-- صفحة المستخدم الرئيسية (مخفية حتى تسجيل الدخول) -->
+    <div id="userPage" style="display: none;">
+        <!-- شريط التنقل -->
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container">
+                <a class="navbar-brand" href="#">
+                    <i class="fas fa-ad me-2"></i>ادفيستا
+                </a>
+                
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#" onclick="showSection('dashboard')">
+                                <i class="fas fa-home me-1"></i> الرئيسية
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showSection('ads')">
+                                <i class="fas fa-ad me-1"></i> الإعلانات
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showSection('withdraw')">
+                                <i class="fas fa-wallet me-1"></i> السحوبات
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showSection('history')">
+                                <i class="fas fa-history me-1"></i> التاريخ
+                            </a>
+                        </li>
+                    </ul>
                     
-                    <div class="mb-3">
-                        <label class="form-label">رقم فودافون كاش</label>
-                        <input type="text" class="form-control" placeholder="أدخل رقم الهاتف المرتبط بفودافون كاش">
+                    <div class="d-flex align-items-center">
+                        <div class="user-info me-3">
+                            <span class="me-2" id="userName">أهلاً، </span>
+                            <span class="user-points">
+                                <i class="fas fa-coins me-1"></i> <span id="userPoints">0</span>
+                            </span>
+                        </div>
+                        
+                        <div class="dropdown">
+                            <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user-circle me-1"></i> الحساب
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="#" onclick="showSection('profile')"><i class="fas fa-user me-2"></i> الملف الشخصي</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="showSection('settings')"><i class="fas fa-cog me-2"></i> الإعدادات</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="#" onclick="signOut()"><i class="fas fa-sign-out-alt me-2"></i> تسجيل الخروج</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- المحتوى الرئيسي -->
+        <div class="container main-container">
+            <!-- قسم الرئيسية -->
+            <div id="dashboardSection">
+                <div class="row mb-4">
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="dashboard-card points-card">
+                            <div class="card-icon">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <h5 class="card-title">رصيد النقاط</h5>
+                            <div class="card-value">
+                                <span class="card-unit">نقطة</span><span id="totalPoints">0</span>
+                            </div>
+                            <p class="text-muted mt-2" id="pointsInDollars">ما يعادل: 0 دولار</p>
+                        </div>
                     </div>
                     
-                    <div class="mb-3">
-                        <label class="form-label">عدد النقاط للسحب</label>
-                        <input type="number" class="form-control" id="withdrawPoints" min="20000" step="1000" value="20000">
-                        <div class="form-text" id="withdrawAmount">المبلغ: 1 دولار</div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="dashboard-card tasks-card">
+                            <div class="card-icon">
+                                <i class="fas fa-tasks"></i>
+                            </div>
+                            <h5 class="card-title">المهام اليومية</h5>
+                            <div class="card-value">
+                                <span class="card-unit">مهمة</span><span id="dailyTasks">0</span>/20
+                            </div>
+                            <p class="text-muted mt-2">النقاط اليومية: <span id="dailyPoints">0</span></p>
+                        </div>
                     </div>
                     
-                    <button class="btn btn-success w-100" id="requestWithdraw">
-                        <i class="fas fa-paper-plane me-2"></i>إرسال طلب السحب
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="dashboard-card withdraw-card">
+                            <div class="card-icon">
+                                <i class="fas fa-wallet"></i>
+                            </div>
+                            <h5 class="card-title">السحوبات</h5>
+                            <div class="card-value">
+                                <span class="card-unit">مرة</span><span id="withdrawCount">0</span>
+                            </div>
+                            <p class="text-muted mt-2">إجمالي السحوبات: <span id="totalWithdraw">0</span> دولار</p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="dashboard-card stats-card">
+                            <div class="card-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <h5 class="card-title">الأرباح الشهرية</h5>
+                            <div class="card-value">
+                                <span class="card-unit">دولار</span><span id="monthlyEarnings">0</span>
+                            </div>
+                            <p class="text-muted mt-2">النقاط الشهرية: <span id="monthlyPoints">0</span></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- الإعلانات اليومية -->
+                <div class="ads-container">
+                    <h3 class="section-title">
+                        <i class="fas fa-bolt me-2"></i>إعلانات اليوم السريعة
+                    </h3>
+                    
+                    <div class="row" id="quickAdsContainer">
+                        <!-- سيتم ملؤها بواسطة JavaScript -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- قسم الإعلانات -->
+            <div id="adsSection" style="display: none;">
+                <h3 class="section-title">
+                    <i class="fas fa-ad me-2"></i>جميع الإعلانات المتاحة
+                </h3>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="searchAds" placeholder="ابحث عن إعلان...">
+                            <button class="btn btn-primary" onclick="searchAds()">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <select class="form-select" id="sortAds" onchange="loadAds()">
+                            <option value="newest">الأحدث أولاً</option>
+                            <option value="highest">أعلى نقاط</option>
+                            <option value="lowest">أقل مدة</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="row" id="adsContainer">
+                    <!-- سيتم ملؤها بواسطة JavaScript -->
+                </div>
+                
+                <div class="text-center mt-4">
+                    <button class="btn btn-outline-primary" onclick="loadMoreAds()" id="loadMoreBtn">
+                        <i class="fas fa-plus me-2"></i>تحميل المزيد
                     </button>
                 </div>
             </div>
             
-            <div class="col-lg-6">
+            <!-- قسم السحوبات -->
+            <div id="withdrawSection" style="display: none;">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="dashboard-card">
+                            <h5 class="card-title">
+                                <i class="fas fa-money-bill-wave me-2"></i>طلب سحب الأرباح
+                            </h5>
+                            <p class="text-muted mb-3">الحد الأدنى للسحب: 1 دولار (20,000 نقطة)</p>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">رقم فودافون كاش</label>
+                                <input type="text" class="form-control" id="vodafoneNumber" placeholder="أدخل رقم الهاتف المرتبط بفودافون كاش" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">عدد النقاط للسحب</label>
+                                <input type="number" class="form-control" id="withdrawPoints" min="20000" step="1000" value="20000" required>
+                                <div class="form-text" id="withdrawAmount">المبلغ: 1 دولار</div>
+                            </div>
+                            
+                            <button class="btn btn-success w-100" id="requestWithdraw" onclick="requestWithdrawal()">
+                                <i class="fas fa-paper-plane me-2"></i>إرسال طلب السحب
+                            </button>
+                        </div>
+                        
+                        <!-- طلبات السحب السابقة -->
+                        <div class="dashboard-card mt-4">
+                            <h5 class="card-title">
+                                <i class="fas fa-history me-2"></i>طلبات السحب السابقة
+                            </h5>
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="withdrawHistoryTable">
+                                    <thead>
+                                        <tr>
+                                            <th>التاريخ</th>
+                                            <th>النقاط</th>
+                                            <th>المبلغ</th>
+                                            <th>رقم الهاتف</th>
+                                            <th>الحالة</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- سيتم ملؤها بواسطة JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-4">
+                        <div class="dashboard-card">
+                            <h5 class="card-title">
+                                <i class="fas fa-info-circle me-2"></i>معلومات مهمة
+                            </h5>
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    الحد الأدنى للسحب: 20,000 نقطة (1 دولار)
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    السحب حصرياً عبر فودافون كاش
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    معالجة طلبات السحب خلال 24-48 ساعة
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    يجب أن يكون الرصيد من نقاط الإعلانات فقط
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    العمولة: 5% من المبلغ المسحوب
+                                </li>
+                            </ul>
+                            
+                            <div class="alert alert-warning alert-custom mt-3">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                يتم خصم 5% عمولة على كل عملية سحب
+                            </div>
+                        </div>
+                        
+                        <!-- حاسبة النقاط -->
+                        <div class="dashboard-card mt-4">
+                            <h5 class="card-title">
+                                <i class="fas fa-calculator me-2"></i>حاسبة النقاط
+                            </h5>
+                            <div class="mb-3">
+                                <label class="form-label">عدد النقاط</label>
+                                <input type="number" class="form-control" id="calcPoints" min="0" value="20000" oninput="calculatePoints()">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">القيمة بالدولار</label>
+                                <input type="text" class="form-control" id="calcDollars" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">بعد الخصم (5%)</label>
+                                <input type="text" class="form-control" id="calcAfterFees" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- قسم التاريخ -->
+            <div id="historySection" style="display: none;">
                 <div class="dashboard-card">
                     <h5 class="card-title">
-                        <i class="fas fa-info-circle me-2"></i>معلومات مهمة
+                        <i class="fas fa-history me-2"></i>سجل النشاط
                     </h5>
-                    <ul class="list-unstyled">
-                        <li class="mb-2">
-                            <i class="fas fa-check-circle text-success me-2"></i>
-                            الحد الأدنى للسحب: 20,000 نقطة (1 دولار)
+                    
+                    <ul class="nav nav-tabs" id="historyTabs">
+                        <li class="nav-item">
+                            <button class="nav-link active" onclick="showHistoryTab('ads')">الإعلانات</button>
                         </li>
-                        <li class="mb-2">
-                            <i class="fas fa-check-circle text-success me-2"></i>
-                            السحب حصرياً عبر فودافون كاش
+                        <li class="nav-item">
+                            <button class="nav-link" onclick="showHistoryTab('points')">النقاط</button>
                         </li>
-                        <li class="mb-2">
-                            <i class="fas fa-check-circle text-success me-2"></i>
-                            معالجة طلبات السحب خلال 24-48 ساعة
-                        </li>
-                        <li class="mb-2">
-                            <i class="fas fa-check-circle text-success me-2"></i>
-                            كل إعلان يعطي 100-500 نقطة حسب المدة
-                        </li>
-                        <li class="mb-2">
-                            <i class="fas fa-check-circle text-success me-2"></i>
-                            يمكنك مشاهدة حتى 50 إعلان يومياً
+                        <li class="nav-item">
+                            <button class="nav-link" onclick="showHistoryTab('penalties')">العقوبات</button>
                         </li>
                     </ul>
                     
-                    <hr>
+                    <div class="tab-content mt-3">
+                        <div class="tab-pane fade show active" id="adsHistoryTab">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>التاريخ</th>
+                                            <th>الإعلان</th>
+                                            <th>النقاط</th>
+                                            <th>المدة</th>
+                                            <th>الحالة</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="adsHistoryBody">
+                                        <!-- سيتم ملؤها بواسطة JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-pane fade" id="pointsHistoryTab">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>التاريخ</th>
+                                            <th>النوع</th>
+                                            <th>النقاط</th>
+                                            <th>الرصيد قبل</th>
+                                            <th>الرصيد بعد</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="pointsHistoryBody">
+                                        <!-- سيتم ملؤها بواسطة JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-pane fade" id="penaltiesHistoryTab">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>التاريخ</th>
+                                            <th>النوع</th>
+                                            <th>النقاط المخصومة</th>
+                                            <th>السبب</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="penaltiesHistoryBody">
+                                        <!-- سيتم ملؤها بواسطة JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- قسم الملف الشخصي -->
+            <div id="profileSection" style="display: none;">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="dashboard-card text-center">
+                            <div class="mb-3">
+                                <img src="https://ui-avatars.com/api/?name=مستخدم&background=3498db&color=fff&size=150" 
+                                     class="rounded-circle" alt="صورة المستخدم" id="userAvatar">
+                            </div>
+                            <h5 id="profileName"></h5>
+                            <p class="text-muted" id="profileEmail"></p>
+                            <p class="text-muted">تاريخ الانضمام: <span id="joinDate"></span></p>
+                        </div>
+                    </div>
                     
-                    <h6 class="fw-bold mt-3">تواصل مع الإدارة للاستفسار:</h6>
-                    <div class="social-icons mt-3">
-                        <a href="https://wa.me/201273740256" target="_blank" title="واتساب">
-                            <i class="fab fa-whatsapp"></i>
-                        </a>
-                        <a href="https://www.instagram.com/Baraa___offical" target="_blank" title="انستجرام">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a href="https://www.tiktok.com/@Baraa_offical" target="_blank" title="تيك توك">
-                            <i class="fab fa-tiktok"></i>
-                        </a>
-                        <a href="https://www.facebook.com/baraa_omar_talaat" target="_blank" title="فيسبوك">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
+                    <div class="col-lg-8">
+                        <div class="dashboard-card">
+                            <h5 class="card-title">معلومات الحساب</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">الاسم الكامل</label>
+                                        <input type="text" class="form-control" id="profileFullName">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">رقم الهاتف</label>
+                                        <input type="text" class="form-control" id="profilePhone">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">البلد</label>
+                                        <select class="form-select" id="profileCountry">
+                                            <option value="egypt">مصر</option>
+                                            <option value="saudi">السعودية</option>
+                                            <option value="uae">الإمارات</option>
+                                            <option value="other">دولة أخرى</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">المدينة</label>
+                                        <input type="text" class="form-control" id="profileCity">
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" onclick="saveProfile()">
+                                <i class="fas fa-save me-2"></i>حفظ التغييرات
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- قسم الإعدادات -->
+            <div id="settingsSection" style="display: none;">
+                <div class="dashboard-card">
+                    <h5 class="card-title">الإعدادات</h5>
+                    
+                    <div class="mb-4">
+                        <h6>إشعارات البريد الإلكتروني</h6>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
+                            <label class="form-check-label" for="emailNotifications">تفعيل الإشعارات بالبريد</label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h6>إعدادات الخصوصية</h6>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="showProfile" checked>
+                            <label class="form-check-label" for="showProfile">إظهار ملفي الشخصي للآخرين</label>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="saveSettings()">
+                        <i class="fas fa-save me-2"></i>حفظ الإعدادات
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- الفوتر -->
+        <footer class="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <h5>عن ادفيستا</h5>
+                        <p>منصة عربية لربح النقاط من خلال مشاهدة الإعلانات. نوفر فرصة ربح حقيقية للمستخدمين مع شروط واضحة وشفافة.</p>
+                        <div class="social-icons mt-4">
+                            <a href="https://wa.me/201273740256" target="_blank" title="واتساب">
+                                <i class="fab fa-whatsapp"></i>
+                            </a>
+                            <a href="https://www.instagram.com/Baraa___offical" target="_blank" title="انستجرام">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="https://www.tiktok.com/@Baraa_offical" target="_blank" title="تيك توك">
+                                <i class="fab fa-tiktok"></i>
+                            </a>
+                            <a href="https://www.facebook.com/baraa_omar_talaat" target="_blank" title="فيسبوك">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <h5>روابط سريعة</h5>
+                        <ul class="footer-links list-unstyled">
+                            <li><a href="#" onclick="showSection('dashboard')"><i class="fas fa-chevron-left me-2"></i>كيفية الربح</a></li>
+                            <li><a href="#" onclick="showSection('withdraw')"><i class="fas fa-chevron-left me-2"></i>شروط السحب</a></li>
+                            <li><a href="#"><i class="fas fa-chevron-left me-2"></i>الأسئلة الشائعة</a></li>
+                            <li><a href="#"><i class="fas fa-chevron-left me-2"></i>سياسة الخصوصية</a></li>
+                            <li><a href="#" onclick="showSection('profile')"><i class="fas fa-chevron-left me-2"></i>اتصل بنا</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="col-lg-4 col-md-12 mb-4">
+                        <h5>معلومات الاتصال</h5>
+                        <ul class="footer-links list-unstyled">
+                            <li><i class="fas fa-envelope me-2"></i> bo2584668@gmail.com</li>
+                            <li><i class="fab fa-whatsapp me-2"></i> 201273740256</li>
+                            <li><i class="fas fa-globe me-2"></i> مصر</li>
+                        </ul>
+                        
+                        <div class="mt-4">
+                            <h6>طرق السحب المتاحة</h6>
+                            <div class="d-flex align-items-center mt-2">
+                                <div class="bg-white rounded p-2 me-2">
+                                    <i class="fas fa-money-bill-wave text-success fa-2x"></i>
+                                </div>
+                                <span>فودافون كاش</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="copyright">
+                    <p>جميع الحقوق محفوظة &copy; 2023 ادفيستا. تم التطوير بواسطة بَراء</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- لوحة تحكم الإدمن -->
+    <div id="adminPage" style="display: none;">
+        <div class="admin-panel">
+            <div class="container-fluid">
+                <div class="row">
+                    <!-- الشريط الجانبي -->
+                    <div class="col-lg-2 col-md-3 admin-sidebar">
+                        <div class="admin-header">
+                            <h4><i class="fas fa-user-shield me-2"></i>لوحة التحكم</h4>
+                            <p class="small mb-0" id="adminEmail"></p>
+                        </div>
+                        
+                        <ul class="admin-menu">
+                            <li><a href="#" class="active" onclick="showAdminSection('dashboard')"><i class="fas fa-tachometer-alt me-2"></i> الإحصائيات</a></li>
+                            <li><a href="#" onclick="showAdminSection('ads')"><i class="fas fa-ad me-2"></i> إدارة الإعلانات</a></li>
+                            <li><a href="#" onclick="showAdminSection('users')"><i class="fas fa-users me-2"></i> إدارة المستخدمين</a></li>
+                            <li><a href="#" onclick="showAdminSection('withdrawals')"><i class="fas fa-money-check me-2"></i> طلبات السحب</a></li>
+                            <li><a href="#" onclick="showAdminSection('reports')"><i class="fas fa-chart-bar me-2"></i> التقارير</a></li>
+                            <li><a href="#" onclick="signOut()"><i class="fas fa-sign-out-alt me-2"></i> تسجيل الخروج</a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- المحتوى الرئيسي -->
+                    <div class="col-lg-10 col-md-9 admin-content">
+                        <!-- قسم إحصائيات الإدمن -->
+                        <div id="adminDashboard">
+                            <h3 class="mb-4">إحصائيات النظام</h3>
+                            
+                            <div class="row">
+                                <div class="col-md-3 mb-3">
+                                    <div class="admin-card">
+                                        <h6>إجمالي المستخدمين</h6>
+                                        <h2 id="totalUsers">0</h2>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <div class="admin-card">
+                                        <h6>الإعلانات النشطة</h6>
+                                        <h2 id="activeAds">0</h2>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <div class="admin-card">
+                                        <h6>طلبات السحب</h6>
+                                        <h2 id="pendingWithdrawals">0</h2>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <div class="admin-card">
+                                        <h6>إجمالي النقاط</h6>
+                                        <h2 id="totalSystemPoints">0</h2>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- رسومات بيانية -->
+                            <div class="row mt-4">
+                                <div class="col-md-6 mb-3">
+                                    <div class="admin-card">
+                                        <h6>نشاط المستخدمين</h6>
+                                        <canvas id="userActivityChart" height="200"></canvas>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="admin-card">
+                                        <h6>الإعلانات الأكثر مشاهدة</h6>
+                                        <canvas id="topAdsChart" height="200"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- قسم إدارة الإعلانات -->
+                        <div id="adminAds" style="display: none;">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h3>إدارة الإعلانات</h3>
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAdModal">
+                                    <i class="fas fa-plus me-2"></i>إضافة إعلان جديد
+                                </button>
+                            </div>
+                            
+                            <div class="admin-card">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>العنوان</th>
+                                                <th>الرابط</th>
+                                                <th>النقاط</th>
+                                                <th>المدة</th>
+                                                <th>المشاهدات</th>
+                                                <th>الحالة</th>
+                                                <th>الإجراءات</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="adminAdsTable">
+                                            <!-- سيتم ملؤها بواسطة JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- قسم إدارة المستخدمين -->
+                        <div id="adminUsers" style="display: none;">
+                            <h3 class="mb-4">إدارة المستخدمين</h3>
+                            
+                            <div class="admin-card">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>الاسم</th>
+                                                <th>البريد</th>
+                                                <th>النقاط</th>
+                                                <th>السحوبات</th>
+                                                <th>تاريخ الانضمام</th>
+                                                <th>الحالة</th>
+                                                <th>الإجراءات</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="adminUsersTable">
+                                            <!-- سيتم ملؤها بواسطة JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- قسم طلبات السحب -->
+                        <div id="adminWithdrawals" style="display: none;">
+                            <h3 class="mb-4">طلبات السحب المعلقة</h3>
+                            
+                            <div class="admin-card">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>المستخدم</th>
+                                                <th>النقاط</th>
+                                                <th>المبلغ</th>
+                                                <th>رقم الهاتف</th>
+                                                <th>التاريخ</th>
+                                                <th>الحالة</th>
+                                                <th>الإجراءات</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="adminWithdrawalsTable">
+                                            <!-- سيتم ملؤها بواسطة JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- قسم التقارير -->
+                        <div id="adminReports" style="display: none;">
+                            <h3 class="mb-4">التقارير والإحصائيات</h3>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="admin-card">
+                                        <h6>أعلى المستخدمين ربحاً</h6>
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>المستخدم</th>
+                                                    <th>النقاط</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="topEarnersTable">
+                                                <!-- سيتم ملؤها بواسطة JavaScript -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <div class="admin-card">
+                                        <h6>أحدث النشاطات</h6>
+                                        <div style="max-height: 300px; overflow-y: auto;">
+                                            <ul class="list-unstyled" id="recentActivities">
+                                                <!-- سيتم ملؤها بواسطة JavaScript -->
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -651,12 +1264,21 @@
                 </div>
                 <div class="modal-body">
                     <div class="timer-container">
-                        <p class="timer-message">يجب مشاهدة الإعلان حتى النهاية للحصول على النقاط</p>
+                        <p class="timer-message" id="adTitleMessage">يجب مشاهدة الإعلان حتى النهاية للحصول على النقاط</p>
                         <div class="timer" id="countdown">30</div>
                         <p>ثانية متبقية</p>
+                        
                         <div class="alert alert-warning alert-custom mt-3">
                             <i class="fas fa-exclamation-triangle me-2"></i>
-                            لا تغلق نافذة الإعلان أو تترك هذه الصفحة حتى ينتهي العدّاد
+                            <span id="warningMessage">لا تغلق نافذة الإعلان أو تترك هذه الصفحة حتى ينتهي العدّاد</span>
+                            <div class="mt-2 small text-danger" id="penaltyWarning" style="display: none;">
+                                <i class="fas fa-skull-crossbones me-1"></i>
+                                تحذير: إذا أغلقت الإعلان قبل الوقت سيتم خصم <span id="penaltyAmount">0</span> نقطة
+                            </div>
+                        </div>
+                        
+                        <div class="progress mt-3" style="height: 10px;">
+                            <div class="progress-bar progress-bar-custom" id="timerProgress" role="progressbar" style="width: 0%"></div>
                         </div>
                     </div>
                     
@@ -673,73 +1295,98 @@
         </div>
     </div>
 
-    <!-- الفوتر -->
-    <footer class="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <h5>عن ادفيستا</h5>
-                    <p>منصة عربية لربح النقاط من خلال مشاهدة الإعلانات. نوفر فرصة ربح حقيقية للمستخدمين مع شروط واضحة وشفافة.</p>
-                    <div class="social-icons mt-4">
-                        <a href="https://wa.me/201273740256" target="_blank" title="واتساب">
-                            <i class="fab fa-whatsapp"></i>
-                        </a>
-                        <a href="https://www.instagram.com/Baraa___offical" target="_blank" title="انستجرام">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a href="https://www.tiktok.com/@Baraa_offical" target="_blank" title="تيك توك">
-                            <i class="fab fa-tiktok"></i>
-                        </a>
-                        <a href="https://www.facebook.com/baraa_omar_talaat" target="_blank" title="فيسبوك">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                    </div>
+    <!-- نافذة إضافة إعلان جديد -->
+    <div class="modal fade" id="addAdModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">إضافة إعلان جديد</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <h5>روابط سريعة</h5>
-                    <ul class="footer-links list-unstyled">
-                        <li><a href="#"><i class="fas fa-chevron-left me-2"></i>كيفية الربح</a></li>
-                        <li><a href="#"><i class="fas fa-chevron-left me-2"></i>شروط الاستخدام</a></li>
-                        <li><a href="#"><i class="fas fa-chevron-left me-2"></i>الأسئلة الشائعة</a></li>
-                        <li><a href="#"><i class="fas fa-chevron-left me-2"></i>سياسة الخصوصية</a></li>
-                        <li><a href="#"><i class="fas fa-chevron-left me-2"></i>اتصل بنا</a></li>
-                    </ul>
-                </div>
-                
-                <div class="col-lg-4 col-md-12 mb-4">
-                    <h5>معلومات الاتصال</h5>
-                    <ul class="footer-links list-unstyled">
-                        <li><i class="fas fa-envelope me-2"></i> bo2584668@gmail.com</li>
-                        <li><i class="fab fa-whatsapp me-2"></i> 201273740256</li>
-                        <li><i class="fas fa-globe me-2"></i> مصر</li>
-                    </ul>
-                    
-                    <div class="mt-4">
-                        <h6>طرق السحب المتاحة</h6>
-                        <div class="d-flex align-items-center mt-2">
-                            <div class="bg-white rounded p-2 me-2">
-                                <i class="fas fa-money-bill-wave text-success fa-2x"></i>
+                <div class="modal-body">
+                    <form id="addAdForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">عنوان الإعلان</label>
+                                <input type="text" class="form-control" id="adTitle" required>
                             </div>
-                            <span>فودافون كاش</span>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">رابط الإعلان</label>
+                                <input type="url" class="form-control" id="adUrl" value="https://linkjust.com/xbTIX" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">عدد النقاط</label>
+                                <input type="number" class="form-control" id="adPoints" min="50" max="1000" value="150" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">مدة المشاهدة (ثانية)</label>
+                                <input type="number" class="form-control" id="adDuration" min="10" max="120" value="30" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">عدد مرات المشاهدة</label>
+                                <input type="number" class="form-control" id="adViewsLimit" min="1" max="10000" value="1000" required>
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label">وصف الإعلان</label>
+                                <textarea class="form-control" id="adDescription" rows="3"></textarea>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">فئة الإعلان</label>
+                                <select class="form-select" id="adCategory">
+                                    <option value="general">عام</option>
+                                    <option value="shopping">تسوق</option>
+                                    <option value="games">ألعاب</option>
+                                    <option value="apps">تطبيقات</option>
+                                    <option value="education">تعليم</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">الصورة (اختياري)</label>
+                                <input type="file" class="form-control" id="adImage" accept="image/*">
+                            </div>
                         </div>
-                    </div>
+                        
+                        <div class="alert alert-info alert-custom">
+                            <i class="fas fa-info-circle me-2"></i>
+                            سيتم نشر الإعلان فور إضافته وسيظهر للمستخدمين مباشرة
+                        </div>
+                    </form>
                 </div>
-            </div>
-            
-            <div class="copyright">
-                <p>جميع الحقوق محفوظة &copy; 2023 ادفيستا. تم التطوير بواسطة بَراء</p>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-primary" onclick="addNewAd()">إضافة الإعلان</button>
+                </div>
             </div>
         </div>
-    </footer>
+    </div>
 
-    <!-- سكريبتات -->
+    <!-- نافذة تفاصيل المستخدم -->
+    <div class="modal fade" id="userDetailsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">تفاصيل المستخدم</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="userDetailsContent">
+                    <!-- سيتم ملؤها بواسطة JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- مكتبات JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <script>
-        // تهيئة Firebase
+        // ============================================
+        // إعدادات Firebase
+        // ============================================
         const firebaseConfig = {
             apiKey: "AIzaSyC4fZQ-BTUeHsN9nQtMGmnjJz-NKdcUgkc",
             authDomain: "advista-b64ab.firebaseapp.com",
@@ -754,44 +1401,250 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
+        const storage = firebase.storage();
         
-        // بيانات الإعلانات
-        const ads = [
-            { id: 1, title: "إعلان تطبيق جديد", points: 150, duration: 30, link: "https://linkjust.com/xbTIX" },
-            { id: 2, title: "عرض خاص على المنتجات", points: 200, duration: 40, link: "https://linkjust.com/xbTIX" },
-            { id: 3, title: "تطبيق توصيل طعام", points: 120, duration: 25, link: "https://linkjust.com/xbTIX" },
-            { id: 4, title: "عروض أونلاين", points: 180, duration: 35, link: "https://linkjust.com/xbTIX" },
-            { id: 5, title: "تطبيق تعليمي", points: 220, duration: 45, link: "https://linkjust.com/xbTIX" },
-            { id: 6, title: "عروض سفر", points: 250, duration: 50, link: "https://linkjust.com/xbTIX" },
-            { id: 7, title: "تطبيق لياقة بدنية", points: 130, duration: 30, link: "https://linkjust.com/xbTIX" },
-            { id: 8, title: "عروض تسوق", points: 170, duration: 35, link: "https://linkjust.com/xbTIX" },
-            { id: 9, title: "تطبيق موسيقى", points: 190, duration: 40, link: "https://linkjust.com/xbTIX" },
-            { id: 10, title: "إعلان خدمات", points: 210, duration: 45, link: "https://linkjust.com/xbTIX" },
-            { id: 11, title: "تطبيق فيديوهات", points: 140, duration: 30, link: "https://linkjust.com/xbTIX" },
-            { id: 12, title: "عروض إلكترونيات", points: 230, duration: 50, link: "https://linkjust.com/xbTIX" },
-            { id: 13, title: "تطبيق اجتماعي", points: 160, duration: 35, link: "https://linkjust.com/xbTIX" },
-            { id: 14, title: "عروض ملابس", points: 180, duration: 40, link: "https://linkjust.com/xbTIX" },
-            { id: 15, title: "تطبيق أخبار", points: 110, duration: 25, link: "https://linkjust.com/xbTIX" },
-            { id: 16, title: "عروض منزلية", points: 195, duration: 40, link: "https://linkjust.com/xbTIX" },
-            { id: 17, title: "تطبيق ألعاب", points: 175, duration: 35, link: "https://linkjust.com/xbTIX" },
-            { id: 18, title: "عروض تجميل", points: 205, duration: 45, link: "https://linkjust.com/xbTIX" },
-            { id: 19, title: "تطبيق طبي", points: 225, duration: 50, link: "https://linkjust.com/xbTIX" },
-            { id: 20, title: "عروض سيارات", points: 240, duration: 50, link: "https://linkjust.com/xbTIX" }
-        ];
+        // إعدادات Google Sign-In
+        const googleProvider = new firebase.auth.GoogleAuthProvider();
+        googleProvider.setCustomParameters({
+            client_id: '805966277330-9j5j1nvluj69f8uieog0kk77p0jb46q4.apps.googleusercontent.com',
+            prompt: 'select_account'
+        });
         
-        // متغيرات النظام
+        // ============================================
+        // المتغيرات العامة
+        // ============================================
+        let currentUser = null;
+        let userData = null;
         let currentAd = null;
         let countdownInterval = null;
         let timerValue = 30;
+        let totalTime = 30;
         let isWindowFocused = true;
         let adTab = null;
+        let penaltyPoints = 0;
+        let ads = [];
+        let currentPage = 1;
+        const adsPerPage = 8;
         
-        // تحميل الإعلانات
-        function loadAds() {
-            const adsContainer = document.getElementById('adsContainer');
-            adsContainer.innerHTML = '';
+        // ============================================
+        // نظام المصادقة
+        // ============================================
+        document.getElementById('googleSignIn').addEventListener('click', signInWithGoogle);
+        
+        async function signInWithGoogle() {
+            try {
+                const result = await auth.signInWithPopup(googleProvider);
+                const user = result.user;
+                
+                // التحقق إذا كان المستخدم هو الإدمن
+                if (user.email === 'bo2584668@gmail.com') {
+                    await createAdminUser(user);
+                    showAdminPage();
+                } else {
+                    await createOrUpdateUser(user);
+                    showUserPage();
+                }
+            } catch (error) {
+                console.error("خطأ في تسجيل الدخول:", error);
+                alert("حدث خطأ في تسجيل الدخول: " + error.message);
+            }
+        }
+        
+        async function createOrUpdateUser(user) {
+            const userRef = db.collection('users').doc(user.uid);
+            const userDoc = await userRef.get();
             
-            ads.forEach(ad => {
+            if (!userDoc.exists) {
+                // إنشاء مستخدم جديد
+                await userRef.set({
+                    uid: user.uid,
+                    email: user.email,
+                    name: user.displayName || 'مستخدم جديد',
+                    points: 0,
+                    dailyPoints: 0,
+                    dailyTasks: 0,
+                    totalWithdrawals: 0,
+                    totalEarned: 0,
+                    joinDate: firebase.firestore.FieldValue.serverTimestamp(),
+                    lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+                    profile: {
+                        phone: '',
+                        country: 'egypt',
+                        city: ''
+                    },
+                    settings: {
+                        emailNotifications: true,
+                        showProfile: true
+                    },
+                    penalties: 0
+                });
+                
+                // إنشاء سجل النقاط الأولي
+                await db.collection('points_history').add({
+                    userId: user.uid,
+                    type: 'registration',
+                    points: 100, // نقاط ترحيبية
+                    balanceBefore: 0,
+                    balanceAfter: 100,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            } else {
+                // تحديث آخر دخول
+                await userRef.update({
+                    lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            }
+            
+            currentUser = user;
+            await loadUserData(user.uid);
+        }
+        
+        async function createAdminUser(user) {
+            const adminRef = db.collection('admins').doc(user.uid);
+            const adminDoc = await adminRef.get();
+            
+            if (!adminDoc.exists) {
+                await adminRef.set({
+                    uid: user.uid,
+                    email: user.email,
+                    name: user.displayName || 'مدير النظام',
+                    role: 'super_admin',
+                    permissions: ['all'],
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            }
+            
+            currentUser = user;
+        }
+        
+        async function loadUserData(userId) {
+            const userDoc = await db.collection('users').doc(userId).get();
+            if (userDoc.exists) {
+                userData = userDoc.data();
+                updateUserUI();
+                loadUserAdsHistory(userId);
+                loadWithdrawHistory(userId);
+            }
+        }
+        
+        function updateUserUI() {
+            if (userData) {
+                document.getElementById('userName').textContent = `أهلاً، ${userData.name}`;
+                document.getElementById('userPoints').textContent = userData.points.toLocaleString();
+                document.getElementById('totalPoints').textContent = userData.points.toLocaleString();
+                document.getElementById('dailyTasks').textContent = userData.dailyTasks || 0;
+                document.getElementById('dailyPoints').textContent = userData.dailyPoints || 0;
+                document.getElementById('withdrawCount').textContent = userData.totalWithdrawals || 0;
+                document.getElementById('totalWithdraw').textContent = (userData.totalWithdrawals || 0).toFixed(2);
+                
+                const dollars = (userData.points / 20000).toFixed(2);
+                document.getElementById('pointsInDollars').textContent = `ما يعادل: ${dollars} دولار`;
+                
+                // تحديث الملف الشخصي
+                document.getElementById('profileName').textContent = userData.name;
+                document.getElementById('profileEmail').textContent = userData.email;
+                document.getElementById('profileFullName').value = userData.name;
+                document.getElementById('profilePhone').value = userData.profile?.phone || '';
+                document.getElementById('profileCountry').value = userData.profile?.country || 'egypt';
+                document.getElementById('profileCity').value = userData.profile?.city || '';
+                
+                if (userData.joinDate) {
+                    const date = userData.joinDate.toDate();
+                    document.getElementById('joinDate').textContent = date.toLocaleDateString('ar-EG');
+                }
+                
+                // تحديث الإعدادات
+                document.getElementById('emailNotifications').checked = userData.settings?.emailNotifications || true;
+                document.getElementById('showProfile').checked = userData.settings?.showProfile || true;
+            }
+        }
+        
+        function showUserPage() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('userPage').style.display = 'block';
+            document.getElementById('adminPage').style.display = 'none';
+            loadAds();
+            loadQuickAds();
+        }
+        
+        function showAdminPage() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('userPage').style.display = 'none';
+            document.getElementById('adminPage').style.display = 'block';
+            document.getElementById('adminEmail').textContent = currentUser.email;
+            loadAdminDashboard();
+        }
+        
+        function signOut() {
+            auth.signOut().then(() => {
+                currentUser = null;
+                userData = null;
+                document.getElementById('loginPage').style.display = 'flex';
+                document.getElementById('userPage').style.display = 'none';
+                document.getElementById('adminPage').style.display = 'none';
+            });
+        }
+        
+        // ============================================
+        // نظام الإعلانات
+        // ============================================
+        async function loadAds() {
+            try {
+                const sortBy = document.getElementById('sortAds').value;
+                let query = db.collection('ads').where('status', '==', 'active');
+                
+                // التصنيف
+                if (sortBy === 'newest') {
+                    query = query.orderBy('createdAt', 'desc');
+                } else if (sortBy === 'highest') {
+                    query = query.orderBy('points', 'desc');
+                } else if (sortBy === 'lowest') {
+                    query = query.orderBy('duration', 'asc');
+                }
+                
+                const snapshot = await query.limit(adsPerPage * currentPage).get();
+                ads = [];
+                snapshot.forEach(doc => {
+                    ads.push({ id: doc.id, ...doc.data() });
+                });
+                
+                displayAds();
+            } catch (error) {
+                console.error("خطأ في تحميل الإعلانات:", error);
+                // عرض إعلانات افتراضية إذا لم توجد في قاعدة البيانات
+                loadDefaultAds();
+            }
+        }
+        
+        function loadDefaultAds() {
+            ads = [];
+            for (let i = 1; i <= 20; i++) {
+                ads.push({
+                    id: `ad${i}`,
+                    title: `إعلان تطبيق جديد ${i}`,
+                    url: "https://linkjust.com/xbTIX",
+                    points: 100 + (i * 10),
+                    duration: 20 + (i * 2),
+                    description: "إعلان تجريبي للموقع",
+                    category: "general",
+                    views: Math.floor(Math.random() * 1000),
+                    maxViews: 1000,
+                    status: "active",
+                    createdAt: new Date()
+                });
+            }
+            displayAds();
+        }
+        
+        function displayAds() {
+            const container = document.getElementById('adsContainer');
+            container.innerHTML = '';
+            
+            const startIndex = 0;
+            const endIndex = Math.min(currentPage * adsPerPage, ads.length);
+            
+            for (let i = startIndex; i < endIndex; i++) {
+                const ad = ads[i];
                 const adCard = document.createElement('div');
                 adCard.className = 'col-lg-3 col-md-4 col-sm-6';
                 adCard.innerHTML = `
@@ -808,55 +1661,199 @@
                                 <i class="fas fa-clock"></i>
                                 <span>المدة: <strong>${ad.duration}</strong> ثانية</span>
                             </div>
-                            <button class="btn btn-view-ad" onclick="startAd(${ad.id})">
+                            <div class="mb-2">
+                                <small class="text-muted">
+                                    <i class="fas fa-eye me-1"></i> ${ad.views || 0}/${ad.maxViews || 1000}
+                                </small>
+                            </div>
+                            <button class="btn btn-view-ad" onclick="startAd('${ad.id}')" ${userData && userData.dailyTasks >= 20 ? 'disabled' : ''}>
+                                <i class="fas fa-play-circle me-2"></i>${userData && userData.dailyTasks >= 20 ? 'اكتمل اليوم' : 'ابدأ المشاهدة'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(adCard);
+            }
+            
+            // إخفاء زر تحميل المزيد إذا لم يكن هناك المزيد
+            document.getElementById('loadMoreBtn').style.display = 
+                endIndex < ads.length ? 'block' : 'none';
+        }
+        
+        function loadQuickAds() {
+            const container = document.getElementById('quickAdsContainer');
+            container.innerHTML = '';
+            
+            // عرض أول 4 إعلانات فقط
+            const quickAds = ads.slice(0, 4);
+            
+            quickAds.forEach(ad => {
+                const adCard = document.createElement('div');
+                adCard.className = 'col-lg-3 col-md-6';
+                adCard.innerHTML = `
+                    <div class="ad-card">
+                        <div class="ad-header">
+                            <h6 class="ad-title">${ad.title}</h6>
+                        </div>
+                        <div class="ad-body">
+                            <div class="ad-points">
+                                <i class="fas fa-coins"></i>
+                                <span>النقاط: <strong>${ad.points}</strong></span>
+                            </div>
+                            <div class="ad-duration">
+                                <i class="fas fa-clock"></i>
+                                <span>المدة: <strong>${ad.duration}</strong> ثانية</span>
+                            </div>
+                            <button class="btn btn-view-ad" onclick="startAd('${ad.id}')" ${userData && userData.dailyTasks >= 20 ? 'disabled' : ''}>
+                                <i class="fas fa-bolt me-2"></i>مشاهدة سريعة
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(adCard);
+            });
+        }
+        
+        function loadMoreAds() {
+            currentPage++;
+            displayAds();
+        }
+        
+        function searchAds() {
+            const searchTerm = document.getElementById('searchAds').value.toLowerCase();
+            const filteredAds = ads.filter(ad => 
+                ad.title.toLowerCase().includes(searchTerm) || 
+                ad.description.toLowerCase().includes(searchTerm)
+            );
+            
+            const container = document.getElementById('adsContainer');
+            container.innerHTML = '';
+            
+            filteredAds.forEach(ad => {
+                const adCard = document.createElement('div');
+                adCard.className = 'col-lg-3 col-md-4 col-sm-6';
+                adCard.innerHTML = `
+                    <div class="ad-card">
+                        <div class="ad-header">
+                            <h6 class="ad-title">${ad.title}</h6>
+                        </div>
+                        <div class="ad-body">
+                            <div class="ad-points">
+                                <i class="fas fa-coins"></i>
+                                <span>النقاط: <strong>${ad.points}</strong></span>
+                            </div>
+                            <div class="ad-duration">
+                                <i class="fas fa-clock"></i>
+                                <span>المدة: <strong>${ad.duration}</strong> ثانية</span>
+                            </div>
+                            <button class="btn btn-view-ad" onclick="startAd('${ad.id}')" ${userData && userData.dailyTasks >= 20 ? 'disabled' : ''}>
                                 <i class="fas fa-play-circle me-2"></i>ابدأ المشاهدة
                             </button>
                         </div>
                     </div>
                 `;
-                adsContainer.appendChild(adCard);
+                container.appendChild(adCard);
             });
         }
         
-        // بدء الإعلان
-        function startAd(adId) {
-            currentAd = ads.find(ad => ad.id === adId);
-            timerValue = currentAd.duration;
+        // ============================================
+        // نظام مشاهدة الإعلانات والعداد
+        // ============================================
+        async function startAd(adId) {
+            if (userData.dailyTasks >= 20) {
+                alert("لقد وصلت للحد الأقصى من المهام اليومية (20 مهمة). عد غداً!");
+                return;
+            }
+            
+            const ad = ads.find(a => a.id === adId);
+            if (!ad) return;
+            
+            // التحقق إذا كان المستخدم قد شاهد هذا الإعلان اليوم
+            const today = new Date().toDateString();
+            const adHistoryRef = db.collection('ad_history')
+                .where('userId', '==', currentUser.uid)
+                .where('adId', '==', adId)
+                .where('date', '==', today)
+                .limit(1);
+            
+            const historySnapshot = await adHistoryRef.get();
+            if (!historySnapshot.empty) {
+                alert("لقد شاهدت هذا الإعلان اليوم بالفعل!");
+                return;
+            }
+            
+            currentAd = ad;
+            timerValue = ad.duration;
+            totalTime = ad.duration;
+            penaltyPoints = Math.floor(ad.points * 0.5); // خصم 50% من نقاط الإعلان كعقوبة
             
             // فتح الإعلان في تبويب جديد
-            adTab = window.open(currentAd.link, '_blank');
+            adTab = window.open(ad.url, '_blank', 'noopener,noreferrer');
             
-            // عرض نافذة العدّاد
+            // تحديث واجهة العدّاد
+            document.getElementById('adTitleMessage').textContent = `جاري مشاهدة: ${ad.title}`;
+            document.getElementById('countdown').textContent = timerValue;
+            document.getElementById('penaltyAmount').textContent = penaltyPoints;
+            document.getElementById('penaltyWarning').style.display = 'block';
+            document.getElementById('timerProgress').style.width = '0%';
+            
+            // إظهار نافذة العدّاد
             const timerModal = new bootstrap.Modal(document.getElementById('timerModal'));
             timerModal.show();
             
             // بدء العدّاد
             startCountdown();
             
-            // مراقبة تركيز النافذة
+            // مراقبة التركيز
             window.addEventListener('blur', handleWindowBlur);
             window.addEventListener('focus', handleWindowFocus);
+            window.addEventListener('beforeunload', handleBeforeUnload);
+            
+            // بدء تتبع المشاهدة في قاعدة البيانات
+            await startAdTracking(adId);
         }
         
-        // بدء العدّاد
+        async function startAdTracking(adId) {
+            const trackingRef = db.collection('ad_tracking').doc();
+            await trackingRef.set({
+                userId: currentUser.uid,
+                adId: adId,
+                startTime: firebase.firestore.FieldValue.serverTimestamp(),
+                status: 'watching',
+                penaltyApplied: false,
+                pointsEarned: 0
+            });
+            
+            // حفظ معرف التتبع
+            currentAd.trackingId = trackingRef.id;
+        }
+        
         function startCountdown() {
             const countdownElement = document.getElementById('countdown');
-            countdownElement.textContent = timerValue;
+            const progressBar = document.getElementById('timerProgress');
             
-            countdownInterval = setInterval(() => {
-                if (isWindowFocused) {
+            countdownInterval = setInterval(async () => {
+                if (isWindowFocused && timerValue > 0) {
                     timerValue--;
                     countdownElement.textContent = timerValue;
                     
+                    // تحديث شريط التقدم
+                    const progress = ((totalTime - timerValue) / totalTime) * 100;
+                    progressBar.style.width = `${progress}%`;
+                    
+                    // التحقق إذا كان التبويب مازال مفتوحاً
+                    if (adTab && adTab.closed) {
+                        handleAdClosed();
+                    }
+                    
                     if (timerValue <= 0) {
                         clearInterval(countdownInterval);
-                        showCaptcha();
+                        await handleAdCompleted();
                     }
                 }
             }, 1000);
         }
         
-        // إدارة فقدان التركيز
         function handleWindowBlur() {
             isWindowFocused = false;
             console.log("تم فقدان التركيز - العدّاد متوقف");
@@ -867,15 +1864,53 @@
             console.log("تم استعادة التركيز - العدّاد مستمر");
         }
         
-        // عرض الكابتشا بعد انتهاء الوقت
-        function showCaptcha() {
-            document.getElementById('captchaSection').classList.remove('d-none');
-            generateCaptcha();
+        function handleBeforeUnload(e) {
+            if (currentAd && timerValue > 0) {
+                e.preventDefault();
+                e.returnValue = 'إذا غادرت الآن سيتم خصم النقاط. هل أنت متأكد؟';
+            }
         }
         
-        // إنشاء كابتشا عشوائية
+        async function handleAdClosed() {
+            if (timerValue > 0) {
+                clearInterval(countdownInterval);
+                
+                // تطبيق العقوبة
+                await applyPenalty();
+                
+                // إخفاء العدّاد وإظهار رسالة
+                document.getElementById('timerContainer').style.display = 'none';
+                document.getElementById('warningMessage').innerHTML = 
+                    '<i class="fas fa-times-circle text-danger me-2"></i>تم إغلاق الإعلان قبل الوقت! تم خصم ' + penaltyPoints + ' نقطة';
+                
+                // تحديث سجل العقوبات
+                await recordPenalty();
+            }
+        }
+        
+        async function handleAdCompleted() {
+            // إيقاف مراقبة التركيز
+            window.removeEventListener('blur', handleWindowBlur);
+            window.removeEventListener('focus', handleWindowFocus);
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+            
+            // إخفاء العدّاد وإظهار الكابتشا
+            document.querySelector('.timer-container').style.display = 'none';
+            document.getElementById('captchaSection').classList.remove('d-none');
+            generateCaptcha();
+            
+            // تحديث حالة التتبع
+            if (currentAd.trackingId) {
+                await db.collection('ad_tracking').doc(currentAd.trackingId).update({
+                    endTime: firebase.firestore.FieldValue.serverTimestamp(),
+                    status: 'completed',
+                    completed: true
+                });
+            }
+        }
+        
         function generateCaptcha() {
-            const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
+            const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
             let captcha = "";
             
             for (let i = 0; i < 5; i++) {
@@ -886,14 +1921,13 @@
             return captcha;
         }
         
-        // التحقق من الكابتشا
-        document.getElementById('verifyCaptcha').addEventListener('click', function() {
+        document.getElementById('verifyCaptcha').addEventListener('click', async function() {
             const captchaInput = document.getElementById('captchaInput').value;
             const captchaText = document.getElementById('captchaText').textContent;
             
             if (captchaInput === captchaText) {
                 // إضافة النقاط
-                alert(`تمت إضافة ${currentAd.points} نقطة إلى رصيدك!`);
+                await addPoints(currentAd.points);
                 
                 // إغلاق نافذة الإعلان
                 if (adTab && !adTab.closed) {
@@ -907,8 +1941,8 @@
                 // إعادة تعيين المتغيرات
                 resetAdSystem();
                 
-                // تحديث رصيد المستخدم (هنا يجب الاتصال بالسيرفر)
-                updateUserPoints(currentAd.points);
+                // إظهار رسالة النجاح
+                showSuccessMessage(`تمت إضافة ${currentAd.points} نقطة إلى رصيدك!`);
             } else {
                 alert("كود التأكيد غير صحيح. حاول مرة أخرى.");
                 generateCaptcha();
@@ -916,104 +1950,910 @@
             }
         });
         
-        // تحديث رصيد المستخدم
-        function updateUserPoints(points) {
-            // هنا سيكون اتصال مع Firebase لتحديث النقاط
-            const userPointsElement = document.querySelector('.user-points');
-            const currentPoints = parseInt(userPointsElement.textContent.replace(/,/g, ''));
-            const newPoints = currentPoints + points;
-            userPointsElement.innerHTML = `<i class="fas fa-coins me-1"></i> ${newPoints.toLocaleString()}`;
+        async function addPoints(points) {
+            if (!currentUser || !userData) return;
             
-            // تحديث رصيد النقاط في البطاقة
-            const pointsCardValue = document.querySelector('.points-card .card-value');
-            pointsCardValue.innerHTML = `<span class="card-unit">نقطة</span>${newPoints.toLocaleString()}`;
+            // تحديث نقاط المستخدم
+            const newPoints = userData.points + points;
+            const newDailyPoints = (userData.dailyPoints || 0) + points;
+            const newDailyTasks = (userData.dailyTasks || 0) + 1;
             
-            // تحديث قيمة الدولار
-            const dollarValue = (newPoints / 20000).toFixed(2);
-            pointsCardValue.nextElementSibling.textContent = `ما يعادل: ${dollarValue} دولار`;
+            await db.collection('users').doc(currentUser.uid).update({
+                points: newPoints,
+                dailyPoints: newDailyPoints,
+                dailyTasks: newDailyTasks,
+                totalEarned: (userData.totalEarned || 0) + points
+            });
+            
+            // تحديث بيانات المستخدم المحلية
+            userData.points = newPoints;
+            userData.dailyPoints = newDailyPoints;
+            userData.dailyTasks = newDailyTasks;
+            
+            // تحديث واجهة المستخدم
+            updateUserUI();
+            
+            // تسجيل عملية إضافة النقاط
+            await db.collection('points_history').add({
+                userId: currentUser.uid,
+                type: 'ad_watch',
+                points: points,
+                balanceBefore: userData.points - points,
+                balanceAfter: userData.points,
+                adId: currentAd.id,
+                adTitle: currentAd.title,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            
+            // تسجيل مشاهدة الإعلان
+            await db.collection('ad_history').add({
+                userId: currentUser.uid,
+                adId: currentAd.id,
+                adTitle: currentAd.title,
+                points: points,
+                date: new Date().toDateString(),
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            
+            // زيادة عدد مشاهدات الإعلان
+            if (currentAd.id && currentAd.id.startsWith('ad')) {
+                // هذا إعلان افتراضي، لا نزيد المشاهدات
+            } else {
+                await db.collection('ads').doc(currentAd.id).update({
+                    views: firebase.firestore.FieldValue.increment(1)
+                });
+            }
         }
         
-        // إعادة تعيين نظام الإعلان
+        async function applyPenalty() {
+            if (!currentUser || !userData || penaltyPoints <= 0) return;
+            
+            // خصم النقاط
+            const newPoints = Math.max(0, userData.points - penaltyPoints);
+            
+            await db.collection('users').doc(currentUser.uid).update({
+                points: newPoints,
+                penalties: (userData.penalties || 0) + 1
+            });
+            
+            // تحديث بيانات المستخدم المحلية
+            userData.points = newPoints;
+            userData.penalties = (userData.penalties || 0) + 1;
+            
+            // تحديث واجهة المستخدم
+            updateUserUI();
+            
+            // تسجيل العقوبة
+            await recordPenalty();
+            
+            // تحديث حالة التتبع
+            if (currentAd.trackingId) {
+                await db.collection('ad_tracking').doc(currentAd.trackingId).update({
+                    penaltyApplied: true,
+                    pointsDeducted: penaltyPoints,
+                    status: 'penalized'
+                });
+            }
+        }
+        
+        async function recordPenalty() {
+            await db.collection('penalties_history').add({
+                userId: currentUser.uid,
+                type: 'ad_closure',
+                points: penaltyPoints,
+                reason: 'إغلاق الإعلان قبل انتهاء الوقت',
+                adId: currentAd.id,
+                adTitle: currentAd.title,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        }
+        
         function resetAdSystem() {
             clearInterval(countdownInterval);
             currentAd = null;
             timerValue = 30;
+            totalTime = 30;
             isWindowFocused = true;
+            penaltyPoints = 0;
             adTab = null;
             
             document.getElementById('captchaSection').classList.add('d-none');
             document.getElementById('captchaInput').value = '';
+            document.querySelector('.timer-container').style.display = 'block';
+            document.getElementById('timerProgress').style.width = '0%';
+            document.getElementById('penaltyWarning').style.display = 'none';
             
             // إزالة مستمعي الأحداث
             window.removeEventListener('blur', handleWindowBlur);
             window.removeEventListener('focus', handleWindowFocus);
+            window.removeEventListener('beforeunload', handleBeforeUnload);
         }
         
-        // نظام طلب السحب
+        // ============================================
+        // نظام السحب
+        // ============================================
         document.getElementById('withdrawPoints').addEventListener('input', function() {
             const points = parseInt(this.value) || 20000;
             const dollars = (points / 20000).toFixed(2);
             document.getElementById('withdrawAmount').textContent = `المبلغ: ${dollars} دولار`;
         });
         
-        document.getElementById('requestWithdraw').addEventListener('click', function() {
-            const points = parseInt(document.getElementById('withdrawPoints').value);
-            const phone = document.querySelector('input[placeholder*="فودافون"]').value;
+        async function requestWithdrawal() {
+            if (!currentUser || !userData) {
+                alert("يجب تسجيل الدخول أولاً");
+                return;
+            }
             
+            const points = parseInt(document.getElementById('withdrawPoints').value);
+            const phone = document.getElementById('vodafoneNumber').value.trim();
+            
+            // التحقق من الحد الأدنى
             if (points < 20000) {
                 alert("الحد الأدنى للسحب هو 20,000 نقطة (1 دولار)");
                 return;
             }
             
+            // التحقق من الرصيد
+            if (userData.points < points) {
+                alert("رصيدك الحالي غير كافي للسحب");
+                return;
+            }
+            
+            // التحقق من رقم الهاتف
             if (!phone || phone.length < 10) {
                 alert("يرجى إدخال رقم هاتف صحيح لفودافون كاش");
                 return;
             }
             
-            // هنا سيتم إرسال طلب السحب إلى الإدارة عبر Firebase
-            alert(`تم إرسال طلب سحب بقيمة ${points} نقطة (${points/20000} دولار) إلى الإدارة. سيتم معالجة الطلب خلال 24-48 ساعة.`);
+            // احتساب العمولة (5%)
+            const fee = points * 0.05;
+            const netPoints = points - fee;
+            const amount = (points / 20000).toFixed(2);
+            const netAmount = (netPoints / 20000).toFixed(2);
             
-            // إعادة تعيين الحقول
-            document.querySelector('input[placeholder*="فودافون"]').value = '';
-            document.getElementById('withdrawPoints').value = '20000';
-            document.getElementById('withdrawAmount').textContent = 'المبلغ: 1 دولار';
-        });
-        
-        // تحميل الإعلانات عند بدء التشغيل
-        window.addEventListener('DOMContentLoaded', loadAds);
-        
-        // إغلاق النافذة المنبثقة عند الضغط على زر الإغلاق
-        document.querySelector('#timerModal .btn-close').addEventListener('click', function() {
-            if (adTab && !adTab.closed) {
-                adTab.close();
+            if (!confirm(`سحب ${points} نقطة (${amount} دولار)\nبعد خصم العمولة 5%: ${netPoints} نقطة (${netAmount} دولار)\nهل تريد المتابعة؟`)) {
+                return;
             }
-            resetAdSystem();
-        });
-        
-        // نظام تسجيل الدخول عبر Google (مثال)
-        function signInWithGoogle() {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider)
-                .then((result) => {
-                    // نجاح تسجيل الدخول
-                    console.log("تم تسجيل الدخول: ", result.user);
-                    // توجيه المستخدم أو تحديث الواجهة
-                })
-                .catch((error) => {
-                    console.error("خطأ في تسجيل الدخول: ", error);
+            
+            try {
+                // خصم النقاط من رصيد المستخدم
+                const newPoints = userData.points - points;
+                await db.collection('users').doc(currentUser.uid).update({
+                    points: newPoints,
+                    totalWithdrawals: (userData.totalWithdrawals || 0) + parseFloat(amount)
                 });
+                
+                // تحديث بيانات المستخدم المحلية
+                userData.points = newPoints;
+                userData.totalWithdrawals = (userData.totalWithdrawals || 0) + parseFloat(amount);
+                
+                // إنشاء طلب سحب
+                await db.collection('withdrawals').add({
+                    userId: currentUser.uid,
+                    userName: userData.name,
+                    userEmail: userData.email,
+                    points: points,
+                    amount: parseFloat(amount),
+                    netAmount: parseFloat(netAmount),
+                    phone: phone,
+                    status: 'pending',
+                    fee: fee,
+                    requestedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    adminNote: ''
+                });
+                
+                // تسجيل عملية السحب
+                await db.collection('points_history').add({
+                    userId: currentUser.uid,
+                    type: 'withdrawal',
+                    points: -points,
+                    balanceBefore: userData.points + points,
+                    balanceAfter: userData.points,
+                    notes: `طلب سحب إلى فودافون كاش: ${phone}`,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                // تحديث واجهة المستخدم
+                updateUserUI();
+                
+                // إعادة تعيين الحقول
+                document.getElementById('vodafoneNumber').value = '';
+                document.getElementById('withdrawPoints').value = '20000';
+                document.getElementById('withdrawAmount').textContent = 'المبلغ: 1 دولار';
+                
+                // إظهار رسالة النجاح
+                showSuccessMessage("تم إرسال طلب السحب بنجاح! سيتم معالجته خلال 24-48 ساعة.");
+                
+                // تحديث جدول السحوبات
+                loadWithdrawHistory(currentUser.uid);
+            } catch (error) {
+                console.error("خطأ في طلب السحب:", error);
+                alert("حدث خطأ في إرسال طلب السحب: " + error.message);
+            }
         }
         
-        // التحقق من حالة تسجيل الدخول
+        async function loadWithdrawHistory(userId) {
+            try {
+                const snapshot = await db.collection('withdrawals')
+                    .where('userId', '==', userId)
+                    .orderBy('requestedAt', 'desc')
+                    .limit(10)
+                    .get();
+                
+                const tbody = document.getElementById('withdrawHistoryTable').querySelector('tbody');
+                tbody.innerHTML = '';
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const row = document.createElement('tr');
+                    
+                    const date = data.requestedAt ? data.requestedAt.toDate().toLocaleDateString('ar-EG') : '---';
+                    const statusBadge = getStatusBadge(data.status);
+                    
+                    row.innerHTML = `
+                        <td>${date}</td>
+                        <td>${data.points.toLocaleString()}</td>
+                        <td>$${data.amount}</td>
+                        <td>${data.phone}</td>
+                        <td>${statusBadge}</td>
+                    `;
+                    
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error("خطأ في تحميل سجل السحوبات:", error);
+            }
+        }
+        
+        function getStatusBadge(status) {
+            switch(status) {
+                case 'pending': return '<span class="badge bg-warning">قيد الانتظار</span>';
+                case 'approved': return '<span class="badge bg-success">مقبول</span>';
+                case 'rejected': return '<span class="badge bg-danger">مرفوض</span>';
+                case 'completed': return '<span class="badge bg-info">مكتمل</span>';
+                default: return '<span class="badge bg-secondary">' + status + '</span>';
+            }
+        }
+        
+        function calculatePoints() {
+            const points = parseInt(document.getElementById('calcPoints').value) || 0;
+            const dollars = (points / 20000).toFixed(2);
+            const afterFees = (points * 0.95 / 20000).toFixed(2);
+            
+            document.getElementById('calcDollars').value = `${dollars} دولار`;
+            document.getElementById('calcAfterFees').value = `${afterFees} دولار`;
+        }
+        
+        // ============================================
+        // نظام التاريخ والنشاطات
+        // ============================================
+        async function loadUserAdsHistory(userId) {
+            try {
+                const snapshot = await db.collection('ad_history')
+                    .where('userId', '==', userId)
+                    .orderBy('timestamp', 'desc')
+                    .limit(20)
+                    .get();
+                
+                const tbody = document.getElementById('adsHistoryBody');
+                tbody.innerHTML = '';
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const row = document.createElement('tr');
+                    
+                    const date = data.timestamp ? data.timestamp.toDate().toLocaleDateString('ar-EG') : '---';
+                    const time = data.timestamp ? data.timestamp.toDate().toLocaleTimeString('ar-EG') : '---';
+                    
+                    row.innerHTML = `
+                        <td>${date}<br><small>${time}</small></td>
+                        <td>${data.adTitle}</td>
+                        <td>+${data.points}</td>
+                        <td>30 ثانية</td>
+                        <td><span class="badge bg-success">مكتمل</span></td>
+                    `;
+                    
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error("خطأ في تحميل سجل الإعلانات:", error);
+            }
+        }
+        
+        async function loadPointsHistory(userId) {
+            try {
+                const snapshot = await db.collection('points_history')
+                    .where('userId', '==', userId)
+                    .orderBy('timestamp', 'desc')
+                    .limit(20)
+                    .get();
+                
+                const tbody = document.getElementById('pointsHistoryBody');
+                tbody.innerHTML = '';
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const row = document.createElement('tr');
+                    
+                    const date = data.timestamp ? data.timestamp.toDate().toLocaleDateString('ar-EG') : '---';
+                    const typeText = getPointsTypeText(data.type);
+                    const pointsClass = data.points > 0 ? 'text-success' : 'text-danger';
+                    const pointsSign = data.points > 0 ? '+' : '';
+                    
+                    row.innerHTML = `
+                        <td>${date}</td>
+                        <td>${typeText}</td>
+                        <td class="${pointsClass}">${pointsSign}${data.points}</td>
+                        <td>${data.balanceBefore || 0}</td>
+                        <td>${data.balanceAfter || 0}</td>
+                    `;
+                    
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error("خطأ في تحميل سجل النقاط:", error);
+            }
+        }
+        
+        async function loadPenaltiesHistory(userId) {
+            try {
+                const snapshot = await db.collection('penalties_history')
+                    .where('userId', '==', userId)
+                    .orderBy('timestamp', 'desc')
+                    .limit(20)
+                    .get();
+                
+                const tbody = document.getElementById('penaltiesHistoryBody');
+                tbody.innerHTML = '';
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const row = document.createElement('tr');
+                    
+                    const date = data.timestamp ? data.timestamp.toDate().toLocaleDateString('ar-EG') : '---';
+                    
+                    row.innerHTML = `
+                        <td>${date}</td>
+                        <td>${data.type}</td>
+                        <td class="text-danger">-${data.points}</td>
+                        <td>${data.reason}</td>
+                    `;
+                    
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error("خطأ في تحميل سجل العقوبات:", error);
+            }
+        }
+        
+        function getPointsTypeText(type) {
+            switch(type) {
+                case 'registration': return 'نقاط ترحيبية';
+                case 'ad_watch': return 'مشاهدة إعلان';
+                case 'withdrawal': return 'سحب نقاط';
+                case 'referral': return 'إحالة';
+                case 'bonus': return 'مكافأة';
+                default: return type;
+            }
+        }
+        
+        function showHistoryTab(tabName) {
+            // تحديث الأزرار النشطة
+            document.querySelectorAll('#historyTabs button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // تحميل المحتوى المناسب
+            switch(tabName) {
+                case 'ads':
+                    if (currentUser) loadUserAdsHistory(currentUser.uid);
+                    break;
+                case 'points':
+                    if (currentUser) loadPointsHistory(currentUser.uid);
+                    break;
+                case 'penalties':
+                    if (currentUser) loadPenaltiesHistory(currentUser.uid);
+                    break;
+            }
+        }
+        
+        // ============================================
+        // الملف الشخصي والإعدادات
+        // ============================================
+        async function saveProfile() {
+            if (!currentUser) return;
+            
+            const profileData = {
+                name: document.getElementById('profileFullName').value,
+                profile: {
+                    phone: document.getElementById('profilePhone').value,
+                    country: document.getElementById('profileCountry').value,
+                    city: document.getElementById('profileCity').value
+                }
+            };
+            
+            try {
+                await db.collection('users').doc(currentUser.uid).update(profileData);
+                
+                // تحديث البيانات المحلية
+                userData.name = profileData.name;
+                if (!userData.profile) userData.profile = {};
+                userData.profile.phone = profileData.profile.phone;
+                userData.profile.country = profileData.profile.country;
+                userData.profile.city = profileData.profile.city;
+                
+                // تحديث واجهة المستخدم
+                updateUserUI();
+                
+                showSuccessMessage("تم حفظ التغييرات بنجاح!");
+            } catch (error) {
+                console.error("خطأ في حفظ الملف الشخصي:", error);
+                alert("حدث خطأ في حفظ التغييرات: " + error.message);
+            }
+        }
+        
+        async function saveSettings() {
+            if (!currentUser) return;
+            
+            const settingsData = {
+                settings: {
+                    emailNotifications: document.getElementById('emailNotifications').checked,
+                    showProfile: document.getElementById('showProfile').checked
+                }
+            };
+            
+            try {
+                await db.collection('users').doc(currentUser.uid).update(settingsData);
+                
+                // تحديث البيانات المحلية
+                if (!userData.settings) userData.settings = {};
+                userData.settings.emailNotifications = settingsData.settings.emailNotifications;
+                userData.settings.showProfile = settingsData.settings.showProfile;
+                
+                showSuccessMessage("تم حفظ الإعدادات بنجاح!");
+            } catch (error) {
+                console.error("خطأ في حفظ الإعدادات:", error);
+                alert("حدث خطأ في حفظ الإعدادات: " + error.message);
+            }
+        }
+        
+        // ============================================
+        // لوحة تحكم الإدمن
+        // ============================================
+        async function loadAdminDashboard() {
+            try {
+                // إحصائيات المستخدمين
+                const usersSnapshot = await db.collection('users').get();
+                document.getElementById('totalUsers').textContent = usersSnapshot.size;
+                
+                // إحصائيات الإعلانات
+                const adsSnapshot = await db.collection('ads').where('status', '==', 'active').get();
+                document.getElementById('activeAds').textContent = adsSnapshot.size;
+                
+                // طلبات السحب المعلقة
+                const withdrawalsSnapshot = await db.collection('withdrawals').where('status', '==', 'pending').get();
+                document.getElementById('pendingWithdrawals').textContent = withdrawalsSnapshot.size;
+                
+                // إجمالي النقاط في النظام
+                let totalPoints = 0;
+                usersSnapshot.forEach(doc => {
+                    const user = doc.data();
+                    totalPoints += user.points || 0;
+                });
+                document.getElementById('totalSystemPoints').textContent = totalPoints.toLocaleString();
+                
+                // تحميل المستخدمين
+                loadAdminUsers();
+                
+                // تحميل الإعلانات
+                loadAdminAds();
+                
+                // تحميل طلبات السحب
+                loadAdminWithdrawals();
+                
+                // تحميل التقارير
+                loadAdminReports();
+            } catch (error) {
+                console.error("خطأ في تحميل إحصائيات الإدمن:", error);
+            }
+        }
+        
+        async function loadAdminUsers() {
+            try {
+                const snapshot = await db.collection('users')
+                    .orderBy('joinDate', 'desc')
+                    .limit(50)
+                    .get();
+                
+                const tbody = document.getElementById('adminUsersTable');
+                tbody.innerHTML = '';
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const row = document.createElement('tr');
+                    
+                    const joinDate = data.joinDate ? data.joinDate.toDate().toLocaleDateString('ar-EG') : '---';
+                    const penalties = data.penalties || 0;
+                    const penaltyBadge = penalties > 0 ? `<span class="penalty-badge">${penalties}</span>` : '';
+                    
+                    row.innerHTML = `
+                        <td>${snapshot.docs.indexOf(doc) + 1}</td>
+                        <td>${data.name}</td>
+                        <td>${data.email}</td>
+                        <td>${data.points.toLocaleString()} ${penaltyBadge}</td>
+                        <td>${data.totalWithdrawals || 0}</td>
+                        <td>${joinDate}</td>
+                        <td><span class="badge bg-success">نشط</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-info" onclick="viewUserDetails('${doc.id}')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
+                    `;
+                    
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error("خطأ في تحميل المستخدمين:", error);
+            }
+        }
+        
+        async function loadAdminAds() {
+            try {
+                const snapshot = await db.collection('ads')
+                    .orderBy('createdAt', 'desc')
+                    .limit(50)
+                    .get();
+                
+                const tbody = document.getElementById('adminAdsTable');
+                tbody.innerHTML = '';
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const row = document.createElement('tr');
+                    
+                    const createdAt = data.createdAt ? data.createdAt.toDate().toLocaleDateString('ar-EG') : '---';
+                    const statusBadge = data.status === 'active' ? 
+                        '<span class="badge bg-success">نشط</span>' : 
+                        '<span class="badge bg-secondary">غير نشط</span>';
+                    
+                    row.innerHTML = `
+                        <td>${snapshot.docs.indexOf(doc) + 1}</td>
+                        <td>${data.title}</td>
+                        <td><small>${data.url.substring(0, 30)}...</small></td>
+                        <td>${data.points}</td>
+                        <td>${data.duration} ثانية</td>
+                        <td>${data.views || 0}/${data.maxViews || 1000}</td>
+                        <td>${statusBadge}</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning me-1">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteAd('${doc.id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                    
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error("خطأ في تحميل الإعلانات:", error);
+            }
+        }
+        
+        async function loadAdminWithdrawals() {
+            try {
+                const snapshot = await db.collection('withdrawals')
+                    .where('status', '==', 'pending')
+                    .orderBy('requestedAt', 'desc')
+                    .limit(50)
+                    .get();
+                
+                const tbody = document.getElementById('adminWithdrawalsTable');
+                tbody.innerHTML = '';
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const row = document.createElement('tr');
+                    
+                    const requestedAt = data.requestedAt ? data.requestedAt.toDate().toLocaleDateString('ar-EG') : '---';
+                    
+                    row.innerHTML = `
+                        <td>${snapshot.docs.indexOf(doc) + 1}</td>
+                        <td>${data.userName}</td>
+                        <td>${data.points.toLocaleString()}</td>
+                        <td>$${data.amount} (صافي: $${data.netAmount})</td>
+                        <td>${data.phone}</td>
+                        <td>${requestedAt}</td>
+                        <td><span class="badge bg-warning">قيد الانتظار</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-success me-1" onclick="approveWithdrawal('${doc.id}')">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="rejectWithdrawal('${doc.id}')">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </td>
+                    `;
+                    
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error("خطأ في تحميل طلبات السحب:", error);
+            }
+        }
+        
+        async function loadAdminReports() {
+            try {
+                // أعلى المستخدمين ربحاً
+                const usersSnapshot = await db.collection('users')
+                    .orderBy('totalEarned', 'desc')
+                    .limit(10)
+                    .get();
+                
+                const tbody = document.getElementById('topEarnersTable');
+                tbody.innerHTML = '';
+                
+                usersSnapshot.forEach(doc => {
+                    const data = doc.data();
+                    const row = document.createElement('tr');
+                    
+                    row.innerHTML = `
+                        <td>${data.name}</td>
+                        <td>${(data.totalEarned || 0).toLocaleString()}</td>
+                    `;
+                    
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error("خطأ في تحميل التقارير:", error);
+            }
+        }
+        
+        async function addNewAd() {
+            const adData = {
+                title: document.getElementById('adTitle').value,
+                url: document.getElementById('adUrl').value,
+                points: parseInt(document.getElementById('adPoints').value),
+                duration: parseInt(document.getElementById('adDuration').value),
+                maxViews: parseInt(document.getElementById('adViewsLimit').value),
+                description: document.getElementById('adDescription').value,
+                category: document.getElementById('adCategory').value,
+                views: 0,
+                status: 'active',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            if (!adData.title || !adData.url || adData.points < 1 || adData.duration < 1) {
+                alert("يرجى ملء جميع الحقول المطلوبة بشكل صحيح");
+                return;
+            }
+            
+            try {
+                await db.collection('ads').add(adData);
+                
+                // إغلاق النافذة
+                const modal = bootstrap.Modal.getInstance(document.getElementById('addAdModal'));
+                modal.hide();
+                
+                // إعادة تعيين النموذج
+                document.getElementById('addAdForm').reset();
+                
+                // تحديث قائمة الإعلانات
+                loadAdminAds();
+                
+                showSuccessMessage("تمت إضافة الإعلان بنجاح!");
+            } catch (error) {
+                console.error("خطأ في إضافة الإعلان:", error);
+                alert("حدث خطأ في إضافة الإعلان: " + error.message);
+            }
+        }
+        
+        async function deleteAd(adId) {
+            if (!confirm("هل أنت متأكد من حذف هذا الإعلان؟")) return;
+            
+            try {
+                await db.collection('ads').doc(adId).update({
+                    status: 'inactive'
+                });
+                
+                loadAdminAds();
+                showSuccessMessage("تم حذف الإعلان بنجاح!");
+            } catch (error) {
+                console.error("خطأ في حذف الإعلان:", error);
+                alert("حدث خطأ في حذف الإعلان: " + error.message);
+            }
+        }
+        
+        async function approveWithdrawal(withdrawalId) {
+            if (!confirm("هل أنت متأكد من قبول طلب السحب؟")) return;
+            
+            try {
+                await db.collection('withdrawals').doc(withdrawalId).update({
+                    status: 'approved',
+                    approvedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    adminNote: 'تم القبول وتحويل المبلغ'
+                });
+                
+                loadAdminWithdrawals();
+                showSuccessMessage("تم قبول طلب السحب!");
+            } catch (error) {
+                console.error("خطأ في قبول طلب السحب:", error);
+                alert("حدث خطأ في قبول طلب السحب: " + error.message);
+            }
+        }
+        
+        async function rejectWithdrawal(withdrawalId) {
+            const reason = prompt("يرجى إدخال سبب الرفض:");
+            if (!reason) return;
+            
+            try {
+                const withdrawalDoc = await db.collection('withdrawals').doc(withdrawalId).get();
+                const withdrawalData = withdrawalDoc.data();
+                
+                // إعادة النقاط للمستخدم
+                await db.collection('users').doc(withdrawalData.userId).update({
+                    points: firebase.firestore.FieldValue.increment(withdrawalData.points)
+                });
+                
+                // تحديث حالة السحب
+                await db.collection('withdrawals').doc(withdrawalId).update({
+                    status: 'rejected',
+                    rejectedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    adminNote: reason
+                });
+                
+                loadAdminWithdrawals();
+                showSuccessMessage("تم رفض طلب السحب وإعادة النقاط للمستخدم!");
+            } catch (error) {
+                console.error("خطأ في رفض طلب السحب:", error);
+                alert("حدث خطأ في رفض طلب السحب: " + error.message);
+            }
+        }
+        
+        async function viewUserDetails(userId) {
+            try {
+                const userDoc = await db.collection('users').doc(userId).get();
+                const userData = userDoc.data();
+                
+                const content = `
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(userData.name)}&background=3498db&color=fff&size=100" 
+                                 class="rounded-circle mb-3" alt="صورة المستخدم">
+                            <h5>${userData.name}</h5>
+                            <p class="text-muted">${userData.email}</p>
+                        </div>
+                        <div class="col-md-8">
+                            <table class="table table-sm">
+                                <tr>
+                                    <th>النقاط الحالية:</th>
+                                    <td>${userData.points.toLocaleString()}</td>
+                                </tr>
+                                <tr>
+                                    <th>إجمالي الأرباح:</th>
+                                    <td>${(userData.totalEarned || 0).toLocaleString()}</td>
+                                </tr>
+                                <tr>
+                                    <th>إجمالي السحوبات:</th>
+                                    <td>${(userData.totalWithdrawals || 0).toFixed(2)} دولار</td>
+                                </tr>
+                                <tr>
+                                    <th>عدد العقوبات:</th>
+                                    <td>${userData.penalties || 0}</td>
+                                </tr>
+                                <tr>
+                                    <th>تاريخ الانضمام:</th>
+                                    <td>${userData.joinDate ? userData.joinDate.toDate().toLocaleDateString('ar-EG') : '---'}</td>
+                                </tr>
+                                <tr>
+                                    <th>آخر دخول:</th>
+                                    <td>${userData.lastLogin ? userData.lastLogin.toDate().toLocaleDateString('ar-EG') : '---'}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('userDetailsContent').innerHTML = content;
+                const modal = new bootstrap.Modal(document.getElementById('userDetailsModal'));
+                modal.show();
+            } catch (error) {
+                console.error("خطأ في تحميل تفاصيل المستخدم:", error);
+            }
+        }
+        
+        function showAdminSection(section) {
+            // إخفاء جميع الأقسام
+            document.getElementById('adminDashboard').style.display = 'none';
+            document.getElementById('adminAds').style.display = 'none';
+            document.getElementById('adminUsers').style.display = 'none';
+            document.getElementById('adminWithdrawals').style.display = 'none';
+            document.getElementById('adminReports').style.display = 'none';
+            
+            // إزالة النشط من جميع القوائم
+            document.querySelectorAll('.admin-menu a').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // إظهار القسم المطلوب
+            document.getElementById('admin' + section.charAt(0).toUpperCase() + section.slice(1)).style.display = 'block';
+            
+            // إضافة النشط للقائمة
+            event.target.classList.add('active');
+        }
+        
+        // ============================================
+        // وظائف مساعدة
+        // ============================================
+        function showSection(section) {
+            // إخفاء جميع الأقسام
+            document.getElementById('dashboardSection').style.display = 'none';
+            document.getElementById('adsSection').style.display = 'none';
+            document.getElementById('withdrawSection').style.display = 'none';
+            document.getElementById('historySection').style.display = 'none';
+            document.getElementById('profileSection').style.display = 'none';
+            document.getElementById('settingsSection').style.display = 'none';
+            
+            // إظهار القسم المطلوب
+            document.getElementById(section + 'Section').style.display = 'block';
+            
+            // تحميل البيانات إذا لزم
+            if (section === 'history' && currentUser) {
+                loadUserAdsHistory(currentUser.uid);
+            } else if (section === 'withdraw' && currentUser) {
+                loadWithdrawHistory(currentUser.uid);
+            }
+        }
+        
+        function showSuccessMessage(message) {
+            // إنشاء عنصر الرسالة
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-success alert-custom position-fixed';
+            alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            alertDiv.innerHTML = `
+                <i class="fas fa-check-circle me-2"></i>
+                ${message}
+            `;
+            
+            // إضافة الرسالة للصفحة
+            document.body.appendChild(alertDiv);
+            
+            // إزالة الرسالة بعد 3 ثواني
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 3000);
+        }
+        
+        // ============================================
+        // تهيئة التطبيق
+        // ============================================
         auth.onAuthStateChanged((user) => {
             if (user) {
-                console.log("مستخدم مسجل الدخول: ", user.email);
-                // تحميل بيانات المستخدم من Firebase
+                currentUser = user;
+                
+                if (user.email === 'bo2584668@gmail.com') {
+                    showAdminPage();
+                } else {
+                    loadUserData(user.uid);
+                    showUserPage();
+                }
             } else {
-                console.log("لا يوجد مستخدم مسجل الدخول");
-                // يمكن توجيه المستخدم إلى صفحة تسجيل الدخول
+                document.getElementById('loginPage').style.display = 'flex';
+                document.getElementById('userPage').style.display = 'none';
+                document.getElementById('adminPage').style.display = 'none';
             }
+        });
+        
+        // تهيئة حاسبة النقاط
+        calculatePoints();
+        
+        // تهيئة الصفحة الأولى
+        document.addEventListener('DOMContentLoaded', function() {
+            showSection('dashboard');
         });
     </script>
 </body>
-</html>
+                            </html>
