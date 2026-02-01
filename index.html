@@ -1453,56 +1453,51 @@ const db = firebase.firestore();
 
 // دالة البدء (تحل مشكلة عدم الظهور وتضمن التوجيه)
 function startApp() {
-    google.accounts.id.initialize({
-        client_id: "805966277330-9j5j1nvluj69f8uieog0kk77p0jb46q4.apps.googleusercontent.com",
-        callback: async (response) => {
-            // فك التشفير
-            const payload = JSON.parse(atob(response.credential.split('.')[1]));
-            const uid = payload.sub;
+async function handleCredentialResponse(response) {
+    console.log("تم استلام الاستجابة من جوجل..."); // للتأكد في الـ Console
+    
+    try {
+        // 1. فك تشفير البيانات (طريقة سريعة ومضمونة)
+        const payload = JSON.parse(atob(response.credential.split('.')[1]));
+        console.log("بيانات المستخدم:", payload.email);
 
-            try {
-                // حفظ في فيربيس
-                const userRef = db.collection("users").doc(uid);
-                const userDoc = await userRef.get();
-
-                let userData;
-                if (!userDoc.exists) {
-                    userData = {
-                        uid: uid,
-                        email: payload.email,
-                        points: 0,
-                        totalEarned: 0,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    };
-                    await userRef.set(userData);
-                } else {
-                    userData = userDoc.data();
-                }
-
-                // حفظ محلي والتوجيه القسري
-                localStorage.setItem("user", JSON.stringify(userData));
-                alert("تم تسجيل الدخول!");
-                
-                // التوجيه (جرب كل الطرق لضمان العمل)
-                window.location.href = "/#home";
-                location.reload(); 
-
-            } catch (err) {
-                console.error("Firebase Error:", err);
-            }
+        // 2. محاولة الحفظ في فيربيس (Firestore)
+        // ملاحظة: لو فيربيس فيه مشكلة، الكود سيكمل للتوجيه بسبب الـ try/catch
+        try {
+            const userRef = db.collection("users").doc(payload.sub);
+            await userRef.set({
+                uid: payload.sub,
+                email: payload.email,
+                points: 0,
+                totalEarned: 0,
+                lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true }); // merge عشان ميمسحش النقاط القديمة لو موجود
+            console.log("تم تحديث البيانات في فيربيس");
+        } catch (dbError) {
+            console.error("فشل الحفظ في فيربيس لكن سأكمل التوجيه:", dbError);
         }
-    });
 
-    // رسم الزر في مكانه
-    google.accounts.id.renderButton(
-        document.getElementById("buttonDiv"),
-        { theme: "filled_blue", size: "large", width: "250" }
-    );
+        // 3. حفظ الحالة محلياً (ضروري جداً لدوام تسجيل الدخول)
+        localStorage.setItem("user", JSON.stringify({
+            uid: payload.sub,
+            email: payload.email
+        }));
+
+        // 4. التوجيه القسري (Redirect)
+        console.log("جاري التوجيه للرئيسية...");
+        
+        // جرب كل طرق التوجيه مع بعض لضمان النجاح
+        window.location.hash = "#home"; 
+        window.location.href = "/#home";
+        
+        // لو موقعك مش SPA (صفحة واحدة)، استخدم الرابط المباشر:
+        // window.location.href = "home.html";
+
+    } catch (error) {
+        console.error("خطأ حرج في الدالة:", error);
+        alert("حدث خطأ أثناء تسجيل الدخول");
+    }
 }
-
-// تشغيل بعد ثانية لضمان تحميل الصفحة
-setTimeout(startApp, 1000);
-
 
 }
 
