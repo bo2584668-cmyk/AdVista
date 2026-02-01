@@ -3,388 +3,1017 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ادفيستا - الربح من مشاهدة الإعلانات</title>
-    <link rel="stylesheet" href="style.css">
+    <title>ادفيستا - ربح النقاط من الإعلانات</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: white !important;
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 500;
+            transition: all 0.3s;
+            margin: 0 5px;
+        }
+        
+        .nav-link:hover {
+            color: white !important;
+            transform: translateY(-2px);
+        }
+        
+        .user-info {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            padding: 5px 15px;
+        }
+        
+        .user-points {
+            color: #f1c40f;
+            font-weight: bold;
+        }
+        
+        .main-container {
+            min-height: calc(100vh - 200px);
+            padding: 30px 0;
+        }
+        
+        .dashboard-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            height: 100%;
+            border: none;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+        }
+        
+        .card-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+        
+        .points-card .card-icon {
+            background-color: rgba(52, 152, 219, 0.15);
+            color: var(--secondary-color);
+        }
+        
+        .tasks-card .card-icon {
+            background-color: rgba(46, 204, 113, 0.15);
+            color: var(--success-color);
+        }
+        
+        .withdraw-card .card-icon {
+            background-color: rgba(155, 89, 182, 0.15);
+            color: #9b59b6;
+        }
+        
+        .stats-card .card-icon {
+            background-color: rgba(241, 196, 15, 0.15);
+            color: var(--warning-color);
+        }
+        
+        .card-title {
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .card-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .card-unit {
+            font-size: 1rem;
+            color: #7f8c8d;
+            margin-right: 5px;
+        }
+        
+        .ads-container {
+            margin-top: 30px;
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--secondary-color);
+            display: inline-block;
+        }
+        
+        .ad-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+            margin-bottom: 25px;
+            border: none;
+        }
+        
+        .ad-card:hover {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+            transform: translateY(-3px);
+        }
+        
+        .ad-header {
+            background: linear-gradient(to right, #3498db, #2c3e50);
+            color: white;
+            padding: 15px;
+        }
+        
+        .ad-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin: 0;
+        }
+        
+        .ad-body {
+            padding: 20px;
+        }
+        
+        .ad-duration, .ad-points {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .ad-duration i, .ad-points i {
+            width: 25px;
+            color: var(--secondary-color);
+        }
+        
+        .btn-view-ad {
+            background: linear-gradient(to right, var(--secondary-color), var(--primary-color));
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 15px;
+        }
+        
+        .btn-view-ad:hover {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn-view-ad:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+        
+        .timer-container {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 20px;
+            border: 2px dashed #dee2e6;
+        }
+        
+        .timer {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin: 15px 0;
+        }
+        
+        .timer-message {
+            color: #7f8c8d;
+            margin-bottom: 15px;
+        }
+        
+        .captcha-container {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 20px;
+            border: 2px dashed #dee2e6;
+        }
+        
+        .captcha-box {
+            background-color: white;
+            border: 2px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            font-size: 1.8rem;
+            letter-spacing: 5px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 15px 0;
+            user-select: none;
+        }
+        
+        .captcha-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+        
+        .btn-verify {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-verify:hover {
+            background-color: #219653;
+            transform: translateY(-2px);
+        }
+        
+        .footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 40px 0 20px;
+            margin-top: 60px;
+        }
+        
+        .footer h5 {
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--light-color);
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+        
+        .social-icons a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            margin-right: 10px;
+            color: white;
+            transition: all 0.3s;
+        }
+        
+        .social-icons a:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+            margin-top: 30px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        /* واجهة الإدمن */
+        .admin-panel {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+        }
+        
+        .admin-sidebar {
+            background-color: var(--primary-color);
+            color: white;
+            min-height: 100vh;
+            padding: 0;
+        }
+        
+        .admin-header {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .admin-menu {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .admin-menu li {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .admin-menu a {
+            color: white;
+            display: block;
+            padding: 15px 20px;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .admin-menu a:hover, .admin-menu a.active {
+            background-color: var(--secondary-color);
+            padding-right: 30px;
+        }
+        
+        .admin-content {
+            padding: 30px;
+        }
+        
+        .admin-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+        
+        /* التجاوب مع الشاشات الصغيرة */
+        @media (max-width: 768px) {
+            .card-value {
+                font-size: 1.8rem;
+            }
+            
+            .timer {
+                font-size: 2rem;
+            }
+            
+            .navbar-brand {
+                font-size: 1.4rem;
+            }
+        }
+        
+        /* رسائل التنبيه */
+        .alert-custom {
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        /* تخصيص Bootstrap */
+        .btn-primary {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+        }
+        
+        .btn-warning {
+            background-color: var(--warning-color);
+            border-color: var(--warning-color);
+        }
+        
+        .btn-danger {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+    </style>
 </head>
 <body>
     <!-- شريط التنقل -->
-    <nav class="navbar">
-        <div class="container nav-container">
-            <a href="#" class="logo">
-                <i class="fas fa-ad"></i> ادفيستا
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-ad me-2"></i>ادفيستا
             </a>
             
-            <div class="nav-menu" id="navMenu">
-                <a href="#home" class="nav-link active"><i class="fas fa-home"></i> الرئيسية</a>
-                <a href="#ads" class="nav-link"><i class="fas fa-ad"></i> الإعلانات</a>
-                <a href="#dashboard" class="nav-link"><i class="fas fa-chart-line"></i> لوحتي</a>
-                <a href="#withdraw" class="nav-link"><i class="fas fa-money-bill-wave"></i> سحب الأرباح</a>
-                <a href="#how-it-works" class="nav-link"><i class="fas fa-question-circle"></i> طريقة العمل</a>
-            </div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
             
-            <div class="nav-buttons">
-                <div class="user-balance" id="userBalance" style="display: none;">
-                    <i class="fas fa-coins"></i>
-                    <span id="balance">0</span> نقطة
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">
+                            <i class="fas fa-home me-1"></i> الرئيسية
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-ad me-1"></i> الإعلانات
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-history me-1"></i> السحوبات
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-question-circle me-1"></i> المساعدة
+                        </a>
+                    </li>
+                </ul>
+                
+                <div class="d-flex align-items-center">
+                    <div class="user-info me-3">
+                        <span class="me-2">أهلاً، محمد</span>
+                        <span class="user-points">
+                            <i class="fas fa-coins me-1"></i> 45,200
+                        </span>
+                    </div>
+                    
+                    <div class="dropdown">
+                        <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i> الحساب
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> الملف الشخصي</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> الإعدادات</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-sign-out-alt me-2"></i> تسجيل الخروج</a></li>
+                        </ul>
+                    </div>
                 </div>
-                
-                <!-- Google Sign-In Button Container -->
-                <div id="g_id_signin" class="g_id_signin" style="display: none;"></div>
-                
-                <button class="btn btn-login" id="loginBtn">
-                    <i class="fab fa-google"></i> تسجيل الدخول
-                </button>
-                
-                <div class="user-profile" id="userProfile" style="display: none;">
-                    <img id="userAvatar" src="" alt="صورة المستخدم" class="user-avatar">
-                    <span id="userName"></span>
-                    <button class="btn btn-logout" id="logoutBtn">
-                        <i class="fas fa-sign-out-alt"></i> خروج
-                    </button>
-                </div>
-                
-                <button class="mobile-toggle" id="mobileToggle">
-                    <i class="fas fa-bars"></i>
-                </button>
             </div>
         </div>
     </nav>
 
-    <!-- قسم الترحيب -->
-    <section class="hero" id="home">
-        <div class="container hero-container">
-            <div class="hero-text">
-                <h1 class="hero-title">اربح المال من مشاهدة الإعلانات</h1>
-                <p class="hero-description">
-                    انضم إلى <span class="highlight">ادفيستا</span> وابدأ الربح اليوم! شاهد الإعلانات، أكمل المهام، واحصل على نقاط يمكنك استبدالها بأموال حقيقية أو جوائز قيمة.
-                </p>
-                <div class="hero-stats">
-                    <div class="stat">
-                        <h3>+<span id="totalUsers">0</span></h3>
-                        <p>مستخدم نشط</p>
-                    </div>
-                    <div class="stat">
-                        <h3>$<span id="totalPayouts">0</span>+</h3>
-                        <p>تم دفعها</p>
-                    </div>
-                    <div class="stat">
-                        <h3><span id="totalAds">0</span>+</h3>
-                        <p>إعلان نشط</p>
-                    </div>
-                </div>
-                <div class="hero-buttons">
-                    <button class="btn btn-primary btn-large" id="startEarningBtn">
-                        <i class="fas fa-play-circle"></i> ابدأ الربح الآن
-                    </button>
-                    <a href="#how-it-works" class="btn btn-secondary btn-large">
-                        <i class="fas fa-info-circle"></i> تعرف أكثر
-                    </a>
-                </div>
-            </div>
-            <div class="hero-image">
-                <img src="https://cdn.pixabay.com/photo/2017/09/14/22/42/money-2750931_1280.png" alt="ربح المال من الإعلانات" loading="lazy">
-            </div>
-        </div>
-    </section>
-
-    <!-- لوحة المستخدم -->
-    <section class="dashboard-section" id="dashboard">
-        <div class="container">
-            <h2 class="section-title"><i class="fas fa-chart-line"></i> لوحة التحكم</h2>
-            <div class="dashboard-grid" id="userDashboard">
-                <div class="login-required">
-                    <i class="fas fa-lock"></i>
-                    <h3>يجب تسجيل الدخول لعرض لوحة التحكم</h3>
-                    <p>سجل الدخول باستخدام حساب جوجل لمشاهدة رصيدك وإحصائياتك</p>
-                    <button class="btn btn-primary" id="dashboardLoginBtn">
-                        <i class="fab fa-google"></i> تسجيل الدخول الآن
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- قسم السحب -->
-    <section class="withdraw-section" id="withdraw">
-        <div class="container">
-            <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> سحب الأرباح</h2>
-            <div class="withdraw-container" id="withdrawContainer">
-                <div class="login-required">
-                    <i class="fas fa-lock"></i>
-                    <h3>يجب تسجيل الدخول لعرض قسم السحب</h3>
-                    <p>سجل الدخول باستخدام حساب جوجل لطلب سحب أرباحك</p>
-                    <button class="btn btn-primary" id="withdrawLoginBtn">
-                        <i class="fab fa-google"></i> تسجيل الدخول الآن
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- قسم الإعلانات -->
-    <section class="ads-section" id="ads">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title"><i class="fas fa-ad"></i> جدار الإعلانات</h2>
-                <p class="section-subtitle">شاهد الإعلانات واكسب النقاط. كل إعلان له وقت محدد يجب مشاهدته بالكامل.</p>
-            </div>
-            
-            <div class="ads-filter">
-                <button class="filter-btn active" data-filter="all">الكل</button>
-                <button class="filter-btn" data-filter="short">قصيرة (10-30 ثانية)</button>
-                <button class="filter-btn" data-filter="medium">متوسطة (31-60 ثانية)</button>
-                <button class="filter-btn" data-filter="long">طويلة (أكثر من دقيقة)</button>
-            </div>
-            
-            <div class="ads-grid" id="adsGrid">
-                <div class="loading-ads">
-                    <div class="spinner"></div>
-                    <p>جاري تحميل الإعلانات المتاحة...</p>
-                </div>
-            </div>
-            
-            <!-- عداد الإعلان -->
-            <div class="ad-timer-overlay" id="adTimerOverlay">
-                <div class="ad-timer-container">
-                    <div class="ad-timer-header">
-                        <h3 id="adTimerTitle">جاري مشاهدة الإعلان</h3>
-                        <button class="close-timer" id="closeTimerBtn">&times;</button>
-                    </div>
-                    <div class="ad-timer-body">
-                        <div class="timer-circle">
-                            <svg class="timer-svg" width="120" height="120">
-                                <circle class="timer-bg" cx="60" cy="60" r="54"></circle>
-                                <circle class="timer-progress" cx="60" cy="60" r="54"></circle>
-                            </svg>
-                            <div class="timer-text">
-                                <span id="timerSeconds">30</span>
-                                <small>ثانية</small>
-                            </div>
-                        </div>
-                        <div class="timer-instructions">
-                            <p><i class="fas fa-exclamation-triangle"></i> يجب أن تبقى هذه الصفحة مفتوحة ورؤية حتى يكتمل العداد</p>
-                            <p><i class="fas fa-eye"></i> سيفشل الإعلان إذا غادرت هذه الصفحة أو قمت بإغلاقها</p>
-                        </div>
-                        <div class="timer-status" id="timerStatus">
-                            <i class="fas fa-check-circle"></i> الإعلان قيد التشغيل
-                        </div>
-                        <div class="timer-action" id="timerAction" style="display: none;">
-                            <p>لقد أكملت مشاهدة الإعلان!</p>
-                            <button class="btn btn-success" id="claimPointsBtn">احصل على النقاط</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- قسم طريقة العمل -->
-    <section class="how-it-works" id="how-it-works">
-        <div class="container">
-            <h2 class="section-title"><i class="fas fa-question-circle"></i> طريقة العمل</h2>
-            <div class="steps-grid">
-                <div class="step-card">
-                    <div class="step-number">1</div>
-                    <div class="step-icon">
-                        <i class="fas fa-user-plus"></i>
-                    </div>
-                    <h3>سجل الدخول</h3>
-                    <p>قم بتسجيل الدخول باستخدام حساب جوجل الخاص بك لبدء رحلة الربح.</p>
-                </div>
-                <div class="step-card">
-                    <div class="step-number">2</div>
-                    <div class="step-icon">
-                        <i class="fas fa-ad"></i>
-                    </div>
-                    <h3>اختر الإعلان</h3>
-                    <p>تصفح قائمة الإعلانات المتاحة واختر الإعلان الذي ترغب بمشاهدته.</p>
-                </div>
-                <div class="step-card">
-                    <div class="step-number">3</div>
-                    <div class="step-icon">
-                        <i class="fas fa-eye"></i>
-                    </div>
-                    <h3>شاهد الإعلان</h3>
-                    <p>شاهد الإعلان بالكامل خلال الوقت المحدد مع بقاء النافذة مفتوحة.</p>
-                </div>
-                <div class="step-card">
-                    <div class="step-number">4</div>
-                    <div class="step-icon">
+    <!-- المحتوى الرئيسي -->
+    <div class="container main-container">
+        <!-- لوحة الإحصائيات -->
+        <div class="row mb-4">
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="dashboard-card points-card">
+                    <div class="card-icon">
                         <i class="fas fa-coins"></i>
                     </div>
-                    <h3>احصل على النقاط</h3>
-                    <p>بعد انتهاء العداد، احصل على نقاطك التي يمكن استبدالها بأموال حقيقية.</p>
+                    <h5 class="card-title">رصيد النقاط</h5>
+                    <div class="card-value">
+                        <span class="card-unit">نقطة</span>45,200
+                    </div>
+                    <p class="text-muted mt-2">ما يعادل: 2.26 دولار</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="dashboard-card tasks-card">
+                    <div class="card-icon">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <h5 class="card-title">المهام اليومية</h5>
+                    <div class="card-value">
+                        <span class="card-unit">مهمة</span>8/20
+                    </div>
+                    <p class="text-muted mt-2">+4,000 نقطة اليوم</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="dashboard-card withdraw-card">
+                    <div class="card-icon">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <h5 class="card-title">السحوبات</h5>
+                    <div class="card-value">
+                        <span class="card-unit">مرة</span>3
+                    </div>
+                    <p class="text-muted mt-2">إجمالي السحوبات: 5 دولار</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="dashboard-card stats-card">
+                    <div class="card-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h5 class="card-title">الأرباح الشهرية</h5>
+                    <div class="card-value">
+                        <span class="card-unit">دولار</span>12.5
+                    </div>
+                    <p class="text-muted mt-2">+250,000 نقطة</p>
                 </div>
             </div>
         </div>
-    </section>
-
-    <!-- تذييل الصفحة -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-col">
-                    <h3><i class="fas fa-ad"></i> ادفيستا</h3>
-                    <p>منصة الربح من الإعلانات الرائدة في العالم العربي. اربح المال بمشاهدة الإعلانات بطريقة آمنة ومضمونة.</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-telegram"></i></a>
+        
+        <!-- قسم الإعلانات -->
+        <div class="ads-container">
+            <h3 class="section-title">
+                <i class="fas fa-ad me-2"></i>الإعلانات المتاحة
+            </h3>
+            
+            <div class="row" id="adsContainer">
+                <!-- الإعلانات سيتم إضافتها هنا عبر JavaScript -->
+            </div>
+        </div>
+        
+        <!-- قسم طلب السحب -->
+        <div class="row mt-5">
+            <div class="col-lg-6">
+                <div class="dashboard-card">
+                    <h5 class="card-title">
+                        <i class="fas fa-money-bill-wave me-2"></i>طلب سحب الأرباح
+                    </h5>
+                    <p class="text-muted mb-3">الحد الأدنى للسحب: 1 دولار (20,000 نقطة)</p>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">رقم فودافون كاش</label>
+                        <input type="text" class="form-control" placeholder="أدخل رقم الهاتف المرتبط بفودافون كاش">
                     </div>
-                </div>
-                <div class="footer-col">
-                    <h3>روابط سريعة</h3>
-                    <a href="#home">الرئيسية</a>
-                    <a href="#ads">الإعلانات</a>
-                    <a href="#dashboard">لوحة التحكم</a>
-                    <a href="#withdraw">سحب الأرباح</a>
-                    <a href="#how-it-works">طريقة العمل</a>
-                </div>
-                <div class="footer-col">
-                    <h3>الشروط والسياسات</h3>
-                    <a href="#">شروط الاستخدام</a>
-                    <a href="#">سياسة الخصوصية</a>
-                    <a href="#">سياسة الدفع</a>
-                    <a href="#">الأسئلة الشائعة</a>
-                </div>
-                <div class="footer-col">
-                    <h3>تواصل معنا</h3>
-                    <p><i class="fas fa-envelope"></i> info@advista.com</p>
-                    <p><i class="fas fa-phone"></i> +966 12 345 6789</p>
-                    <p><i class="fas fa-map-marker-alt"></i> المملكة العربية السعودية</p>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">عدد النقاط للسحب</label>
+                        <input type="number" class="form-control" id="withdrawPoints" min="20000" step="1000" value="20000">
+                        <div class="form-text" id="withdrawAmount">المبلغ: 1 دولار</div>
+                    </div>
+                    
+                    <button class="btn btn-success w-100" id="requestWithdraw">
+                        <i class="fas fa-paper-plane me-2"></i>إرسال طلب السحب
+                    </button>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <p>© 2023 ادفيستا. جميع الحقوق محفوظة.</p>
-                <p>تم التطوير بواسطة <span class="highlight">فريق ادفيستا</span></p>
+            
+            <div class="col-lg-6">
+                <div class="dashboard-card">
+                    <h5 class="card-title">
+                        <i class="fas fa-info-circle me-2"></i>معلومات مهمة
+                    </h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            الحد الأدنى للسحب: 20,000 نقطة (1 دولار)
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            السحب حصرياً عبر فودافون كاش
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            معالجة طلبات السحب خلال 24-48 ساعة
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            كل إعلان يعطي 100-500 نقطة حسب المدة
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            يمكنك مشاهدة حتى 50 إعلان يومياً
+                        </li>
+                    </ul>
+                    
+                    <hr>
+                    
+                    <h6 class="fw-bold mt-3">تواصل مع الإدارة للاستفسار:</h6>
+                    <div class="social-icons mt-3">
+                        <a href="https://wa.me/201273740256" target="_blank" title="واتساب">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                        <a href="https://www.instagram.com/Baraa___offical" target="_blank" title="انستجرام">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://www.tiktok.com/@Baraa_offical" target="_blank" title="تيك توك">
+                            <i class="fab fa-tiktok"></i>
+                        </a>
+                        <a href="https://www.facebook.com/baraa_omar_talaat" target="_blank" title="فيسبوك">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة العدّاد -->
+    <div class="modal fade" id="timerModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">مشاهدة الإعلان</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="timer-container">
+                        <p class="timer-message">يجب مشاهدة الإعلان حتى النهاية للحصول على النقاط</p>
+                        <div class="timer" id="countdown">30</div>
+                        <p>ثانية متبقية</p>
+                        <div class="alert alert-warning alert-custom mt-3">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            لا تغلق نافذة الإعلان أو تترك هذه الصفحة حتى ينتهي العدّاد
+                        </div>
+                    </div>
+                    
+                    <div class="captcha-container d-none" id="captchaSection">
+                        <p>أدخل الأحاظ في الصورة أدناه لتأكيد المشاهدة</p>
+                        <div class="captcha-box" id="captchaText">A3B7C</div>
+                        <input type="text" class="captcha-input" id="captchaInput" placeholder="أدخل النص أعلاه">
+                        <button class="btn btn-verify" id="verifyCaptcha">
+                            <i class="fas fa-check-circle me-2"></i>تأكيد والحصول على النقاط
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- الفوتر -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <h5>عن ادفيستا</h5>
+                    <p>منصة عربية لربح النقاط من خلال مشاهدة الإعلانات. نوفر فرصة ربح حقيقية للمستخدمين مع شروط واضحة وشفافة.</p>
+                    <div class="social-icons mt-4">
+                        <a href="https://wa.me/201273740256" target="_blank" title="واتساب">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                        <a href="https://www.instagram.com/Baraa___offical" target="_blank" title="انستجرام">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://www.tiktok.com/@Baraa_offical" target="_blank" title="تيك توك">
+                            <i class="fab fa-tiktok"></i>
+                        </a>
+                        <a href="https://www.facebook.com/baraa_omar_talaat" target="_blank" title="فيسبوك">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <h5>روابط سريعة</h5>
+                    <ul class="footer-links list-unstyled">
+                        <li><a href="#"><i class="fas fa-chevron-left me-2"></i>كيفية الربح</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-left me-2"></i>شروط الاستخدام</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-left me-2"></i>الأسئلة الشائعة</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-left me-2"></i>سياسة الخصوصية</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-left me-2"></i>اتصل بنا</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-4 col-md-12 mb-4">
+                    <h5>معلومات الاتصال</h5>
+                    <ul class="footer-links list-unstyled">
+                        <li><i class="fas fa-envelope me-2"></i> bo2584668@gmail.com</li>
+                        <li><i class="fab fa-whatsapp me-2"></i> 201273740256</li>
+                        <li><i class="fas fa-globe me-2"></i> مصر</li>
+                    </ul>
+                    
+                    <div class="mt-4">
+                        <h6>طرق السحب المتاحة</h6>
+                        <div class="d-flex align-items-center mt-2">
+                            <div class="bg-white rounded p-2 me-2">
+                                <i class="fas fa-money-bill-wave text-success fa-2x"></i>
+                            </div>
+                            <span>فودافون كاش</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>جميع الحقوق محفوظة &copy; 2023 ادفيستا. تم التطوير بواسطة بَراء</p>
             </div>
         </div>
     </footer>
 
-    <!-- نموذج طلب السحب -->
-    <div class="modal-overlay" id="withdrawModal">
-        <div class="modal-container">
-            <div class="modal-header">
-                <h3><i class="fas fa-money-bill-wave"></i> طلب سحب الأرباح</h3>
-                <button class="modal-close" id="closeWithdrawModal">&times;</button>
-            </div>
-            <div class="modal-body">
-                <form id="withdrawForm">
-                    <div class="form-group">
-                        <label for="withdrawAmount">مبلغ السحب (بالنقاط)</label>
-                        <input type="number" id="withdrawAmount" class="form-control" min="20000" step="1000" placeholder="أدخل المبلغ المراد سحبه" required>
-                        <small class="form-text">الحد الأدنى للسحب: 20,000 نقطة (1 دولار)</small>
-                        <small class="form-text" id="amountInDollars"></small>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="vodafoneNumber">رقم فودافون كاش</label>
-                        <input type="tel" id="vodafoneNumber" class="form-control" pattern="[0-9]{11}" placeholder="أدخل رقم فودافون كاش (11 رقم)" required>
-                        <small class="form-text">مثال: 01012345678</small>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="withdrawNotes">ملاحظات (اختياري)</label>
-                        <textarea id="withdrawNotes" class="form-control" rows="3" placeholder="أضف أي ملاحظات تريد إبلاغها للإدارة"></textarea>
-                    </div>
-                    
-                    <div class="withdraw-summary">
-                        <h4>ملخص الطلب:</h4>
-                        <div class="summary-item">
-                            <span>رصيدك الحالي:</span>
-                            <span id="currentBalanceSummary">0 نقطة</span>
-                        </div>
-                        <div class="summary-item">
-                            <span>المبلغ المطلوب:</span>
-                            <span id="requestedAmount">0 نقطة</span>
-                        </div>
-                        <div class="summary-item">
-                            <span>القيمة بالدولار:</span>
-                            <span id="amountInDollar">$0.00</span>
-                        </div>
-                        <div class="summary-item">
-                            <span>الرصيد المتبقي:</span>
-                            <span id="remainingBalance">0 نقطة</span>
-                        </div>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary btn-block">
-                        <i class="fas fa-paper-plane"></i> إرسال طلب السحب
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- نافذة تأكيد السحب -->
-    <div class="modal-overlay" id="confirmModal" style="display: none;">
-        <div class="modal-container">
-            <div class="modal-header">
-                <h3><i class="fas fa-check-circle"></i> تأكيد طلب السحب</h3>
-                <button class="modal-close" id="closeConfirmModal">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="confirmation-message">
-                    <i class="fas fa-check-circle success-icon"></i>
-                    <h4>تم إرسال طلب السحب بنجاح!</h4>
-                    <p>سيتم مراجعة طلبك من قبل الإدارة خلال 24-48 ساعة</p>
-                    <p>يمكنك متابعة حالة الطلب من قسم سحب الأرباح</p>
-                </div>
-                <button class="btn btn-success btn-block" id="closeConfirmBtn">
-                    <i class="fas fa-check"></i> تم الفهم
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Google Sign-In Script -->
+    <!-- سكريبتات -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script>
-        // Initialize Google Sign-In
-        function initGoogleSignIn() {
-            if (typeof google !== 'undefined') {
-                google.accounts.id.initialize({
-                    client_id: '805966277330-9j5j1nvluj69f8uieog0kk77p0jb46q4.apps.googleusercontent.com',
-                    callback: handleGoogleSignIn,
-                    auto_select: false,
-                    cancel_on_tap_outside: true
-                });
-                
-                // Render button
-                google.accounts.id.renderButton(
-                    document.getElementById('g_id_signin'),
-                    {
-                        type: 'standard',
-                        theme: 'filled_blue',
-                        size: 'medium',
-                        text: 'signin_with',
-                        shape: 'rectangular',
-                        logo_alignment: 'left',
-                        width: '200'
+        // تهيئة Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyC4fZQ-BTUeHsN9nQtMGmnjJz-NKdcUgkc",
+            authDomain: "advista-b64ab.firebaseapp.com",
+            projectId: "advista-b64ab",
+            storageBucket: "advista-b64ab.firebasestorage.app",
+            messagingSenderId: "509713648189",
+            appId: "1:509713648189:web:0ccd6ada1f4e07f85d3854",
+            measurementId: "G-VG4S1SMKH8"
+        };
+        
+        // تهيئة Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        // بيانات الإعلانات
+        const ads = [
+            { id: 1, title: "إعلان تطبيق جديد", points: 150, duration: 30, link: "https://linkjust.com/xbTIX" },
+            { id: 2, title: "عرض خاص على المنتجات", points: 200, duration: 40, link: "https://linkjust.com/xbTIX" },
+            { id: 3, title: "تطبيق توصيل طعام", points: 120, duration: 25, link: "https://linkjust.com/xbTIX" },
+            { id: 4, title: "عروض أونلاين", points: 180, duration: 35, link: "https://linkjust.com/xbTIX" },
+            { id: 5, title: "تطبيق تعليمي", points: 220, duration: 45, link: "https://linkjust.com/xbTIX" },
+            { id: 6, title: "عروض سفر", points: 250, duration: 50, link: "https://linkjust.com/xbTIX" },
+            { id: 7, title: "تطبيق لياقة بدنية", points: 130, duration: 30, link: "https://linkjust.com/xbTIX" },
+            { id: 8, title: "عروض تسوق", points: 170, duration: 35, link: "https://linkjust.com/xbTIX" },
+            { id: 9, title: "تطبيق موسيقى", points: 190, duration: 40, link: "https://linkjust.com/xbTIX" },
+            { id: 10, title: "إعلان خدمات", points: 210, duration: 45, link: "https://linkjust.com/xbTIX" },
+            { id: 11, title: "تطبيق فيديوهات", points: 140, duration: 30, link: "https://linkjust.com/xbTIX" },
+            { id: 12, title: "عروض إلكترونيات", points: 230, duration: 50, link: "https://linkjust.com/xbTIX" },
+            { id: 13, title: "تطبيق اجتماعي", points: 160, duration: 35, link: "https://linkjust.com/xbTIX" },
+            { id: 14, title: "عروض ملابس", points: 180, duration: 40, link: "https://linkjust.com/xbTIX" },
+            { id: 15, title: "تطبيق أخبار", points: 110, duration: 25, link: "https://linkjust.com/xbTIX" },
+            { id: 16, title: "عروض منزلية", points: 195, duration: 40, link: "https://linkjust.com/xbTIX" },
+            { id: 17, title: "تطبيق ألعاب", points: 175, duration: 35, link: "https://linkjust.com/xbTIX" },
+            { id: 18, title: "عروض تجميل", points: 205, duration: 45, link: "https://linkjust.com/xbTIX" },
+            { id: 19, title: "تطبيق طبي", points: 225, duration: 50, link: "https://linkjust.com/xbTIX" },
+            { id: 20, title: "عروض سيارات", points: 240, duration: 50, link: "https://linkjust.com/xbTIX" }
+        ];
+        
+        // متغيرات النظام
+        let currentAd = null;
+        let countdownInterval = null;
+        let timerValue = 30;
+        let isWindowFocused = true;
+        let adTab = null;
+        
+        // تحميل الإعلانات
+        function loadAds() {
+            const adsContainer = document.getElementById('adsContainer');
+            adsContainer.innerHTML = '';
+            
+            ads.forEach(ad => {
+                const adCard = document.createElement('div');
+                adCard.className = 'col-lg-3 col-md-4 col-sm-6';
+                adCard.innerHTML = `
+                    <div class="ad-card">
+                        <div class="ad-header">
+                            <h6 class="ad-title">${ad.title}</h6>
+                        </div>
+                        <div class="ad-body">
+                            <div class="ad-points">
+                                <i class="fas fa-coins"></i>
+                                <span>النقاط: <strong>${ad.points}</strong></span>
+                            </div>
+                            <div class="ad-duration">
+                                <i class="fas fa-clock"></i>
+                                <span>المدة: <strong>${ad.duration}</strong> ثانية</span>
+                            </div>
+                            <button class="btn btn-view-ad" onclick="startAd(${ad.id})">
+                                <i class="fas fa-play-circle me-2"></i>ابدأ المشاهدة
+                            </button>
+                        </div>
+                    </div>
+                `;
+                adsContainer.appendChild(adCard);
+            });
+        }
+        
+        // بدء الإعلان
+        function startAd(adId) {
+            currentAd = ads.find(ad => ad.id === adId);
+            timerValue = currentAd.duration;
+            
+            // فتح الإعلان في تبويب جديد
+            adTab = window.open(currentAd.link, '_blank');
+            
+            // عرض نافذة العدّاد
+            const timerModal = new bootstrap.Modal(document.getElementById('timerModal'));
+            timerModal.show();
+            
+            // بدء العدّاد
+            startCountdown();
+            
+            // مراقبة تركيز النافذة
+            window.addEventListener('blur', handleWindowBlur);
+            window.addEventListener('focus', handleWindowFocus);
+        }
+        
+        // بدء العدّاد
+        function startCountdown() {
+            const countdownElement = document.getElementById('countdown');
+            countdownElement.textContent = timerValue;
+            
+            countdownInterval = setInterval(() => {
+                if (isWindowFocused) {
+                    timerValue--;
+                    countdownElement.textContent = timerValue;
+                    
+                    if (timerValue <= 0) {
+                        clearInterval(countdownInterval);
+                        showCaptcha();
                     }
-                );
+                }
+            }, 1000);
+        }
+        
+        // إدارة فقدان التركيز
+        function handleWindowBlur() {
+            isWindowFocused = false;
+            console.log("تم فقدان التركيز - العدّاد متوقف");
+        }
+        
+        function handleWindowFocus() {
+            isWindowFocused = true;
+            console.log("تم استعادة التركيز - العدّاد مستمر");
+        }
+        
+        // عرض الكابتشا بعد انتهاء الوقت
+        function showCaptcha() {
+            document.getElementById('captchaSection').classList.remove('d-none');
+            generateCaptcha();
+        }
+        
+        // إنشاء كابتشا عشوائية
+        function generateCaptcha() {
+            const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
+            let captcha = "";
+            
+            for (let i = 0; i < 5; i++) {
+                captcha += chars.charAt(Math.floor(Math.random() * chars.length));
             }
+            
+            document.getElementById('captchaText').textContent = captcha;
+            return captcha;
         }
         
-        // Handle Google Sign-In callback
-        function handleGoogleSignIn(response) {
-            window.handleGoogleSignInResponse(response);
+        // التحقق من الكابتشا
+        document.getElementById('verifyCaptcha').addEventListener('click', function() {
+            const captchaInput = document.getElementById('captchaInput').value;
+            const captchaText = document.getElementById('captchaText').textContent;
+            
+            if (captchaInput === captchaText) {
+                // إضافة النقاط
+                alert(`تمت إضافة ${currentAd.points} نقطة إلى رصيدك!`);
+                
+                // إغلاق نافذة الإعلان
+                if (adTab && !adTab.closed) {
+                    adTab.close();
+                }
+                
+                // إغلاق النافذة المنبثقة
+                const timerModal = bootstrap.Modal.getInstance(document.getElementById('timerModal'));
+                timerModal.hide();
+                
+                // إعادة تعيين المتغيرات
+                resetAdSystem();
+                
+                // تحديث رصيد المستخدم (هنا يجب الاتصال بالسيرفر)
+                updateUserPoints(currentAd.points);
+            } else {
+                alert("كود التأكيد غير صحيح. حاول مرة أخرى.");
+                generateCaptcha();
+                document.getElementById('captchaInput').value = '';
+            }
+        });
+        
+        // تحديث رصيد المستخدم
+        function updateUserPoints(points) {
+            // هنا سيكون اتصال مع Firebase لتحديث النقاط
+            const userPointsElement = document.querySelector('.user-points');
+            const currentPoints = parseInt(userPointsElement.textContent.replace(/,/g, ''));
+            const newPoints = currentPoints + points;
+            userPointsElement.innerHTML = `<i class="fas fa-coins me-1"></i> ${newPoints.toLocaleString()}`;
+            
+            // تحديث رصيد النقاط في البطاقة
+            const pointsCardValue = document.querySelector('.points-card .card-value');
+            pointsCardValue.innerHTML = `<span class="card-unit">نقطة</span>${newPoints.toLocaleString()}`;
+            
+            // تحديث قيمة الدولار
+            const dollarValue = (newPoints / 20000).toFixed(2);
+            pointsCardValue.nextElementSibling.textContent = `ما يعادل: ${dollarValue} دولار`;
         }
         
-        // Load Google Sign-In when script is ready
-        window.addEventListener('load', function() {
-            if (typeof google !== 'undefined') {
-                initGoogleSignIn();
+        // إعادة تعيين نظام الإعلان
+        function resetAdSystem() {
+            clearInterval(countdownInterval);
+            currentAd = null;
+            timerValue = 30;
+            isWindowFocused = true;
+            adTab = null;
+            
+            document.getElementById('captchaSection').classList.add('d-none');
+            document.getElementById('captchaInput').value = '';
+            
+            // إزالة مستمعي الأحداث
+            window.removeEventListener('blur', handleWindowBlur);
+            window.removeEventListener('focus', handleWindowFocus);
+        }
+        
+        // نظام طلب السحب
+        document.getElementById('withdrawPoints').addEventListener('input', function() {
+            const points = parseInt(this.value) || 20000;
+            const dollars = (points / 20000).toFixed(2);
+            document.getElementById('withdrawAmount').textContent = `المبلغ: ${dollars} دولار`;
+        });
+        
+        document.getElementById('requestWithdraw').addEventListener('click', function() {
+            const points = parseInt(document.getElementById('withdrawPoints').value);
+            const phone = document.querySelector('input[placeholder*="فودافون"]').value;
+            
+            if (points < 20000) {
+                alert("الحد الأدنى للسحب هو 20,000 نقطة (1 دولار)");
+                return;
+            }
+            
+            if (!phone || phone.length < 10) {
+                alert("يرجى إدخال رقم هاتف صحيح لفودافون كاش");
+                return;
+            }
+            
+            // هنا سيتم إرسال طلب السحب إلى الإدارة عبر Firebase
+            alert(`تم إرسال طلب سحب بقيمة ${points} نقطة (${points/20000} دولار) إلى الإدارة. سيتم معالجة الطلب خلال 24-48 ساعة.`);
+            
+            // إعادة تعيين الحقول
+            document.querySelector('input[placeholder*="فودافون"]').value = '';
+            document.getElementById('withdrawPoints').value = '20000';
+            document.getElementById('withdrawAmount').textContent = 'المبلغ: 1 دولار';
+        });
+        
+        // تحميل الإعلانات عند بدء التشغيل
+        window.addEventListener('DOMContentLoaded', loadAds);
+        
+        // إغلاق النافذة المنبثقة عند الضغط على زر الإغلاق
+        document.querySelector('#timerModal .btn-close').addEventListener('click', function() {
+            if (adTab && !adTab.closed) {
+                adTab.close();
+            }
+            resetAdSystem();
+        });
+        
+        // نظام تسجيل الدخول عبر Google (مثال)
+        function signInWithGoogle() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider)
+                .then((result) => {
+                    // نجاح تسجيل الدخول
+                    console.log("تم تسجيل الدخول: ", result.user);
+                    // توجيه المستخدم أو تحديث الواجهة
+                })
+                .catch((error) => {
+                    console.error("خطأ في تسجيل الدخول: ", error);
+                });
+        }
+        
+        // التحقق من حالة تسجيل الدخول
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                console.log("مستخدم مسجل الدخول: ", user.email);
+                // تحميل بيانات المستخدم من Firebase
+            } else {
+                console.log("لا يوجد مستخدم مسجل الدخول");
+                // يمكن توجيه المستخدم إلى صفحة تسجيل الدخول
             }
         });
     </script>
-
-    <!-- روابط JavaScript -->
-    <script src="script.js"></script>
 </body>
 </html>
