@@ -9,8 +9,12 @@ const firebaseConfig = {
     measurementId: "G-VG4S1SMKH8"
 };
 
-// Initialize Firebase للتخزين فقط
-firebase.initializeApp(firebaseConfig);
+// Initialize Firebase للتخزين فقط - مع منع التكرار
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+} else {
+    firebase.app(); // إذا تم التهيئة مسبقاً
+}
 const db = firebase.firestore();
 
 // Google Sign-In Configuration
@@ -54,22 +58,37 @@ function initUI() {
     });
     
     // Login button
-    document.getElementById('loginBtn').addEventListener('click', function() {
-        triggerGoogleSignIn();
-    });
+    const loginBtn = document.getElementById('loginBtn');
+    if (loginBtn) {
+        loginBtn.addEventListener('click', function() {
+            triggerGoogleSignIn();
+        });
+    }
     
     // Dashboard login button
-    document.getElementById('dashboardLoginBtn')?.addEventListener('click', function() {
-        triggerGoogleSignIn();
-    });
+    const dashboardLoginBtn = document.getElementById('dashboardLoginBtn');
+    if (dashboardLoginBtn) {
+        dashboardLoginBtn.addEventListener('click', function() {
+            triggerGoogleSignIn();
+        });
+    }
     
     // Logout button
-    document.getElementById('logoutBtn')?.addEventListener('click', signOut);
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', signOut);
+    }
     
     // Start earning button
-    document.getElementById('startEarningBtn').addEventListener('click', function() {
-        document.getElementById('ads').scrollIntoView({ behavior: 'smooth' });
-    });
+    const startEarningBtn = document.getElementById('startEarningBtn');
+    if (startEarningBtn) {
+        startEarningBtn.addEventListener('click', function() {
+            const adsSection = document.getElementById('ads');
+            if (adsSection) {
+                adsSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    }
     
     // Ad filter buttons
     document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -81,10 +100,16 @@ function initUI() {
     });
     
     // Timer close button
-    document.getElementById('closeTimerBtn').addEventListener('click', closeAdTimer);
+    const closeTimerBtn = document.getElementById('closeTimerBtn');
+    if (closeTimerBtn) {
+        closeTimerBtn.addEventListener('click', closeAdTimer);
+    }
     
     // Claim points button
-    document.getElementById('claimPointsBtn').addEventListener('click', claimAdPoints);
+    const claimPointsBtn = document.getElementById('claimPointsBtn');
+    if (claimPointsBtn) {
+        claimPointsBtn.addEventListener('click', claimAdPoints);
+    }
 }
 
 // Trigger Google Sign-In
@@ -114,6 +139,13 @@ function triggerGoogleSignIn() {
 // Handle Google Sign-In Response
 function handleGoogleSignIn(response) {
     console.log("Google Sign-In Response:", response);
+    
+    // تحقق من صحة الاستجابة
+    if (!response || !response.credential) {
+        console.error("Invalid Google response:", response);
+        showNotification('فشل تسجيل الدخول، حاول مرة أخرى', 'error');
+        return;
+    }
     
     try {
         // Decode JWT token
@@ -149,9 +181,12 @@ function decodeJWT(token) {
     try {
         const base64Url = token.split('.')[1];
         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
+        const jsonPayload = decodeURIComponent(
+            atob(base64)
+                .split('')
+                .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+                .join('')
+        );
         
         return JSON.parse(jsonPayload);
     } catch (error) {
@@ -181,13 +216,13 @@ function checkGoogleAuthState() {
                 return;
             } else {
                 // Token expired
-                localStorage.removeItem('google_token');
-                localStorage.removeItem('user_data');
+                console.log("Token expired, signing out...");
+                signOut(); // استدعاء دالة تسجيل الخروج لتنظيف كل شيء
+                return;
             }
         } catch (error) {
             console.error("Error checking auth state:", error);
-            localStorage.removeItem('google_token');
-            localStorage.removeItem('user_data');
+            signOut(); // في حالة الخطأ، نعمل تسجيل خروج
         }
     }
     
@@ -280,20 +315,26 @@ async function initializeUserData(user) {
 
 // Update UI for Logged In User
 function updateUIForLoggedInUser(user) {
-    document.getElementById('loginBtn').style.display = 'none';
-    document.getElementById('userProfile').style.display = 'flex';
-    document.getElementById('userBalance').style.display = 'flex';
+    const loginBtn = document.getElementById('loginBtn');
+    const userProfile = document.getElementById('userProfile');
+    const userBalance = document.getElementById('userBalance');
+    
+    if (loginBtn) loginBtn.style.display = 'none';
+    if (userProfile) userProfile.style.display = 'flex';
+    if (userBalance) userBalance.style.display = 'flex';
     
     const userAvatar = document.getElementById('userAvatar');
     const userName = document.getElementById('userName');
     
-    if (user.photoURL) {
+    if (user.photoURL && userAvatar) {
         userAvatar.src = user.photoURL;
-    } else {
+    } else if (userAvatar) {
         userAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || user.email)}&background=4361ee&color=fff`;
     }
     
-    userName.textContent = user.displayName || user.email;
+    if (userName) {
+        userName.textContent = user.displayName || user.email;
+    }
     
     // Load user balance
     loadUserBalance(user.uid);
@@ -301,9 +342,13 @@ function updateUIForLoggedInUser(user) {
 
 // Update UI for Logged Out User
 function updateUIForLoggedOutUser() {
-    document.getElementById('loginBtn').style.display = 'block';
-    document.getElementById('userProfile').style.display = 'none';
-    document.getElementById('userBalance').style.display = 'none';
+    const loginBtn = document.getElementById('loginBtn');
+    const userProfile = document.getElementById('userProfile');
+    const userBalance = document.getElementById('userBalance');
+    
+    if (loginBtn) loginBtn.style.display = 'block';
+    if (userProfile) userProfile.style.display = 'none';
+    if (userBalance) userBalance.style.display = 'none';
     
     // Reset dashboard
     const dashboard = document.getElementById('userDashboard');
@@ -320,7 +365,10 @@ function updateUIForLoggedOutUser() {
         `;
         
         // Re-attach event listener
-        document.getElementById('dashboardLoginBtn').addEventListener('click', triggerGoogleSignIn);
+        const dashboardLoginBtn = document.getElementById('dashboardLoginBtn');
+        if (dashboardLoginBtn) {
+            dashboardLoginBtn.addEventListener('click', triggerGoogleSignIn);
+        }
     }
 }
 
@@ -330,7 +378,10 @@ async function loadUserBalance(userId) {
         const userDoc = await db.collection('users').doc(userId).get();
         if (userDoc.exists) {
             const userData = userDoc.data();
-            document.getElementById('balance').textContent = userData.balance || 0;
+            const balanceElement = document.getElementById('balance');
+            if (balanceElement) {
+                balanceElement.textContent = userData.balance || 0;
+            }
         }
     } catch (error) {
         console.error('Error loading user balance:', error);
@@ -342,16 +393,25 @@ async function loadGlobalStats() {
     try {
         // Count users
         const usersSnapshot = await db.collection('users').get();
-        document.getElementById('totalUsers').textContent = usersSnapshot.size;
+        const totalUsersElement = document.getElementById('totalUsers');
+        if (totalUsersElement) {
+            totalUsersElement.textContent = usersSnapshot.size;
+        }
         
         // Count active ads
         const adsSnapshot = await db.collection('ads').where('status', '==', 'active').get();
-        document.getElementById('totalAds').textContent = adsSnapshot.size;
+        const totalAdsElement = document.getElementById('totalAds');
+        if (totalAdsElement) {
+            totalAdsElement.textContent = adsSnapshot.size;
+        }
         
         // Calculate total payouts
         const usersData = await Promise.all(usersSnapshot.docs.map(doc => doc.data()));
         const totalPayouts = usersData.reduce((sum, user) => sum + (user.totalEarned || 0), 0);
-        document.getElementById('totalPayouts').textContent = totalPayouts;
+        const totalPayoutsElement = document.getElementById('totalPayouts');
+        if (totalPayoutsElement) {
+            totalPayoutsElement.textContent = totalPayouts;
+        }
     } catch (error) {
         console.error('Error loading global stats:', error);
     }
@@ -361,6 +421,8 @@ async function loadGlobalStats() {
 async function loadPublicAds() {
     try {
         const adsGrid = document.getElementById('adsGrid');
+        if (!adsGrid) return;
+        
         adsGrid.innerHTML = `
             <div class="loading-ads">
                 <div class="spinner"></div>
@@ -380,7 +442,8 @@ async function loadPublicAds() {
             return;
         }
         
-        displayAds(adsSnapshot.docs);
+        // للزوار، نمرر مجموعة فارغة للإعلانات المشاهدة
+        displayAds(adsSnapshot.docs, new Set());
     } catch (error) {
         console.error('Error loading public ads:', error);
         showNotification('حدث خطأ في تحميل الإعلانات', 'error');
@@ -393,6 +456,8 @@ async function loadUserAds() {
         if (!currentUser) return;
         
         const adsGrid = document.getElementById('adsGrid');
+        if (!adsGrid) return;
+        
         adsGrid.innerHTML = `
             <div class="loading-ads">
                 <div class="spinner"></div>
@@ -492,6 +557,8 @@ async function createSampleAds() {
 // Display Ads
 function displayAds(adDocs, watchedAds = new Set()) {
     const adsGrid = document.getElementById('adsGrid');
+    if (!adsGrid) return;
+    
     adsGrid.innerHTML = '';
     
     if (adDocs.length === 0) {
@@ -511,7 +578,7 @@ function displayAds(adDocs, watchedAds = new Set()) {
         
         adCard.innerHTML = `
             <div class="ad-image">
-                <img src="${ad.image}" alt="${ad.title}" loading="lazy" onerror="this.src='https://picsum.photos/400/250?random=1'">
+                <img src="${ad.image}" alt="${ad.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/400x250/4361ee/ffffff?text=AdVista'">
             </div>
             <div class="ad-content">
                 <h3 class="ad-title">${ad.title}</h3>
@@ -561,25 +628,20 @@ function displayAds(adDocs, watchedAds = new Set()) {
 function filterAds(filter) {
     const allAds = document.querySelectorAll('.ad-card');
     
-    if (filter === 'all') {
-        allAds.forEach(ad => {
+    allAds.forEach(ad => {
+        if (filter === 'all' || ad.dataset.category === filter) {
             ad.style.display = 'block';
-        });
-    } else {
-        allAds.forEach(ad => {
-            if (ad.dataset.category === filter) {
-                ad.style.display = 'block';
-            } else {
-                ad.style.display = 'none';
-            }
-        });
-    }
+        } else {
+            ad.style.display = 'none';
+        }
+    });
 }
 
 // Start Ad Timer
 function startAdTimer(adId, title, duration, points) {
     if (!currentUser) {
         showNotification('يجب تسجيل الدخول أولاً', 'error');
+        // افتح نافذة تسجيل الدخول تلقائياً
         triggerGoogleSignIn();
         return;
     }
@@ -600,6 +662,11 @@ function startAdTimer(adId, title, duration, points) {
     const timerSeconds = document.getElementById('timerSeconds');
     const timerProgress = document.querySelector('.timer-progress');
     const adTimerTitle = document.getElementById('adTimerTitle');
+    
+    if (!timerOverlay || !timerSeconds || !timerProgress || !adTimerTitle) {
+        showNotification('عناصر العداد غير موجودة', 'error');
+        return;
+    }
     
     timerOverlay.style.display = 'flex';
     timerSeconds.textContent = duration;
@@ -626,8 +693,10 @@ function startCountdown(duration, circleLength) {
     const timerSeconds = document.getElementById('timerSeconds');
     const timerProgress = document.querySelector('.timer-progress');
     
+    if (!timerSeconds || !timerProgress) return;
+    
     adTimerInterval = setInterval(() => {
-        if (!currentAd.paused) {
+        if (currentAd && !currentAd.paused) {
             timeLeft--;
             currentAd.remainingTime = timeLeft;
             timerSeconds.textContent = timeLeft;
@@ -647,16 +716,19 @@ function startCountdown(duration, circleLength) {
 
 // Handle Visibility Change
 function handleVisibilityChange() {
+    const timerStatus = document.getElementById('timerStatus');
+    if (!timerStatus) return;
+    
     if (document.hidden) {
         pauseTimer();
-        document.getElementById('timerStatus').innerHTML = '<i class="fas fa-exclamation-triangle"></i> تم إيقاف العد بسبب تركيز الصفحة';
-        document.getElementById('timerStatus').style.backgroundColor = '#fef3c7';
-        document.getElementById('timerStatus').style.color = '#92400e';
+        timerStatus.innerHTML = '<i class="fas fa-exclamation-triangle"></i> تم إيقاف العد بسبب تركيز الصفحة';
+        timerStatus.style.backgroundColor = '#fef3c7';
+        timerStatus.style.color = '#92400e';
     } else {
         resumeTimer();
-        document.getElementById('timerStatus').innerHTML = '<i class="fas fa-check-circle"></i> الإعلان قيد التشغيل';
-        document.getElementById('timerStatus').style.backgroundColor = '#d1fae5';
-        document.getElementById('timerStatus').style.color = '#065f46';
+        timerStatus.innerHTML = '<i class="fas fa-check-circle"></i> الإعلان قيد التشغيل';
+        timerStatus.style.backgroundColor = '#d1fae5';
+        timerStatus.style.color = '#065f46';
     }
 }
 
@@ -691,11 +763,18 @@ function resumeTimer() {
 
 // Ad Timer Complete
 function adTimerComplete() {
-    currentAd.completed = true;
+    if (currentAd) {
+        currentAd.completed = true;
+    }
     
     // Show claim button
-    document.getElementById('timerAction').style.display = 'block';
-    document.getElementById('timerStatus').style.display = 'none';
+    const timerAction = document.getElementById('timerAction');
+    const timerStatus = document.getElementById('timerStatus');
+    
+    if (timerAction) timerAction.style.display = 'block';
+    if (timerStatus) {
+        timerStatus.style.display = 'none';
+    }
     
     // Remove event listeners
     document.removeEventListener('visibilitychange', handleVisibilityChange);
@@ -727,7 +806,11 @@ async function claimAdPoints() {
             const adViewDoc = await transaction.get(adViewRef);
             
             if (adViewDoc.exists) {
-                throw new Error('لقد شاهدت هذا الإعلان اليوم بالفعل');
+                // لا ترمي خطأ، فقط أخبر المستخدم وأغلق العداد
+                showNotification('لقد شاهدت هذا الإعلان اليوم بالفعل', 'warning');
+                closeAdTimer();
+                // نرمي خطأ لإيقاف المعاملة، ولكن لن نعرضه كخطأ للمستخدم
+                throw new Error('Ad already watched today');
             }
             
             // Record ad view
@@ -768,25 +851,37 @@ async function claimAdPoints() {
         console.log("تمت إضافة النقاط:", currentAd.points);
         
     } catch (error) {
-        console.error('Error claiming points:', error);
-        showNotification(error.message || 'حدث خطأ في المطالبة بالنقاط', 'error');
-        closeAdTimer();
+        // تجاهل الخطأ إذا كان بسبب مشاهدة الإعلان مسبقاً
+        if (error.message !== 'Ad already watched today') {
+            console.error('Error claiming points:', error);
+            showNotification(error.message || 'حدث خطأ في المطالبة بالنقاط', 'error');
+            closeAdTimer();
+        }
     }
 }
 
 // Close Ad Timer
 function closeAdTimer() {
     const timerOverlay = document.getElementById('adTimerOverlay');
-    timerOverlay.style.display = 'none';
+    if (timerOverlay) {
+        timerOverlay.style.display = 'none';
+    }
     
     // Reset timer
-    document.getElementById('timerSeconds').textContent = '30';
-    document.querySelector('.timer-progress').style.strokeDashoffset = '339.292';
-    document.getElementById('timerAction').style.display = 'none';
-    document.getElementById('timerStatus').style.display = 'flex';
-    document.getElementById('timerStatus').innerHTML = '<i class="fas fa-check-circle"></i> الإعلان قيد التشغيل';
-    document.getElementById('timerStatus').style.backgroundColor = '#d1fae5';
-    document.getElementById('timerStatus').style.color = '#065f46';
+    const timerSeconds = document.getElementById('timerSeconds');
+    const timerProgress = document.querySelector('.timer-progress');
+    const timerAction = document.getElementById('timerAction');
+    const timerStatus = document.getElementById('timerStatus');
+    
+    if (timerSeconds) timerSeconds.textContent = '30';
+    if (timerProgress) timerProgress.style.strokeDashoffset = '339.292';
+    if (timerAction) timerAction.style.display = 'none';
+    if (timerStatus) {
+        timerStatus.style.display = 'flex';
+        timerStatus.innerHTML = '<i class="fas fa-check-circle"></i> الإعلان قيد التشغيل';
+        timerStatus.style.backgroundColor = '#d1fae5';
+        timerStatus.style.color = '#065f46';
+    }
     
     // Remove event listeners
     document.removeEventListener('visibilitychange', handleVisibilityChange);
@@ -816,6 +911,8 @@ async function loadDashboard() {
         const userData = userDoc.data();
         
         const dashboard = document.getElementById('userDashboard');
+        if (!dashboard) return;
+        
         dashboard.innerHTML = `
             <div class="dashboard-card balance-card">
                 <div class="card-icon">
@@ -899,11 +996,18 @@ async function loadDashboard() {
         `;
         
         // Update balance in navbar
-        document.getElementById('balance').textContent = userData.balance || 0;
+        updateBalance(0); // هذا سيعرض الرصيد الحالي فقط
         
         // Add event listeners
-        document.getElementById('withdrawBtn')?.addEventListener('click', handleWithdraw);
-        document.getElementById('redeemBtn')?.addEventListener('click', handleRedeem);
+        const withdrawBtn = document.getElementById('withdrawBtn');
+        if (withdrawBtn) {
+            withdrawBtn.addEventListener('click', handleWithdraw);
+        }
+        
+        const redeemBtn = document.getElementById('redeemBtn');
+        if (redeemBtn) {
+            redeemBtn.addEventListener('click', handleRedeem);
+        }
         
     } catch (error) {
         console.error('Error loading dashboard:', error);
@@ -913,9 +1017,11 @@ async function loadDashboard() {
 // Update Balance
 function updateBalance(pointsEarned) {
     const balanceElement = document.getElementById('balance');
-    const currentBalance = parseInt(balanceElement.textContent) || 0;
-    const newBalance = currentBalance + pointsEarned;
-    balanceElement.textContent = newBalance;
+    if (balanceElement) {
+        const currentBalance = parseInt(balanceElement.textContent) || 0;
+        const newBalance = currentBalance + pointsEarned;
+        balanceElement.textContent = newBalance;
+    }
 }
 
 // Handle Withdraw
