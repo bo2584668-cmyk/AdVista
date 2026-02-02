@@ -1367,7 +1367,8 @@ window.onload = function () {
             measurementId: "G-VG4S1SMKH8"
         };
 
-        // ===========================================
+       window.handleCredentialResponse = handleCredentialResponse;
+ // ===========================================
         // GLOBAL VARIABLES
         // ===========================================
         let currentUser = null;
@@ -1432,7 +1433,8 @@ window.onload = function () {
                     console.warn('Firebase not initialized yet, waiting...');
                     setTimeout(initializeGoogleSignIn, 100);
                     return;
-                }
+                } const app = initializeApp(firebaseConfig);
+
 
                 // تهيئة Google Sign-In
                 google.accounts.id.initialize({
