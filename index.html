@@ -10,106 +10,101 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     
-    <!-- Icons -->
+    <!-- Icons & Fonts -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* CSS Reset & Base */
+        /* CSS Reset */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
         
-        *:not(.allow-select):not(.referral-link):not(.withdrawal-message) {
-            user-select: none;
-        }
-        
-        .allow-select {
-            user-select: text;
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #00b09b 0%, #96c93d 100%);
+            --danger-gradient: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+            --warning-gradient: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         body {
-            font-family: 'Segoe UI', 'Cairo', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #333;
+            font-family: 'Cairo', sans-serif;
+            background: var(--primary-gradient);
             min-height: 100vh;
             overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
+            color: #333;
         }
         
-        /* Custom Scrollbar */
+        /* Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
+            height: 8px;
         }
         
         ::-webkit-scrollbar-track {
-            background: #f1f1f1;
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 4px;
         }
         
         ::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: rgba(255, 255, 255, 0.3);
             border-radius: 4px;
         }
         
-        /* Container */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+        
+        /* Main Container */
+        .main-container {
+            display: none;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        /* Header */
+        .header {
             padding: 20px;
-        }
-        
-        /* Glassmorphism Cards */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .glass-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-        }
-        
-        /* Header & Navigation */
-        header {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 0;
-            margin-bottom: 30px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
         
         .logo {
             display: flex;
             align-items: center;
             gap: 15px;
+            color: white;
         }
         
         .logo i {
             font-size: 2.5rem;
-            color: #667eea;
+            animation: pulse 2s infinite;
         }
         
         .logo h1 {
             font-size: 1.8rem;
-            color: white;
             font-weight: 700;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
         }
         
-        /* User Profile */
-        .user-profile {
+        /* User Menu */
+        .user-menu {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 20px;
         }
         
         .user-avatar {
@@ -120,26 +115,51 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            color: #667eea;
+            font-size: 1.2rem;
             font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            color: #667eea;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid white;
         }
         
-        /* Dashboard Stats */
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+        
+        .user-info {
+            color: white;
+            text-align: right;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .user-email {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        /* Stats Cards */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
-            margin-bottom: 30px;
+            padding: 20px;
+            margin-bottom: 20px;
         }
         
         .stat-card {
-            text-align: center;
-            padding: 20px;
-            border-radius: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
             position: relative;
             overflow: hidden;
         }
@@ -151,88 +171,409 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 1%, transparent 20%);
-            transform: rotate(30deg);
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+            animation: shine 3s infinite;
         }
         
-        .stat-card i {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            opacity: 0.9;
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
         }
         
-        .stat-card .value {
-            font-size: 2rem;
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .stat-value {
+            font-size: 2.2rem;
             font-weight: 700;
-            margin: 10px 0;
+            margin-bottom: 5px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
-        .stat-card .label {
-            font-size: 0.9rem;
-            opacity: 0.9;
+        .stat-label {
+            color: #666;
+            font-size: 0.95rem;
         }
         
-        /* Ads Section */
+        /* Main Content */
+        .content-wrapper {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+            padding: 20px;
+            min-height: calc(100vh - 140px);
+        }
+        
+        @media (max-width: 1024px) {
+            .content-wrapper {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+        
+        .nav-menu {
+            list-style: none;
+        }
+        
+        .nav-item {
+            margin-bottom: 10px;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 20px;
+            border-radius: 15px;
+            color: #333;
+            text-decoration: none;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+        
+        .nav-link:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateX(-5px);
+        }
+        
+        .nav-link.active {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .nav-link i {
+            font-size: 1.2rem;
+            width: 24px;
+        }
+        
+        /* Main Content Area */
+        .main-content {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: slideIn 0.5s ease;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.1);
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            color: #667eea;
+        }
+        
+        /* Ads Grid */
         .ads-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+            gap: 25px;
             margin-bottom: 30px;
         }
         
         .ad-card {
-            position: relative;
-            cursor: pointer;
+            background: white;
+            border-radius: 20px;
             overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: var(--transition);
+            cursor: pointer;
+            border: 2px solid transparent;
         }
         
-        .ad-card img {
+        .ad-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            border-color: #667eea;
+        }
+        
+        .ad-image {
             width: 100%;
             height: 180px;
             object-fit: cover;
-            border-radius: 15px;
-            transition: transform 0.3s ease;
+            transition: transform 0.5s ease;
         }
         
-        .ad-card:hover img {
+        .ad-card:hover .ad-image {
             transform: scale(1.05);
         }
         
-        .ad-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.8));
-            border-radius: 15px;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 15px;
-            color: white;
+        .ad-content {
+            padding: 20px;
         }
         
         .ad-title {
             font-size: 1.1rem;
             font-weight: 600;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .ad-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
         }
         
         .ad-reward {
             display: flex;
             align-items: center;
             gap: 5px;
-            font-size: 0.9rem;
-            opacity: 0.9;
+            color: #ff9800;
+            font-weight: 600;
         }
         
-        .ad-reward i {
-            color: gold;
+        .ad-time {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #666;
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn:hover::after {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-success {
+            background: var(--secondary-gradient);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: var(--danger-gradient);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: var(--warning-gradient);
+            color: white;
+        }
+        
+        /* Forms */
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e6e6e6;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-family: 'Cairo', sans-serif;
+            transition: var(--transition);
+            background: white;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        /* Login Screen */
+        .login-screen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: var(--primary-gradient);
+            animation: gradientShift 10s ease infinite;
+            background-size: 400% 400%;
+        }
+        
+        .login-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 50px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            animation: slideUp 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        .login-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .login-logo i {
+            font-size: 4rem;
+            color: #667eea;
+            animation: bounce 2s infinite;
+        }
+        
+        .login-logo h1 {
+            font-size: 2.5rem;
+            color: #333;
+            font-weight: 800;
+        }
+        
+        .login-welcome {
+            margin-bottom: 30px;
+        }
+        
+        .login-welcome h2 {
+            font-size: 1.8rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .login-welcome p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .login-features {
+            background: rgba(102, 126, 234, 0.1);
+            padding: 25px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            text-align: right;
+        }
+        
+        .login-features h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .feature-list {
+            list-style: none;
+        }
+        
+        .feature-list li {
+            padding: 8px 0;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .feature-list i {
+            color: #00b09b;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 18px;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        
+        .login-footer {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .login-footer a {
+            color: #667eea;
+            text-decoration: none;
         }
         
         /* Timer Modal */
-        .modal {
+        .modal-overlay {
             display: none;
             position: fixed;
             top: 0;
@@ -240,65 +581,78 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(5px);
-            z-index: 1000;
+            backdrop-filter: blur(10px);
+            z-index: 2000;
             align-items: center;
             justify-content: center;
-        }
-        
-        .modal.active {
-            display: flex;
             animation: fadeIn 0.3s ease;
         }
         
-        .modal-content {
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .timer-modal {
+            background: white;
+            border-radius: 30px;
             width: 90%;
             max-width: 500px;
-            background: white;
-            border-radius: 20px;
             overflow: hidden;
             transform: scale(0.9);
-            animation: modalAppear 0.3s ease forwards;
+            animation: modalPop 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
         }
         
-        .modal-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .timer-header {
+            background: var(--primary-gradient);
             color: white;
-            padding: 20px;
+            padding: 30px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
         }
         
-        .modal-body {
-            padding: 30px;
+        .timer-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+            animation: shine 3s infinite;
+        }
+        
+        .timer-body {
+            padding: 40px;
             text-align: center;
         }
         
         .timer-container {
             width: 200px;
             height: 200px;
-            margin: 20px auto;
+            margin: 0 auto 30px;
             position: relative;
+        }
+        
+        .timer-svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+        
+        .timer-circle-bg {
+            fill: none;
+            stroke: #f0f0f0;
+            stroke-width: 8;
         }
         
         .timer-circle {
-            width: 100%;
-            height: 100%;
-            position: relative;
-        }
-        
-        .timer-background {
-            fill: none;
-            stroke: #e6e6e6;
-            stroke-width: 10;
-        }
-        
-        .timer-progress {
             fill: none;
             stroke: #667eea;
-            stroke-width: 10;
+            stroke-width: 8;
             stroke-linecap: round;
-            transform: rotate(-90deg);
-            transform-origin: 50% 50%;
+            stroke-dasharray: 565;
+            stroke-dashoffset: 565;
             transition: stroke-dashoffset 1s linear;
         }
         
@@ -312,162 +666,82 @@
             color: #333;
         }
         
-        .timer-warning {
-            color: #ff6b6b;
-            animation: pulse 1s infinite;
-        }
-        
-        /* Buttons */
-        .btn {
-            padding: 12px 30px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            text-decoration: none;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
-        
-        .btn-success {
-            background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%);
-            color: white;
-        }
-        
-        .btn-danger {
-            background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
-            color: white;
-        }
-        
-        .btn-disabled {
-            background: #cccccc;
-            cursor: not-allowed;
-        }
-        
-        /* Withdrawal Form */
-        .withdrawal-form {
-            max-width: 500px;
-            margin: 0 auto;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #555;
-        }
-        
-        .form-control {
-            width: 100%;
-            padding: 12px 20px;
-            border: 2px solid #e6e6e6;
-            border-radius: 10px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-        }
-        
-        .form-control:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        
         /* Notifications */
-        .notification {
+        .notification-container {
             position: fixed;
             top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 15px 25px;
-            border-radius: 10px;
-            color: white;
-            font-weight: 600;
-            z-index: 1001;
+            right: 20px;
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .notification {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
             display: flex;
             align-items: center;
-            gap: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            animation: slideDown 0.3s ease;
+            gap: 15px;
+            min-width: 300px;
+            transform: translateX(100%);
+            animation: slideInRight 0.5s ease forwards;
+            border-right: 5px solid;
         }
         
         .notification.success {
-            background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%);
+            border-color: #00b09b;
         }
         
         .notification.error {
-            background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+            border-color: #ff416c;
         }
         
         .notification.warning {
-            background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+            border-color: #f7971e;
         }
         
-        /* Admin Panel */
-        .admin-section {
-            display: none;
+        .notification.info {
+            border-color: #667eea;
         }
         
-        .admin-section.active {
-            display: block;
+        .notification i {
+            font-size: 1.5rem;
         }
         
-        .admin-controls {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+        .notification.success i {
+            color: #00b09b;
         }
         
-        .admin-table {
-            width: 100%;
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        .notification.error i {
+            color: #ff416c;
         }
         
-        .admin-table th {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px;
-            text-align: right;
+        .notification.warning i {
+            color: #f7971e;
         }
         
-        .admin-table td {
-            padding: 15px;
-            border-bottom: 1px solid #e6e6e6;
-        }
-        
-        .admin-table tr:last-child td {
-            border-bottom: none;
+        .notification.info i {
+            color: #667eea;
         }
         
         /* Loading Spinner */
+        .spinner-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 50px;
+        }
+        
         .spinner {
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             border: 5px solid #f3f3f3;
             border-top: 5px solid #667eea;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin: 20px auto;
         }
         
         /* Animations */
@@ -476,18 +750,37 @@
             to { opacity: 1; }
         }
         
-        @keyframes modalAppear {
-            to { transform: scale(1); }
-        }
-        
-        @keyframes slideDown {
+        @keyframes slideIn {
             from {
-                transform: translateX(-50%) translateY(-100%);
                 opacity: 0;
+                transform: translateY(30px);
             }
             to {
-                transform: translateX(-50%) translateY(0);
                 opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideInRight {
+            to {
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes modalPop {
+            to {
+                transform: scale(1);
             }
         }
         
@@ -497,14 +790,36 @@
         }
         
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
         
-        /* Responsive Design */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes shine {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Responsive */
         @media (max-width: 768px) {
-            .container {
+            .content-wrapper {
+                grid-template-columns: 1fr;
                 padding: 10px;
+            }
+            
+            .sidebar {
+                position: static;
+                margin-bottom: 20px;
             }
             
             .stats-grid {
@@ -515,28 +830,32 @@
                 grid-template-columns: 1fr;
             }
             
-            header {
+            .header {
                 flex-direction: column;
                 gap: 15px;
+                text-align: center;
             }
             
-            .logo h1 {
-                font-size: 1.5rem;
+            .user-menu {
+                flex-direction: column;
+                gap: 10px;
             }
             
-            .modal-content {
-                width: 95%;
-                margin: 10px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .glass-card {
-                padding: 15px;
+            .user-info {
+                text-align: center;
             }
             
-            .stat-card .value {
-                font-size: 1.5rem;
+            .login-card {
+                padding: 30px 20px;
+            }
+            
+            .login-logo {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .login-logo h1 {
+                font-size: 2rem;
             }
             
             .timer-container {
@@ -548,346 +867,628 @@
                 font-size: 2rem;
             }
         }
+        
+        @media (max-width: 480px) {
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+            
+            .form-control {
+                padding: 12px 15px;
+            }
+            
+            .notification {
+                min-width: 250px;
+                padding: 15px;
+            }
+        }
     </style>
 </head>
 <body>
     <!-- Login Screen -->
-    <div id="loginScreen" class="container" style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
-        <div class="glass-card" style="max-width: 500px; text-align: center;">
-            <div class="logo" style="justify-content: center; margin-bottom: 30px;">
+    <div id="loginScreen" class="login-screen">
+        <div class="login-card">
+            <div class="login-logo">
                 <i class="fas fa-coins"></i>
-                <h1 style="color: #333;">Advista</h1>
+                <h1>Advista</h1>
             </div>
             
-            <h2 style="margin-bottom: 20px; color: #333;">مرحباً بك في Advista</h2>
-            <p style="margin-bottom: 30px; color: #666; line-height: 1.6;">
-                منصة ربح المال من مشاهدة الإعلانات. اشترك الآن وابدأ رحلتك نحو الربح اليومي من خلال مشاهدة إعلانات قصيرة!
-            </p>
+            <div class="login-welcome">
+                <h2>مرحباً بك في Advista</h2>
+                <p>منصة ربح المال من مشاهدة الإعلانات. اربح نقاطاً حقيقية مقابل مشاهدة إعلانات قصيرة وسهلة!</p>
+            </div>
             
-            <div style="background: #f8f9fa; padding: 20px; border-radius: 15px; margin-bottom: 30px;">
-                <h3 style="margin-bottom: 15px; color: #333;">معلومات مهمة:</h3>
-                <ul style="text-align: right; list-style-position: inside; color: #666;">
-                    <li style="margin-bottom: 10px;">30,000 نقطة = 1 دولار</li>
-                    <li style="margin-bottom: 10px;">الحد الأدنى للسحب: 30,000 نقطة</li>
-                    <li style="margin-bottom: 10px;">طريقة السحب: فودافون كاش فقط</li>
-                    <li>العمليات تتم يدوياً خلال 24-48 ساعة</li>
+            <div class="login-features">
+                <h3><i class="fas fa-star"></i> مميزات المنصة</h3>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check-circle"></i> ربح حقيقي من مشاهدة الإعلانات</li>
+                    <li><i class="fas fa-check-circle"></i> سحب سريع عبر فودافون كاش</li>
+                    <li><i class="fas fa-check-circle"></i> نظام دعوة بربح 10% مدى الحياة</li>
+                    <li><i class="fas fa-check-circle"></i> تحديثات يومية للإعلانات</li>
+                    <li><i class="fas fa-check-circle"></i> دعم فني على مدار الساعة</li>
                 </ul>
             </div>
             
-            <button id="googleLoginBtn" class="btn btn-primary" style="width: 100%;">
-                <i class="fab fa-google"></i> تسجيل الدخول بحساب جوجل
+            <button id="googleLoginBtn" class="btn btn-primary login-btn">
+                <i class="fab fa-google"></i> تسجيل الدخول بحساب Google
             </button>
             
-            <p style="margin-top: 20px; color: #666; font-size: 0.9rem;">
-                بالتسجيل أنت توافق على <a href="#" style="color: #667eea;">شروط الخدمة</a> و <a href="#" style="color: #667eea;">سياسة الخصوصية</a>
+            <p class="login-footer">
+                بالتسجيل أنت توافق على <a href="#" onclick="showTerms()">الشروط والأحكام</a> و <a href="#" onclick="showPrivacy()">سياسة الخصوصية</a>
             </p>
         </div>
     </div>
     
-    <!-- Main Dashboard -->
-    <div id="dashboard" class="container" style="display: none;">
+    <!-- Main App -->
+    <div id="mainApp" class="main-container">
         <!-- Header -->
-        <header>
+        <header class="header">
             <div class="logo">
                 <i class="fas fa-coins"></i>
                 <h1>Advista</h1>
             </div>
             
-            <div class="user-profile">
-                <div class="user-avatar" id="userAvatar">U</div>
-                <div style="color: white;">
-                    <div id="userName" style="font-weight: 600;"></div>
-                    <div id="userEmail" style="font-size: 0.9rem; opacity: 0.9;"></div>
+            <div class="user-menu">
+                <div class="user-info">
+                    <div class="user-name" id="userName"></div>
+                    <div class="user-email" id="userEmail"></div>
                 </div>
-                <button id="logoutBtn" class="btn btn-danger" style="padding: 8px 20px;">
-                    <i class="fas fa-sign-out-alt"></i>
-                </button>
+                <div class="user-avatar" id="userAvatar" onclick="toggleUserMenu()">
+                    <i class="fas fa-user"></i>
+                </div>
             </div>
         </header>
         
-        <!-- Stats -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <i class="fas fa-wallet"></i>
-                <div class="value" id="balance">0</div>
-                <div class="label">الرصيد الحالي (نقطة)</div>
-            </div>
-            
-            <div class="stat-card">
-                <i class="fas fa-calendar-day"></i>
-                <div class="value" id="dailyEarnings">0</div>
-                <div class="label">أرباح اليوم (نقطة)</div>
-            </div>
-            
-            <div class="stat-card">
-                <i class="fas fa-chart-line"></i>
-                <div class="value" id="totalEarnings">0</div>
-                <div class="label">إجمالي الأرباح (نقطة)</div>
-            </div>
-            
-            <div class="stat-card">
-                <i class="fas fa-users"></i>
-                <div class="value" id="referralCount">0</div>
-                <div class="label">عدد الأحالات</div>
-            </div>
-        </div>
-        
-        <!-- Tabs Navigation -->
-        <div style="display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 10px;">
-            <button class="tab-btn active btn" data-tab="ads">الإعلانات</button>
-            <button class="tab-btn btn" data-tab="withdrawal">طلب السحب</button>
-            <button class="tab-btn btn" data-tab="referral">نظام الدعوة</button>
-            <button id="adminTabBtn" class="tab-btn btn" data-tab="admin" style="display: none;">لوحة التحكم</button>
-        </div>
-        
-        <!-- Ads Tab -->
-        <div id="adsTab" class="tab-content">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="color: white;">الإعلانات المتاحة</h2>
-                <div style="color: white; background: rgba(255,255,255,0.2); padding: 8px 15px; border-radius: 20px;">
-                    <i class="fas fa-eye"></i> <span id="adsViewedToday">0</span> / <span id="dailyLimit">10</span>
+        <!-- User Menu Dropdown -->
+        <div id="userMenuDropdown" class="dropdown-menu" style="display: none; position: absolute; top: 80px; right: 20px; background: white; border-radius: 15px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 1000; min-width: 250px;">
+            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #eee;">
+                <div class="user-avatar" style="width: 40px; height: 40px; font-size: 1rem;">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div>
+                    <div style="font-weight: 600;" id="dropdownUserName"></div>
+                    <div style="font-size: 0.9rem; color: #666;" id="dropdownUserEmail"></div>
                 </div>
             </div>
-            
-            <div id="adsGrid" class="ads-grid">
-                <!-- Ads will be loaded here -->
-                <div class="spinner"></div>
-            </div>
+            <button class="btn btn-primary" style="width: 100%; margin-bottom: 10px;" onclick="showProfile()">
+                <i class="fas fa-user-circle"></i> الملف الشخصي
+            </button>
+            <button class="btn btn-warning" style="width: 100%; margin-bottom: 10px;" onclick="showSettings()">
+                <i class="fas fa-cog"></i> الإعدادات
+            </button>
+            <button class="btn btn-danger" style="width: 100%;" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+            </button>
         </div>
         
-        <!-- Withdrawal Tab -->
-        <div id="withdrawalTab" class="tab-content" style="display: none;">
-            <div class="glass-card">
-                <h2 style="margin-bottom: 20px; color: #333;">طلب سحب الأرباح</h2>
-                
-                <div class="withdrawal-form">
-                    <div class="form-group">
-                        <label>عدد النقاط المراد سحبها</label>
-                        <input type="number" id="withdrawPoints" class="form-control" placeholder="الحد الأدنى 30,000 نقطة" min="30000">
-                        <div style="margin-top: 5px; font-size: 0.9rem; color: #666;">
-                            <span id="withdrawAmount">0</span> دولار
+        <!-- Content -->
+        <div class="content-wrapper">
+            <!-- Sidebar Navigation -->
+            <aside class="sidebar">
+                <nav>
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link active" data-section="dashboard">
+                                <i class="fas fa-home"></i>
+                                <span>الرئيسية</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-section="ads">
+                                <i class="fas fa-ad"></i>
+                                <span>الإعلانات</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-section="withdraw">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <span>السحب</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-section="referral">
+                                <i class="fas fa-users"></i>
+                                <span>نظام الدعوة</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-section="history">
+                                <i class="fas fa-history"></i>
+                                <span>السجل</span>
+                            </a>
+                        </li>
+                        <li class="nav-item" id="adminNavItem" style="display: none;">
+                            <a href="#" class="nav-link" data-section="admin">
+                                <i class="fas fa-crown"></i>
+                                <span>لوحة التحكم</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+            
+            <!-- Main Content -->
+            <main class="main-content" id="mainContent">
+                <!-- Dashboard Section -->
+                <div id="dashboardSection" class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-tachometer-alt"></i>
+                            لوحة التحكم
+                        </h2>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-primary" onclick="refreshData()">
+                                <i class="fas fa-sync-alt"></i> تحديث
+                            </button>
                         </div>
                     </div>
                     
-                    <div class="form-group">
-                        <label>رقم فودافون كاش</label>
-                        <input type="tel" id="vodafoneNumber" class="form-control" placeholder="01xxxxxxxxx">
+                    <!-- Stats -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: var(--primary-gradient);">
+                                <i class="fas fa-wallet"></i>
+                            </div>
+                            <div class="stat-value" id="balance">0</div>
+                            <div class="stat-label">الرصيد الحالي</div>
+                            <div style="font-size: 0.9rem; color: #666; margin-top: 5px;">
+                                <span id="balanceUSD">0</span> دولار
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: var(--secondary-gradient);">
+                                <i class="fas fa-calendar-day"></i>
+                            </div>
+                            <div class="stat-value" id="dailyEarnings">0</div>
+                            <div class="stat-label">أرباح اليوم</div>
+                            <div style="font-size: 0.9rem; color: #666; margin-top: 5px;">
+                                <i class="fas fa-fire" style="color: #ff9800;"></i> <span id="adsToday">0</span> إعلان اليوم
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: var(--danger-gradient);">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="stat-value" id="totalEarnings">0</div>
+                            <div class="stat-label">إجمالي الأرباح</div>
+                            <div style="font-size: 0.9rem; color: #666; margin-top: 5px;">
+                                <i class="fas fa-eye"></i> <span id="totalAdsViewed">0</span> إعلان
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: var(--warning-gradient);">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-value" id="referralCount">0</div>
+                            <div class="stat-label">عدد الأحالات</div>
+                            <div style="font-size: 0.9rem; color: #666; margin-top: 5px;">
+                                <i class="fas fa-coins" style="color: gold;"></i> <span id="referralEarnings">0</span> ربح
+                            </div>
+                        </div>
                     </div>
                     
-                    <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
-                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-                            <i class="fas fa-info-circle" style="color: #667eea;"></i>
-                            <span style="font-weight: 600;">معلومات مهمة:</span>
+                    <!-- Quick Actions -->
+                    <div style="background: #f8f9fa; padding: 25px; border-radius: 20px; margin: 30px 0;">
+                        <h3 style="margin-bottom: 20px; color: #333; display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-bolt"></i> إجراءات سريعة
+                        </h3>
+                        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                            <button class="btn btn-primary" onclick="showAds()">
+                                <i class="fas fa-play-circle"></i> بدء مشاهدة الإعلانات
+                            </button>
+                            <button class="btn btn-success" onclick="showWithdraw()">
+                                <i class="fas fa-paper-plane"></i> طلب سحب الأرباح
+                            </button>
+                            <button class="btn btn-warning" onclick="showReferral()">
+                                <i class="fas fa-share-alt"></i> مشاركة رابط الدعوة
+                            </button>
+                            <button class="btn btn-danger" onclick="showSupport()">
+                                <i class="fas fa-headset"></i> الدعم الفني
+                            </button>
                         </div>
-                        <ul style="text-align: right; list-style-position: inside; color: #666; font-size: 0.9rem;">
-                            <li>الحد الأدنى للسحب: 30,000 نقطة (1 دولار)</li>
-                            <li>التحويل يتم خلال 24-48 ساعة</li>
-                            <li>يرجى التأكد من صحة رقم الهاتف</li>
-                        </ul>
                     </div>
                     
-                    <button id="submitWithdrawalBtn" class="btn btn-success" style="width: 100%;">
-                        <i class="fas fa-paper-plane"></i> تقديم طلب السحب
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Withdrawal History -->
-            <div class="glass-card" style="margin-top: 20px;">
-                <h3 style="margin-bottom: 20px; color: #333;">سجل طلبات السحب</h3>
-                <div id="withdrawalHistory">
-                    <div class="spinner"></div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Referral Tab -->
-        <div id="referralTab" class="tab-content" style="display: none;">
-            <div class="glass-card">
-                <h2 style="margin-bottom: 20px; color: #333;">نظام الدعوة والعمولة</h2>
-                
-                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 25px; border-radius: 15px; margin-bottom: 25px;">
-                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-                        <i class="fas fa-gift" style="font-size: 2rem;"></i>
-                        <div>
-                            <h3 style="margin-bottom: 5px;">اربح 10% من أرباح أصدقائك!</h3>
-                            <p>كلما كسب صديقك من الإعلانات، تحصل على 10% من أرباحه مدى الحياة!</p>
+                    <!-- Recent Activity -->
+                    <div>
+                        <h3 style="margin-bottom: 20px; color: #333; display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-history"></i> النشاط الأخير
+                        </h3>
+                        <div id="recentActivity">
+                            <div class="spinner-container">
+                                <div class="spinner"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="form-group">
-                    <label>رابط الدعوة الخاص بك</label>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="text" id="referralLink" class="form-control allow-select" readonly style="background: #f8f9fa;">
-                        <button id="copyReferralBtn" class="btn btn-primary">
-                            <i class="fas fa-copy"></i> نسخ
+                <!-- Ads Section -->
+                <div id="adsSection" class="content-section" style="display: none;">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-ad"></i>
+                            الإعلانات المتاحة
+                        </h2>
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div style="background: var(--primary-gradient); color: white; padding: 8px 20px; border-radius: 20px; font-weight: 600;">
+                                <i class="fas fa-eye"></i> <span id="adsViewedCount">0</span>/<span id="dailyLimit">10</span>
+                            </div>
+                            <button class="btn btn-primary" onclick="refreshAds()">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="adsContainer">
+                        <div class="spinner-container">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Withdraw Section -->
+                <div id="withdrawSection" class="content-section" style="display: none;">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-money-bill-wave"></i>
+                            سحب الأرباح
+                        </h2>
+                    </div>
+                    
+                    <div style="max-width: 500px; margin: 0 auto;">
+                        <div class="form-group">
+                            <label class="form-label">عدد النقاط المراد سحبها</label>
+                            <input type="number" id="withdrawPoints" class="form-control" placeholder="الحد الأدنى 30,000 نقطة" min="30000">
+                            <div style="margin-top: 10px; font-size: 0.9rem; color: #666;">
+                                <i class="fas fa-dollar-sign"></i> المبلغ: <span id="withdrawAmount">0</span> دولار
+                                <br>
+                                <span style="color: #667eea;">(30,000 نقطة = 1 دولار)</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">رقم فودافون كاش</label>
+                            <input type="tel" id="vodafoneNumber" class="form-control" placeholder="01xxxxxxxxx" pattern="01[0-9]{9}">
+                        </div>
+                        
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 15px; margin-bottom: 25px;">
+                            <h4 style="margin-bottom: 15px; color: #333; display: flex; align-items: center; gap: 10px;">
+                                <i class="fas fa-info-circle" style="color: #667eea;"></i>
+                                معلومات مهمة
+                            </h4>
+                            <ul style="list-style: none; color: #666;">
+                                <li style="margin-bottom: 10px; padding-right: 10px;">
+                                    <i class="fas fa-check" style="color: #00b09b;"></i> الحد الأدنى للسحب: 30,000 نقطة (1 دولار)
+                                </li>
+                                <li style="margin-bottom: 10px; padding-right: 10px;">
+                                    <i class="fas fa-check" style="color: #00b09b;"></i> يتم التحويل خلال 24-48 ساعة
+                                </li>
+                                <li style="margin-bottom: 10px; padding-right: 10px;">
+                                    <i class="fas fa-check" style="color: #00b09b;"></i> يرجى التأكد من صحة رقم الهاتف
+                                </li>
+                                <li style="padding-right: 10px;">
+                                    <i class="fas fa-check" style="color: #00b09b;"></i> الطلبات تتم مراجعتها يدوياً
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <button id="submitWithdrawalBtn" class="btn btn-success" style="width: 100%; padding: 18px;">
+                            <i class="fas fa-paper-plane"></i> تقديم طلب السحب
                         </button>
                     </div>
-                </div>
-                
-                <div style="margin-top: 30px;">
-                    <h3 style="margin-bottom: 15px; color: #333;">الأصدقاء المدعوون</h3>
-                    <div id="referralList">
-                        <div class="spinner"></div>
+                    
+                    <!-- Withdrawal History -->
+                    <div style="margin-top: 40px;">
+                        <h3 style="margin-bottom: 20px; color: #333; display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-history"></i> طلبات السحب السابقة
+                        </h3>
+                        <div id="withdrawalHistory">
+                            <div class="spinner-container">
+                                <div class="spinner"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        
-        <!-- Admin Tab -->
-        <div id="adminTab" class="tab-content" style="display: none;">
-            <div class="glass-card">
-                <h2 style="margin-bottom: 25px; color: #333; display: flex; align-items: center; gap: 10px;">
-                    <i class="fas fa-crown"></i> لوحة تحكم الأدمن
-                </h2>
                 
-                <!-- Quick Stats -->
-                <div class="stats-grid" style="margin-bottom: 30px;">
-                    <div class="stat-card">
-                        <i class="fas fa-users"></i>
-                        <div class="value" id="totalUsers">0</div>
-                        <div class="label">إجمالي المستخدمين</div>
+                <!-- Referral Section -->
+                <div id="referralSection" class="content-section" style="display: none;">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-users"></i>
+                            نظام الدعوة والعمولة
+                        </h2>
                     </div>
                     
-                    <div class="stat-card">
-                        <i class="fas fa-money-bill-wave"></i>
-                        <div class="value" id="totalWithdrawals">0</div>
-                        <div class="label">طلبات السحب</div>
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 20px; margin-bottom: 30px;">
+                        <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 20px;">
+                            <i class="fas fa-gift" style="font-size: 3rem;"></i>
+                            <div>
+                                <h3 style="margin-bottom: 10px; font-size: 1.8rem;">اربح 10% من أرباح أصدقائك!</h3>
+                                <p>كلما كسب صديقك من الإعلانات، تحصل على 10% من أرباحه مدى الحياة!</p>
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                            <div style="text-align: center; background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px;">
+                                <div style="font-size: 1.8rem; font-weight: 700;">10%</div>
+                                <div>عمولة مدى الحياة</div>
+                            </div>
+                            <div style="text-align: center; background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px;">
+                                <div style="font-size: 1.8rem; font-weight: 700;" id="refCount">0</div>
+                                <div>صديق مدعو</div>
+                            </div>
+                            <div style="text-align: center; background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px;">
+                                <div style="font-size: 1.8rem; font-weight: 700;" id="refEarnings">0</div>
+                                <div>نقطة ربحت</div>
+                            </div>
+                        </div>
                     </div>
                     
-                    <div class="stat-card">
-                        <i class="fas fa-ad"></i>
-                        <div class="value" id="totalAds">0</div>
-                        <div class="label">الإعلانات النشطة</div>
+                    <div class="form-group">
+                        <label class="form-label">رابط الدعوة الخاص بك</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="text" id="referralLink" class="form-control" readonly style="background: #f8f9fa; font-family: monospace;">
+                            <button id="copyReferralBtn" class="btn btn-primary">
+                                <i class="fas fa-copy"></i> نسخ
+                            </button>
+                            <button onclick="shareReferral()" class="btn btn-success">
+                                <i class="fas fa-share-alt"></i> مشاركة
+                            </button>
+                        </div>
                     </div>
                     
-                    <div class="stat-card">
-                        <i class="fas fa-coins"></i>
-                        <div class="value" id="totalPoints">0</div>
-                        <div class="label">النقاط الموزعة</div>
+                    <div style="margin-top: 30px;">
+                        <h3 style="margin-bottom: 20px; color: #333; display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-user-friends"></i> الأصدقاء المدعوون
+                        </h3>
+                        <div id="referralList">
+                            <div class="spinner-container">
+                                <div class="spinner"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
-                <!-- Tabs for Admin -->
-                <div style="display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 10px;">
-                    <button class="admin-tab-btn active btn" data-admin-tab="withdrawals">طلبات السحب</button>
-                    <button class="admin-tab-btn btn" data-admin-tab="users">المستخدمين</button>
-                    <button class="admin-tab-btn btn" data-admin-tab="ads">إدارة الإعلانات</button>
-                    <button class="admin-tab-btn btn" data-admin-tab="addAd">إضافة إعلان</button>
-                </div>
-                
-                <!-- Withdrawals Management -->
-                <div id="adminWithdrawals" class="admin-tab-content">
-                    <div class="spinner"></div>
-                </div>
-                
-                <!-- Users Management -->
-                <div id="adminUsers" class="admin-tab-content" style="display: none;">
-                    <div class="spinner"></div>
-                </div>
-                
-                <!-- Ads Management -->
-                <div id="adminAds" class="admin-tab-content" style="display: none;">
-                    <div class="spinner"></div>
-                </div>
-                
-                <!-- Add Ad Form -->
-                <div id="adminAddAd" class="admin-tab-content" style="display: none;">
-                    <div class="withdrawal-form">
-                        <div class="form-group">
-                            <label>عنوان الإعلان</label>
-                            <input type="text" id="adTitle" class="form-control" placeholder="أدخل عنوان الإعلان">
+                <!-- History Section -->
+                <div id="historySection" class="content-section" style="display: none;">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-history"></i>
+                            سجل النشاط
+                        </h2>
+                        <div style="display: flex; gap: 10px;">
+                            <select id="historyFilter" class="form-control" style="width: 200px;">
+                                <option value="all">جميع الأنشطة</option>
+                                <option value="ads">مشاهدات الإعلانات</option>
+                                <option value="withdrawals">طلبات السحب</option>
+                                <option value="referrals">الدعوات</option>
+                            </select>
                         </div>
-                        
-                        <div class="form-group">
-                            <label>وصف الإعلان</label>
-                            <textarea id="adDescription" class="form-control" rows="3" placeholder="أدخل وصف الإعلان"></textarea>
+                    </div>
+                    
+                    <div id="activityHistory">
+                        <div class="spinner-container">
+                            <div class="spinner"></div>
                         </div>
-                        
-                        <div class="form-group">
-                            <label>رابط الإعلان</label>
-                            <input type="url" id="adLink" class="form-control" placeholder="https://example.com">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>صورة الإعلان (رابط)</label>
-                            <input type="url" id="adImage" class="form-control" placeholder="https://example.com/image.jpg">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>النقاط المقدمة</label>
-                            <input type="number" id="adPoints" class="form-control" placeholder="عدد النقاط" min="1">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>مدة المشاهدة (بالثواني)</label>
-                            <input type="number" id="adDuration" class="form-control" placeholder="30-45" min="30" max="45">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>تاريخ الانتهاء</label>
-                            <input type="date" id="adExpiry" class="form-control">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>الحد اليومي للمشاهدات</label>
-                            <input type="number" id="adDailyLimit" class="form-control" placeholder="0 = لا يوجد حد" min="0">
-                        </div>
-                        
-                        <button id="addAdBtn" class="btn btn-success" style="width: 100%;">
-                            <i class="fas fa-plus"></i> إضافة الإعلان
-                        </button>
                     </div>
                 </div>
-            </div>
+                
+                <!-- Admin Section -->
+                <div id="adminSection" class="content-section" style="display: none;">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-crown"></i>
+                            لوحة تحكم الأدمن
+                        </h2>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-success" onclick="addNewAd()">
+                                <i class="fas fa-plus"></i> إعلان جديد
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Admin Stats -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: var(--primary-gradient);">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-value" id="adminTotalUsers">0</div>
+                            <div class="stat-label">إجمالي المستخدمين</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: var(--secondary-gradient);">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                            <div class="stat-value" id="adminPendingWithdrawals">0</div>
+                            <div class="stat-label">طلبات سحب معلقة</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: var(--danger-gradient);">
+                                <i class="fas fa-ad"></i>
+                            </div>
+                            <div class="stat-value" id="adminActiveAds">0</div>
+                            <div class="stat-label">إعلانات نشطة</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: var(--warning-gradient);">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <div class="stat-value" id="adminTotalPoints">0</div>
+                            <div class="stat-label">نقطة موزعة</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Admin Tabs -->
+                    <div style="margin: 30px 0; border-bottom: 2px solid #eee;">
+                        <div style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;">
+                            <button class="admin-tab-btn active" data-tab="withdrawals">طلبات السحب</button>
+                            <button class="admin-tab-btn" data-tab="users">المستخدمين</button>
+                            <button class="admin-tab-btn" data-tab="ads">الإعلانات</button>
+                            <button class="admin-tab-btn" data-tab="addAd">إضافة إعلان</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Admin Content -->
+                    <div id="adminContent">
+                        <div class="spinner-container">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </main>
         </div>
     </div>
     
     <!-- Timer Modal -->
-    <div id="timerModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 style="margin: 0;">مشاهدة الإعلان</h3>
+    <div id="timerModal" class="modal-overlay">
+        <div class="timer-modal">
+            <div class="timer-header">
+                <h2 style="margin: 0; font-size: 1.5rem;">مشاهدة الإعلان</h2>
             </div>
-            <div class="modal-body">
+            <div class="timer-body">
                 <div class="timer-container">
-                    <svg class="timer-circle" viewBox="0 0 100 100">
-                        <circle class="timer-background" cx="50" cy="50" r="45"></circle>
-                        <circle class="timer-progress" cx="50" cy="50" r="45" 
-                                stroke-dasharray="283" stroke-dashoffset="283"></circle>
+                    <svg class="timer-svg">
+                        <circle class="timer-circle-bg" cx="100" cy="100" r="90"></circle>
+                        <circle class="timer-circle" cx="100" cy="100" r="90"></circle>
                     </svg>
                     <div class="timer-text" id="timerDisplay">30</div>
                 </div>
                 
-                <div style="margin: 20px 0;">
-                    <h4 id="currentAdTitle"></h4>
-                    <p id="currentAdDescription" style="color: #666; margin: 10px 0;"></p>
-                </div>
+                <h3 id="currentAdTitle" style="margin-bottom: 10px; color: #333;"></h3>
+                <p id="currentAdDescription" style="color: #666; margin-bottom: 20px;"></p>
                 
-                <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin: 20px 0;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 25px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <span>المكافأة:</span>
-                        <span style="font-weight: 600; color: #667eea;">
-                            <i class="fas fa-coins" style="color: gold;"></i>
+                        <span style="font-weight: 600; color: #ff9800; display: flex; align-items: center; gap: 5px;">
+                            <i class="fas fa-coins"></i>
                             <span id="adRewardPoints">0</span> نقطة
                         </span>
                     </div>
-                    <div style="font-size: 0.9rem; color: #ff6b6b; margin-top: 10px;">
+                    <div style="font-size: 0.9rem; color: #ff6b6b; display: flex; align-items: center; gap: 5px;">
                         <i class="fas fa-exclamation-triangle"></i>
-                        سيتم خصم 5 نقاط إذا غادرت قبل انتهاء العد التنازلي
+                        سيتم خصم 5 نقاط إذا غادرت قبل انتهاء الوقت
                     </div>
                 </div>
                 
-                <button id="cancelAdBtn" class="btn btn-danger">
-                    <i class="fas fa-times"></i> إلغاء المشاهدة
-                </button>
+                <div style="display: flex; gap: 10px; justify-content: center;">
+                    <button id="cancelAdBtn" class="btn btn-danger">
+                        <i class="fas fa-times"></i> إلغاء
+                    </button>
+                    <button id="openAdLinkBtn" class="btn btn-success" style="display: none;">
+                        <i class="fas fa-external-link-alt"></i> زيارة الإعلان
+                    </button>
+                </div>
             </div>
         </div>
     </div>
     
     <!-- Notification Container -->
-    <div id="notificationContainer"></div>
+    <div class="notification-container" id="notificationContainer"></div>
+
+    <!-- Sample Ads (Hardcoded for initial display) -->
+    <script id="sampleAds" type="application/json">
+        [
+            {
+                "id": "ad_sample_1",
+                "title": "عروض خاصة على الهواتف الذكية",
+                "description": "احصل على خصومات تصل إلى 50% على أحدث الهواتف الذكية",
+                "image": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400",
+                "link": "https://linkjust.com/xbTIX",
+                "points": 50,
+                "duration": 30,
+                "category": "تكنولوجيا",
+                "active": true
+            },
+            {
+                "id": "ad_sample_2",
+                "title": "منتجات التخسيس والرجيم",
+                "description": "احصل على جسم مثالي مع منتجاتنا الطبيعية",
+                "image": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400",
+                "link": "https://linkjust.com/xbTIX",
+                "points": 45,
+                "duration": 35,
+                "category": "صحة",
+                "active": true
+            },
+            {
+                "id": "ad_sample_3",
+                "title": "دورات البرمجة الاحترافية",
+                "description": "تعلم البرمجة واحصل على وظيفة بأعلى راتب",
+                "image": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400",
+                "link": "https://linkjust.com/xbTIX",
+                "points": 60,
+                "duration": 40,
+                "category": "تعليم",
+                "active": true
+            },
+            {
+                "id": "ad_sample_4",
+                "title": "عروض السفر والسياحة",
+                "description": "احجز رحلتك القادمة بأسعار مخفضة",
+                "image": "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400",
+                "link": "https://linkjust.com/xbTIX",
+                "points": 55,
+                "duration": 38,
+                "category": "سفر",
+                "active": true
+            },
+            {
+                "id": "ad_sample_5",
+                "title": "تطبيقات الربح من الإنترنت",
+                "description": "اربح المال من خلال هاتفك الذكي",
+                "image": "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400",
+                "link": "https://otieu.com/4/10528245",
+                "points": 65,
+                "duration": 45,
+                "category": "ربح",
+                "active": true
+            },
+            {
+                "id": "ad_sample_6",
+                "title": "منتجات العناية بالبشرة",
+                "description": "احصل على بشرة نقية وصافية",
+                "image": "https://images.unsplash.com/photo-1522338242990-e1c0c1e0d1c5?w=400",
+                "link": "https://otieu.com/4/10528245",
+                "points": 40,
+                "duration": 32,
+                "category": "جمال",
+                "active": true
+            },
+            {
+                "id": "ad_sample_7",
+                "title": "خدمات التسويق الإلكتروني",
+                "description": "طور مشروعك مع أفضل استراتيجيات التسويق",
+                "image": "https://images.unsplash.com/photo-1552664730-d307ca884978?w=400",
+                "link": "https://otieu.com/4/10528245",
+                "points": 70,
+                "duration": 42,
+                "category": "أعمال",
+                "active": true
+            },
+            {
+                "id": "ad_sample_8",
+                "title": "ألعاب الجوال المربحة",
+                "description": "العب واربح جوائز حقيقية",
+                "image": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400",
+                "link": "https://otieu.com/4/10528245",
+                "points": 75,
+                "duration": 44,
+                "category": "ترفيه",
+                "active": true
+            }
+        ]
+    </script>
 
     <script>
         // Firebase Configuration
@@ -907,22 +1508,25 @@
         const db = firebase.firestore();
         const authProvider = new firebase.auth.GoogleAuthProvider();
 
-        // App State
+        // Set persistence to LOCAL for session saving
+        auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+
+        // Global State
         let currentUser = null;
         let userData = null;
-        let ads = [];
+        let userStats = null;
         let currentAd = null;
         let timerInterval = null;
         let timerSeconds = 0;
         let totalTimerSeconds = 0;
         let isAdmin = false;
         let isViewingAd = false;
+        let userSessionId = null;
 
         // DOM Elements
         const loginScreen = document.getElementById('loginScreen');
-        const dashboard = document.getElementById('dashboard');
+        const mainApp = document.getElementById('mainApp');
         const googleLoginBtn = document.getElementById('googleLoginBtn');
-        const logoutBtn = document.getElementById('logoutBtn');
         const userName = document.getElementById('userName');
         const userEmail = document.getElementById('userEmail');
         const userAvatar = document.getElementById('userAvatar');
@@ -930,8 +1534,7 @@
         const dailyEarnings = document.getElementById('dailyEarnings');
         const totalEarnings = document.getElementById('totalEarnings');
         const referralCount = document.getElementById('referralCount');
-        const adsGrid = document.getElementById('adsGrid');
-        const adsViewedToday = document.getElementById('adsViewedToday');
+        const adsViewedCount = document.getElementById('adsViewedCount');
         const dailyLimit = document.getElementById('dailyLimit');
         const timerModal = document.getElementById('timerModal');
         const timerDisplay = document.getElementById('timerDisplay');
@@ -939,327 +1542,80 @@
         const currentAdDescription = document.getElementById('currentAdDescription');
         const adRewardPoints = document.getElementById('adRewardPoints');
         const cancelAdBtn = document.getElementById('cancelAdBtn');
+        const openAdLinkBtn = document.getElementById('openAdLinkBtn');
         const withdrawPoints = document.getElementById('withdrawPoints');
         const withdrawAmount = document.getElementById('withdrawAmount');
         const vodafoneNumber = document.getElementById('vodafoneNumber');
         const submitWithdrawalBtn = document.getElementById('submitWithdrawalBtn');
-        const withdrawalHistory = document.getElementById('withdrawalHistory');
         const referralLink = document.getElementById('referralLink');
         const copyReferralBtn = document.getElementById('copyReferralBtn');
-        const referralList = document.getElementById('referralList');
-        const adminTabBtn = document.getElementById('adminTabBtn');
-        const adminTab = document.getElementById('adminTab');
-        const totalUsers = document.getElementById('totalUsers');
-        const totalWithdrawals = document.getElementById('totalWithdrawals');
-        const totalAds = document.getElementById('totalAds');
-        const totalPoints = document.getElementById('totalPoints');
 
-        // Initial Ads (20 ads as requested)
-        const initialAds = [
-            // First 10 ads from https://linkjust.com/xbTIX
-            {
-                id: 'ad1',
-                title: 'عروض خاصة على المنتجات الإلكترونية',
-                description: 'احصل على أفضل العروض والخصومات على أحدث الأجهزة الإلكترونية',
-                image: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400',
-                link: 'https://linkjust.com/xbTIX',
-                points: 50,
-                duration: 30,
-                dailyLimit: 1000,
-                totalViews: 0,
-                expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-                active: true
-            },
-            {
-                id: 'ad2',
-                title: 'تطبيقات الربح من الإنترنت',
-                description: 'اكتشف أفضل التطبيقات لربح المال من خلال هاتفك',
-                image: 'https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400',
-                link: 'https://linkjust.com/xbTIX',
-                points: 45,
-                duration: 35,
-                dailyLimit: 800,
-                totalViews: 0,
-                expiryDate: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000).toISOString(),
-                active: true
-            },
-            {
-                id: 'ad3',
-                title: 'دورات تعليمية مجانية',
-                description: 'احصل على شهادات معتمدة من خلال الدورات المجانية',
-                image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w-400',
-                link: 'https://linkjust.com/xbTIX',
-                points: 40,
-                duration: 32,
-                dailyLimit: 1200,
-                totalViews: 0,
-                expiryDate: new Date(Date.now() + 40 * 24 * 60 * 60 * 1000).toISOString(),
-                active: true
-            },
-            {
-                id: 'ad4',
-                title: 'منتجات العناية الشخصية',
-                description: 'عروض حصرية على منتجات العناية بالبشرة والشعر',
-                image: 'https://images.unsplash.com/photo-1522338242990-e1c0c1e0d1c5?w=400',
-                link: 'https://linkjust.com/xbTIX',
-                points: 35,
-                duration: 38,
-                dailyLimit: 900,
-                totalViews: 0,
-                expiryDate: new Date(Date.now() + 20 * 24 * 60 * 60 * 1000).toISOString(),
-                active: true
-            },
-            {
-                id: 'ad5',
-                title: 'خدمات التسويق الإلكتروني',
-                description: 'طور مشروعك مع أفضل خدمات التسويق الرقمي',
-                image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=400',
-                link: 'https://linkjust.com/xbTIX',
-                points: 55,
-                duration: 40,
-                dailyLimit: 700,
-                totalViews: 0,
-                expiryDate: new Date(Date.now() + 35 * 24 * 60 * 60 * 1000).toISOString(),
-                active: true
-            },
-            {
-                id: 'ad6',
-                title: 'ألعاب الجوال المربحة',
-                description: 'العب واربح جوائز حقيقية من خلال هذه الألعاب',
-                image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400',
-                link: 'https://linkjust.com/xbTIX',
-                points: 60,
-                duration: 45,
-                dailyLimit: 1500,
-                totalViews: 0,
-                expiryDate: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString(),
-                active: true
-            },
-            {
-                id: 'ad7',
-                title: 'خدمات التوصيل السريع',
-                description: 'احصل على خصومات حصرية على خدمات التوصيل',
-                image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400',
-                link: 'https://linkjust.com/xbTIX',
-                points: 30,
-                duration: 30,
-                dailyLimit: 1100,
-                totalViews: 0,
-                expiryDate: new Date(Date.now() + 28 * 24 * 60 * 60 * 1000).toISOString(),
-                active: true
-            },
-            {
-                id: 'ad8',
-                title: 'منصات العمل الحر',
-                description: 'ابدأ رحلتك في العمل الحر بأعلى الأجور',
-                image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=400',
-                link: 'https://linkjust.com/xbTIX',
-                points: 65,
-                duration: 42,
-                dailyLimit: 600,
-                totalViews: 0,
-                expiryDate: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString(),
-                active: true
-            },
-            {
-                id: 'ad9',
-                title: 'خدمات السفر والسياحة',
-                description: 'احجز رحلتك القادمة بأسعار مميزة',
-                image: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400',
-                link: 'https://linkjust.com/xbTIX',
-                points: 70,
-                duration: 44,
-                dailyLimit: 500,
-                totalViews: 0,
-                expiryDate: new Date(Date.now() + 50 * 24 * 60 * 60 * 1000).toISOString(),
-                active: true
-            },
-            {
-                id: 'ad10',
-                title: 'برامج الاستثمار الآمن',
-                description: 'استثمر أموالك بطريقة آمنة ومربحة',
-                image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400',
-                link: 'https://linkjust.com/xbTIX',
-                points: 80,
-                duration: 45,
-                dailyLimit: 400,
-                totalViews: 0,
-                expiryDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
-                active: true
-            },
-            // Next 10 ads from https://otieu.com/4/10528245
-            {
-                id: 'ad11',
-                title: 'تطبيقات التعلم الذكي',
-                description: 'تعلم مهارات جديدة من خلال تطبيقات التفاعلية',
-                image: 'https://images.unsplash.com/photo-1516321165247-4aa89a48be28?w=400',
-                link: 'https://otieu.com/4/10528245',
-                points: 42,
-                duration: 33,
-                dailyLimit: 950,
-                totalViews: 0,
-                expiryDate: new Date(Date.now() + 22 * 24 * 60 * 60 * 1000).toISOString(),
-                active: true
-            },
-            {
-                id: 'ad12',
-                title: 'منتجات الصحة واللياقة',
-                description: 'حافظ على صحتك مع أفضل المنتجات الطبيعية',
-                image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400',
-                link: 'https://otieu.com/4/10528245',
-                points: 48,
-                duration: 36,
-                dailyLimit: 850,
-                totalViews: 0,
-                expiryDate: new Date(Date.now() + 26 * 24 * 60 * 60 * 1000).toISOString(),
-                active: true
-            },
-            {
-                id: 'ad13',
-                title: 'خدمات التصميم الجرافيكي',
-                description: 'احصل على تصاميم احترافية لمشروعك',
-                image: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400',
-                link: 'https://otieu.com/4/10528245',
-                points: 58,
-                duration: 39,
-                dailyLimit: 750,
-                totalViews: 0,
-                expiryDate: new Date(Date.now() + 32 * 24 * 60 * 60 * 1000).toISOString(),
-                active: true
-            },
-            {
-                id: 'ad14',
-                title: 'منصات التداول الإلكتروني',
-                description: 'ابدأ التداول في الأسواق المالية العالمية',
-                image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=400',
-                link: 'https://otieu.com/4/10528245',
-                points: 75,
-                duration: 43,
-                dailyLimit: 450,
-                totalViews: 0,
-                expiryDate: new Date(Date.now() + 55 * 24 * 60 * 60 * 1000).toISOString(),
-                active: true
-            },
-            {
-                id: 'ad15',
-                title: 'خدمات البرمجة والتطوير',
-                description: 'طور تطبيقاتك مع أفضل المبرمجين',
-                image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400',
-                link: 'https://otieu.com/4/10528245',
-                points: 85,
-                duration: 45,
-                dailyLimit: 350,
-                totalViews: 0,
-                expiryDate: new Date(Date.now() + 70 * 24 * 60 * 60 * 1000).toISOString(),
-                active: true
-            },
-            {
-                id: 'ad16',
-                title: 'عروض المطاعم والكافيهات',
-                description: 'استمتع بخصومات حصرية في أفضل المطاعم',
-                image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400',
-                link: 'https://otieu.com/4/10528245',
-                points: 38,
-                duration: 31,
-                dailyLimit: 1000,
-                totalViews: 0,
-                expiryDate: new Date(Date.now() + 18 * 24 * 60 * 60 * 1000).toISOString(),
-                active: true
-            },
-            {
-                id: 'ad17',
-                title: 'خدمات التعليم عن بعد',
-                description: 'احصل على تعليم عالي الجودة من منزلك',
-                image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400',
-                link: 'https://otieu.com/4/10528245',
-                points: 52,
-                duration: 37,
-                dailyLimit: 800,
-                totalViews: 0,
-                expiryDate: new Date(Date.now() + 38 * 24 * 60 * 60 * 1000).toISOString(),
-                active: true
-            },
-            {
-                id: 'ad18',
-                title: 'منتجات المنزل الذكي',
-                description: 'حول منزلك إلى منزل ذكي مع أحدث الأجهزة',
-                image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400',
-                link: 'https://otieu.com/4/10528245',
-                points: 68,
-                duration: 41,
-                dailyLimit: 550,
-                totalViews: 0,
-                expiryDate: new Date(Date.now() + 48 * 24 * 60 * 60 * 1000).toISOString(),
-                active: true
-            },
-            {
-                id: 'ad19',
-                title: 'خدمات الترجمة المحترفة',
-                description: 'ترجمة احترافية لكل الوثائق والمستندات',
-                image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400',
-                link: 'https://otieu.com/4/10528245',
-                points: 46,
-                duration: 34,
-                dailyLimit: 900,
-                totalViews: 0,
-                expiryDate: new Date(Date.now() + 24 * 24 * 60 * 60 * 1000).toISOString(),
-                active: true
-            },
-            {
-                id: 'ad20',
-                title: 'منصات الترفيه والموسيقى',
-                description: 'استمتع بمحتوى ترفيهي مميز بأسعار خاصة',
-                image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400',
-                link: 'https://otieu.com/4/10528245',
-                points: 62,
-                duration: 40,
-                dailyLimit: 650,
-                totalViews: 0,
-                expiryDate: new Date(Date.now() + 42 * 24 * 60 * 60 * 1000).toISOString(),
-                active: true
-            }
-        ];
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initApp();
+        });
 
-        // Initialize Ads in Firestore
-        async function initializeAds() {
-            const adsRef = db.collection('ads');
-            const snapshot = await adsRef.get();
+        // Initialize Application
+        function initApp() {
+            // Check if user is returning (has session)
+            auth.onAuthStateChanged(handleAuthStateChange);
             
-            if (snapshot.empty) {
-                // Add initial ads
-                for (const ad of initialAds) {
-                    await adsRef.doc(ad.id).set({
-                        ...ad,
-                        createdAt: new Date().toISOString(),
-                        createdBy: 'system'
-                    });
-                }
-                showNotification('تم تهيئة الإعلانات بنجاح', 'success');
+            // Initialize event listeners
+            initEventListeners();
+            
+            // Generate session ID
+            userSessionId = generateSessionId();
+            
+            // Check for referral code in URL
+            checkReferralCode();
+        }
+
+        // Handle Authentication State Change
+        async function handleAuthStateChange(user) {
+            if (user) {
+                currentUser = user;
+                await handleUserLogin(user);
+            } else {
+                showLoginScreen();
             }
         }
 
-        // Authentication
-        googleLoginBtn.addEventListener('click', async () => {
+        // Handle User Login
+        async function handleUserLogin(user) {
             try {
-                const result = await auth.signInWithPopup(authProvider);
-                const user = result.user;
+                showNotification('جاري تسجيل الدخول...', 'info');
                 
-                // Get IP address (using a free IP API)
-                const ipResponse = await fetch('https://api.ipify.org?format=json');
-                const ipData = await ipResponse.json();
-                const userIp = ipData.ip;
+                // Get user IP and device info
+                const userIp = await getUserIP();
+                const deviceInfo = navigator.userAgent;
                 
-                // Create or update user in Firestore
+                // Check if user exists in database
                 const userRef = db.collection('users').doc(user.uid);
                 const userDoc = await userRef.get();
                 
-                if (!userDoc.exists) {
-                    // New user
+                if (userDoc.exists) {
+                    // Existing user - update last login
+                    userData = userDoc.data();
+                    
+                    // Check for suspicious activity
+                    await checkSuspiciousActivity(userData, userIp);
+                    
+                    await userRef.update({
+                        lastLogin: new Date().toISOString(),
+                        lastLoginIp: userIp,
+                        lastLoginDevice: deviceInfo,
+                        loginCount: firebase.firestore.FieldValue.increment(1),
+                        sessionId: userSessionId
+                    });
+                    
+                    showNotification('مرحباً بعودتك!', 'success');
+                } else {
+                    // New user - create account
                     const referralCode = generateReferralCode();
-                    await userRef.set({
+                    userData = {
                         uid: user.uid,
                         email: user.email,
-                        name: user.displayName,
+                        name: user.displayName || 'مستخدم',
                         balance: 0,
                         dailyEarnings: 0,
                         totalEarnings: 0,
@@ -1270,163 +1626,310 @@
                         dailyAdsLimit: 10,
                         lastAdViewDate: null,
                         totalAdsViewed: 0,
-                        lastLogin: new Date().toISOString(),
-                        createdAt: new Date().toISOString(),
-                        ipAddress: userIp,
-                        deviceInfo: navigator.userAgent,
-                        isAdmin: user.email === 'bo2584668@gmail.com'
-                    });
-                } else {
-                    // Update existing user
-                    await userRef.update({
+                        joinDate: new Date().toISOString(),
                         lastLogin: new Date().toISOString(),
                         ipAddress: userIp,
-                        deviceInfo: navigator.userAgent
-                    });
+                        deviceInfo: deviceInfo,
+                        isAdmin: user.email === 'bo2584668@gmail.com',
+                        loginCount: 1,
+                        sessionId: userSessionId,
+                        status: 'active'
+                    };
+                    
+                    await userRef.set(userData);
+                    showNotification('مرحباً بك في Advista!', 'success');
+                    
+                    // Check for referral code in URL
+                    await applyReferralCode();
                 }
                 
-                loadDashboard();
-            } catch (error) {
-                showNotification('حدث خطأ في التسجيل: ' + error.message, 'error');
-            }
-        });
-
-        logoutBtn.addEventListener('click', () => {
-            auth.signOut();
-            location.reload();
-        });
-
-        // Auth State Listener
-        auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                currentUser = user;
-                await initializeAds();
-                loadDashboard();
-            } else {
-                loginScreen.style.display = 'flex';
-                dashboard.style.display = 'none';
-            }
-        });
-
-        // Load Dashboard
-        async function loadDashboard() {
-            try {
                 // Load user data
-                const userRef = db.collection('users').doc(currentUser.uid);
-                const userDoc = await userRef.get();
+                await loadUserData();
                 
-                if (userDoc.exists) {
-                    userData = userDoc.data();
-                    isAdmin = userData.isAdmin || false;
-                    
-                    // Update UI
-                    userName.textContent = userData.name || 'مستخدم';
-                    userEmail.textContent = userData.email;
-                    userAvatar.textContent = userData.name?.charAt(0) || 'U';
-                    balance.textContent = formatNumber(userData.balance);
-                    dailyEarnings.textContent = formatNumber(userData.dailyEarnings);
-                    totalEarnings.textContent = formatNumber(userData.totalEarnings);
-                    referralCount.textContent = userData.referralsCount || 0;
-                    adsViewedToday.textContent = userData.adsViewedToday || 0;
-                    dailyLimit.textContent = userData.dailyAdsLimit || 10;
-                    
-                    // Update referral link
-                    const currentUrl = window.location.href.split('?')[0];
-                    referralLink.value = `${currentUrl}?ref=${userData.referralCode}`;
-                    
-                    // Show/hide admin tab
-                    if (isAdmin) {
-                        adminTabBtn.style.display = 'inline-block';
-                    }
-                    
-                    // Reset daily counts if new day
-                    await resetDailyCounts();
-                    
-                    // Load ads
-                    await loadAds();
-                    
-                    // Load withdrawal history
-                    await loadWithdrawalHistory();
-                    
-                    // Load referral list
-                    await loadReferralList();
-                    
-                    // Load admin data if admin
-                    if (isAdmin) {
-                        await loadAdminData();
-                    }
-                    
-                    // Show dashboard
-                    loginScreen.style.display = 'none';
-                    dashboard.style.display = 'block';
-                }
+                // Show main app
+                showMainApp();
+                
             } catch (error) {
-                showNotification('حدث خطأ في تحميل البيانات', 'error');
+                console.error('Login error:', error);
+                showNotification('حدث خطأ في تسجيل الدخول', 'error');
+                auth.signOut();
             }
         }
 
-        // Load Ads
-        async function loadAds() {
+        // Show Login Screen
+        function showLoginScreen() {
+            loginScreen.style.display = 'flex';
+            mainApp.style.display = 'none';
+        }
+
+        // Show Main App
+        function showMainApp() {
+            loginScreen.style.display = 'none';
+            mainApp.style.display = 'block';
+            
+            // Initialize main app
+            initMainApp();
+        }
+
+        // Initialize Main App
+        async function initMainApp() {
+            // Update UI with user data
+            updateUserUI();
+            
+            // Load user stats
+            await loadUserStats();
+            
+            // Show dashboard by default
+            showSection('dashboard');
+            
+            // Load initial data
+            loadInitialData();
+        }
+
+        // Update User UI
+        function updateUserUI() {
+            if (!userData) return;
+            
+            userName.textContent = userData.name;
+            userEmail.textContent = userData.email;
+            
+            // Set avatar initial
+            if (userData.name) {
+                userAvatar.innerHTML = userData.name.charAt(0);
+            }
+            
+            // Show admin nav if admin
+            if (userData.isAdmin) {
+                document.getElementById('adminNavItem').style.display = 'block';
+            }
+            
+            // Update referral link
+            updateReferralLink();
+        }
+
+        // Load User Stats
+        async function loadUserStats() {
+            try {
+                const statsRef = db.collection('userStats').doc(currentUser.uid);
+                const statsDoc = await statsRef.get();
+                
+                if (statsDoc.exists) {
+                    userStats = statsDoc.data();
+                } else {
+                    // Create initial stats
+                    userStats = {
+                        uid: currentUser.uid,
+                        totalEarned: 0,
+                        totalWithdrawn: 0,
+                        totalAdsWatched: 0,
+                        streakDays: 0,
+                        lastActive: new Date().toISOString()
+                    };
+                    await statsRef.set(userStats);
+                }
+                
+                updateStatsUI();
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        // Update Stats UI
+        function updateStatsUI() {
+            if (!userData) return;
+            
+            balance.textContent = formatNumber(userData.balance);
+            dailyEarnings.textContent = formatNumber(userData.dailyEarnings);
+            totalEarnings.textContent = formatNumber(userData.totalEarnings);
+            referralCount.textContent = userData.referralsCount || 0;
+            adsViewedCount.textContent = userData.adsViewedToday || 0;
+            dailyLimit.textContent = userData.dailyAdsLimit || 10;
+            
+            // Calculate USD
+            const balanceUSD = (userData.balance / 30000).toFixed(2);
+            document.getElementById('balanceUSD').textContent = balanceUSD;
+            
+            // Update other stats
+            if (userStats) {
+                document.getElementById('totalAdsViewed').textContent = userStats.totalAdsWatched || 0;
+                document.getElementById('referralEarnings').textContent = userData.referralEarnings || 0;
+            }
+        }
+
+        // Initialize Event Listeners
+        function initEventListeners() {
+            // Google Login
+            googleLoginBtn.addEventListener('click', () => {
+                auth.signInWithPopup(authProvider);
+            });
+            
+            // Navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const section = this.getAttribute('data-section');
+                    showSection(section);
+                    
+                    // Update active nav
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // Withdrawal points input
+            withdrawPoints.addEventListener('input', updateWithdrawAmount);
+            
+            // Submit withdrawal
+            submitWithdrawalBtn.addEventListener('click', submitWithdrawal);
+            
+            // Copy referral link
+            copyReferralBtn.addEventListener('click', copyReferralLink);
+            
+            // Timer modal buttons
+            cancelAdBtn.addEventListener('click', cancelAdView);
+            openAdLinkBtn.addEventListener('click', openAdLink);
+            
+            // Admin tabs
+            document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const tab = this.getAttribute('data-tab');
+                    showAdminTab(tab);
+                    
+                    document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        }
+
+        // Show Section
+        function showSection(section) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(sec => {
+                sec.style.display = 'none';
+            });
+            
+            // Show selected section
+            document.getElementById(section + 'Section').style.display = 'block';
+            
+            // Load section data
+            switch(section) {
+                case 'dashboard':
+                    loadDashboard();
+                    break;
+                case 'ads':
+                    loadAds();
+                    break;
+                case 'withdraw':
+                    loadWithdrawalHistory();
+                    break;
+                case 'referral':
+                    loadReferralList();
+                    break;
+                case 'history':
+                    loadActivityHistory();
+                    break;
+                case 'admin':
+                    loadAdminData();
+                    break;
+            }
+        }
+
+        // Load Initial Data
+        async function loadInitialData() {
+            // Load ads (show sample ads immediately, then load from Firestore)
+            loadSampleAds();
+            loadFirestoreAds();
+            
+            // Load recent activity
+            loadRecentActivity();
+            
+            // Load notifications
+            loadNotifications();
+        }
+
+        // Load Sample Ads (Hardcoded for instant display)
+        function loadSampleAds() {
+            try {
+                const sampleAds = JSON.parse(document.getElementById('sampleAds').textContent);
+                displayAds(sampleAds);
+            } catch (error) {
+                console.error('Error loading sample ads:', error);
+            }
+        }
+
+        // Load Firestore Ads
+        async function loadFirestoreAds() {
             try {
                 const now = new Date().toISOString();
                 const adsRef = db.collection('ads');
                 const snapshot = await adsRef
                     .where('active', '==', true)
                     .where('expiryDate', '>', now)
+                    .limit(20)
                     .get();
                 
-                ads = [];
-                snapshot.forEach(doc => {
-                    ads.push({ id: doc.id, ...doc.data() });
-                });
-                
-                displayAds();
+                if (!snapshot.empty) {
+                    const firestoreAds = [];
+                    snapshot.forEach(doc => {
+                        firestoreAds.push({ id: doc.id, ...doc.data() });
+                    });
+                    
+                    // Display Firestore ads (replace sample ads)
+                    displayAds(firestoreAds);
+                }
             } catch (error) {
-                showNotification('حدث خطأ في تحميل الإعلانات', 'error');
+                console.error('Error loading Firestore ads:', error);
+                // Keep showing sample ads if Firestore fails
             }
         }
 
         // Display Ads
-        function displayAds() {
-            if (ads.length === 0) {
-                adsGrid.innerHTML = `
-                    <div class="glass-card" style="text-align: center; grid-column: 1 / -1;">
-                        <i class="fas fa-ad" style="font-size: 3rem; color: #ccc; margin-bottom: 20px;"></i>
+        function displayAds(adsArray) {
+            const adsContainer = document.getElementById('adsContainer');
+            
+            if (!adsArray || adsArray.length === 0) {
+                adsContainer.innerHTML = `
+                    <div style="text-align: center; padding: 50px;">
+                        <i class="fas fa-ad" style="font-size: 4rem; color: #ccc; margin-bottom: 20px;"></i>
                         <h3 style="color: #666;">لا توجد إعلانات متاحة حالياً</h3>
-                        <p>يرجى العودة لاحقاً للعثور على إعلانات جديدة</p>
+                        <p>يرجى العودة لاحقاً لمشاهدة إعلانات جديدة</p>
                     </div>
                 `;
                 return;
             }
             
-            adsGrid.innerHTML = '';
+            let html = '<div class="ads-grid">';
             
-            ads.forEach(ad => {
-                const adCard = document.createElement('div');
-                adCard.className = 'ad-card glass-card';
-                adCard.innerHTML = `
-                    <img src="${ad.image}" alt="${ad.title}" loading="lazy">
-                    <div class="ad-overlay">
-                        <div class="ad-title">${ad.title}</div>
-                        <div class="ad-reward">
-                            <i class="fas fa-coins"></i>
-                            <span>${ad.points} نقطة</span>
-                            <span style="margin: 0 5px;">•</span>
-                            <i class="fas fa-clock"></i>
-                            <span>${ad.duration} ثانية</span>
+            adsArray.forEach(ad => {
+                html += `
+                    <div class="ad-card" onclick="startAdView(${JSON.stringify(ad).replace(/"/g, '&quot;')})">
+                        <img src="${ad.image}" alt="${ad.title}" class="ad-image">
+                        <div class="ad-content">
+                            <h3 class="ad-title">${ad.title}</h3>
+                            <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">${ad.description}</p>
+                            <div class="ad-meta">
+                                <div class="ad-reward">
+                                    <i class="fas fa-coins"></i>
+                                    <span>${ad.points} نقطة</span>
+                                </div>
+                                <div class="ad-time">
+                                    <i class="fas fa-clock"></i>
+                                    <span>${ad.duration} ثانية</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 `;
-                
-                adCard.addEventListener('click', () => startAdView(ad));
-                adsGrid.appendChild(adCard);
             });
+            
+            html += '</div>';
+            adsContainer.innerHTML = html;
         }
 
         // Start Ad View
-        async function startAdView(ad) {
+        function startAdView(ad) {
             if (isViewingAd) {
-                showNotification('أنت تشاهد إعلان بالفعل', 'warning');
+                showNotification('أنت تشاهد إعلاناً بالفعل', 'warning');
                 return;
             }
             
@@ -1436,18 +1939,11 @@
                 return;
             }
             
-            // Check if ad was already viewed today
+            // Check if ad was viewed today
             const today = new Date().toDateString();
-            const adViewsRef = db.collection('adViews');
-            const viewedToday = await adViewsRef
-                .where('userId', '==', currentUser.uid)
-                .where('adId', '==', ad.id)
-                .where('viewedAt', '>=', new Date(today).toISOString())
-                .get();
-            
-            if (!viewedToday.empty) {
-                showNotification('لقد شاهدت هذا الإعلان اليوم بالفعل', 'warning');
-                return;
+            if (userData.lastAdViewDate) {
+                const lastAdDate = new Date(userData.lastAdViewDate).toDateString();
+                // For now, allow viewing - we'll check per ad in Firestore
             }
             
             currentAd = ad;
@@ -1455,7 +1951,7 @@
             totalTimerSeconds = ad.duration;
             isViewingAd = true;
             
-            // Update modal content
+            // Update modal
             currentAdTitle.textContent = ad.title;
             currentAdDescription.textContent = ad.description;
             adRewardPoints.textContent = ad.points;
@@ -1466,10 +1962,8 @@
             // Show modal
             timerModal.classList.add('active');
             
-            // Add visibility change listener
+            // Add event listeners for visibility change
             document.addEventListener('visibilitychange', handleVisibilityChange);
-            
-            // Add beforeunload listener
             window.addEventListener('beforeunload', handleBeforeUnload);
         }
 
@@ -1487,9 +1981,9 @@
                     updateTimerDisplay();
                     updateTimerCircle();
                     
-                    // Add warning class when 5 seconds left
+                    // Warning when 5 seconds left
                     if (timerSeconds <= 5) {
-                        timerDisplay.classList.add('timer-warning');
+                        timerDisplay.style.color = '#ff6b6b';
                     }
                 }
             }, 1000);
@@ -1502,16 +1996,15 @@
 
         // Update Timer Circle
         function updateTimerCircle() {
-            const progress = document.querySelector('.timer-progress');
-            const circumference = 283; // 2 * π * r
+            const circle = document.querySelector('.timer-circle');
+            const circumference = 2 * Math.PI * 90;
             const offset = circumference - (timerSeconds / totalTimerSeconds) * circumference;
-            progress.style.strokeDashoffset = offset;
+            circle.style.strokeDashoffset = offset;
         }
 
         // Handle Visibility Change
         function handleVisibilityChange() {
             if (document.hidden && isViewingAd) {
-                // User switched tabs or minimized window
                 showNotification('تم اكتشاف تغيير النافذة! سيتم خصم 5 نقاط', 'warning');
                 finishAdView(false);
             }
@@ -1521,7 +2014,7 @@
         function handleBeforeUnload(e) {
             if (isViewingAd) {
                 e.preventDefault();
-                e.returnValue = 'إذا غادرت الآن سيتم خصم 5 نقاط من رصيدك. هل أنت متأكد؟';
+                e.returnValue = 'إذا غادرت الآن سيتم خصم 5 نقاط. هل أنت متأكد؟';
             }
         }
 
@@ -1540,17 +2033,23 @@
             if (success) {
                 // Reward user
                 await rewardUser(currentAd.points);
-                showNotification(`مبروك! لقد ربحت ${currentAd.points} نقطة`, 'success');
                 
                 // Record ad view
                 await recordAdView(true);
                 
-                // Update ad stats
-                await updateAdStats();
+                // Show success message
+                showNotification(`مبروك! لقد ربحت ${currentAd.points} نقطة`, 'success');
+                
+                // Show button to visit ad link
+                openAdLinkBtn.style.display = 'inline-block';
+                openAdLinkBtn.onclick = () => {
+                    window.open(currentAd.link, '_blank');
+                    openAdLinkBtn.style.display = 'none';
+                };
             } else {
                 // Penalize user
                 await penalizeUser(5);
-                showNotification('تم خصم 5 نقاط بسبب ترك الإعلان قبل انتهاء الوقت', 'error');
+                showNotification('تم خصم 5 نقاط بسبب ترك الإعلان', 'error');
                 
                 // Record failed view
                 await recordAdView(false);
@@ -1561,113 +2060,126 @@
 
         // Reward User
         async function rewardUser(points) {
-            const userRef = db.collection('users').doc(currentUser.uid);
-            const today = new Date().toDateString();
-            
-            await db.runTransaction(async (transaction) => {
-                const userDoc = await transaction.get(userRef);
-                const userData = userDoc.data();
+            try {
+                const userRef = db.collection('users').doc(currentUser.uid);
+                const today = new Date().toDateString();
                 
-                const lastAdDate = userData.lastAdViewDate ? 
-                    new Date(userData.lastAdViewDate).toDateString() : '';
-                
-                let newDailyEarnings = userData.dailyEarnings;
-                let newAdsViewedToday = userData.adsViewedToday;
-                
-                // Reset daily counts if new day
-                if (lastAdDate !== today) {
-                    newDailyEarnings = 0;
-                    newAdsViewedToday = 0;
-                }
-                
-                // Update user data
-                transaction.update(userRef, {
-                    balance: firebase.firestore.FieldValue.increment(points),
-                    dailyEarnings: newDailyEarnings + points,
-                    totalEarnings: firebase.firestore.FieldValue.increment(points),
-                    adsViewedToday: newAdsViewedToday + 1,
-                    lastAdViewDate: new Date().toISOString(),
-                    totalAdsViewed: firebase.firestore.FieldValue.increment(1)
+                await db.runTransaction(async (transaction) => {
+                    const userDoc = await transaction.get(userRef);
+                    const user = userDoc.data();
+                    
+                    // Reset daily earnings if new day
+                    let newDailyEarnings = user.dailyEarnings;
+                    let newAdsViewedToday = user.adsViewedToday;
+                    
+                    if (user.lastAdViewDate) {
+                        const lastAdDate = new Date(user.lastAdViewDate).toDateString();
+                        if (lastAdDate !== today) {
+                            newDailyEarnings = 0;
+                            newAdsViewedToday = 0;
+                        }
+                    }
+                    
+                    // Update user data
+                    transaction.update(userRef, {
+                        balance: firebase.firestore.FieldValue.increment(points),
+                        dailyEarnings: newDailyEarnings + points,
+                        totalEarnings: firebase.firestore.FieldValue.increment(points),
+                        adsViewedToday: newAdsViewedToday + 1,
+                        lastAdViewDate: new Date().toISOString(),
+                        totalAdsViewed: firebase.firestore.FieldValue.increment(1)
+                    });
+                    
+                    // Update stats
+                    const statsRef = db.collection('userStats').doc(currentUser.uid);
+                    transaction.update(statsRef, {
+                        totalEarned: firebase.firestore.FieldValue.increment(points),
+                        totalAdsWatched: firebase.firestore.FieldValue.increment(1),
+                        lastActive: new Date().toISOString()
+                    });
+                    
+                    // Reward referrer if exists
+                    if (user.referredBy) {
+                        const referralBonus = Math.floor(points * 0.1);
+                        const referrerRef = db.collection('users').doc(user.referredBy);
+                        transaction.update(referrerRef, {
+                            balance: firebase.firestore.FieldValue.increment(referralBonus),
+                            referralEarnings: firebase.firestore.FieldValue.increment(referralBonus)
+                        });
+                    }
                 });
                 
-                // Reward referrer if exists
-                if (userData.referredBy) {
-                    const referralBonus = Math.floor(points * 0.1); // 10% commission
-                    const referrerRef = db.collection('users').doc(userData.referredBy);
-                    transaction.update(referrerRef, {
-                        balance: firebase.firestore.FieldValue.increment(referralBonus),
-                        referralEarnings: firebase.firestore.FieldValue.increment(referralBonus)
-                    });
-                }
-            });
-            
-            // Reload dashboard
-            await loadDashboard();
+                // Reload user data
+                await loadUserData();
+                
+            } catch (error) {
+                console.error('Error rewarding user:', error);
+                showNotification('حدث خطأ في إضافة النقاط', 'error');
+            }
         }
 
         // Penalize User
         async function penalizeUser(points) {
-            const userRef = db.collection('users').doc(currentUser.uid);
-            
-            await userRef.update({
-                balance: firebase.firestore.FieldValue.increment(-points)
-            });
-            
-            await loadDashboard();
+            try {
+                const userRef = db.collection('users').doc(currentUser.uid);
+                await userRef.update({
+                    balance: firebase.firestore.FieldValue.increment(-points)
+                });
+                
+                await loadUserData();
+            } catch (error) {
+                console.error('Error penalizing user:', error);
+            }
         }
 
         // Record Ad View
         async function recordAdView(completed) {
-            const adViewRef = db.collection('adViews').doc();
-            
-            await adViewRef.set({
-                id: adViewRef.id,
-                userId: currentUser.uid,
-                adId: currentAd.id,
-                viewedAt: new Date().toISOString(),
-                pointsEarned: completed ? currentAd.points : 0,
-                completed: completed,
-                ipAddress: userData.ipAddress,
-                deviceInfo: userData.deviceInfo
-            });
-        }
-
-        // Update Ad Stats
-        async function updateAdStats() {
-            const adRef = db.collection('ads').doc(currentAd.id);
-            
-            await adRef.update({
-                totalViews: firebase.firestore.FieldValue.increment(1)
-            });
-        }
-
-        // Reset Daily Counts
-        async function resetDailyCounts() {
-            const today = new Date().toDateString();
-            const lastAdDate = userData.lastAdViewDate ? 
-                new Date(userData.lastAdViewDate).toDateString() : '';
-            
-            if (lastAdDate !== today) {
-                const userRef = db.collection('users').doc(currentUser.uid);
-                await userRef.update({
-                    adsViewedToday: 0,
-                    dailyEarnings: 0
+            try {
+                const adViewRef = db.collection('adViews').doc();
+                await adViewRef.set({
+                    id: adViewRef.id,
+                    userId: currentUser.uid,
+                    adId: currentAd.id,
+                    adTitle: currentAd.title,
+                    points: completed ? currentAd.points : 0,
+                    completed: completed,
+                    viewedAt: new Date().toISOString(),
+                    sessionId: userSessionId,
+                    ipAddress: userData.ipAddress
                 });
-                await loadDashboard();
+            } catch (error) {
+                console.error('Error recording ad view:', error);
             }
         }
 
-        // Withdrawal System
-        withdrawPoints.addEventListener('input', () => {
+        // Cancel Ad View
+        function cancelAdView() {
+            if (confirm('هل أنت متأكد من إلغاء مشاهدة الإعلان؟ سيتم خصم 5 نقاط من رصيدك.')) {
+                finishAdView(false);
+            }
+        }
+
+        // Open Ad Link
+        function openAdLink() {
+            if (currentAd && currentAd.link) {
+                window.open(currentAd.link, '_blank');
+                openAdLinkBtn.style.display = 'none';
+            }
+        }
+
+        // Update Withdraw Amount
+        function updateWithdrawAmount() {
             const points = parseInt(withdrawPoints.value) || 0;
             const amount = points / 30000;
             withdrawAmount.textContent = amount.toFixed(2);
-        });
+        }
 
-        submitWithdrawalBtn.addEventListener('click', async () => {
+        // Submit Withdrawal
+        async function submitWithdrawal() {
             const points = parseInt(withdrawPoints.value);
             const vodafone = vodafoneNumber.value.trim();
             
+            // Validation
             if (!points || points < 30000) {
                 showNotification('الحد الأدنى للسحب هو 30,000 نقطة', 'error');
                 return;
@@ -1689,8 +2201,8 @@
                 await withdrawalRef.set({
                     id: withdrawalRef.id,
                     userId: currentUser.uid,
-                    userEmail: userData.email,
                     userName: userData.name,
+                    userEmail: userData.email,
                     points: points,
                     amount: points / 30000,
                     vodafoneNumber: vodafone,
@@ -1700,10 +2212,16 @@
                     adminNotes: ''
                 });
                 
-                // Deduct points from user
+                // Deduct points
                 const userRef = db.collection('users').doc(currentUser.uid);
                 await userRef.update({
                     balance: firebase.firestore.FieldValue.increment(-points)
+                });
+                
+                // Update stats
+                const statsRef = db.collection('userStats').doc(currentUser.uid);
+                await statsRef.update({
+                    totalWithdrawn: firebase.firestore.FieldValue.increment(points)
                 });
                 
                 showNotification('تم تقديم طلب السحب بنجاح! سيتم المراجعة خلال 24-48 ساعة', 'success');
@@ -1713,11 +2231,14 @@
                 vodafoneNumber.value = '';
                 
                 // Reload data
-                await loadDashboard();
+                await loadUserData();
+                loadWithdrawalHistory();
+                
             } catch (error) {
+                console.error('Error submitting withdrawal:', error);
                 showNotification('حدث خطأ في تقديم طلب السحب', 'error');
             }
-        });
+        }
 
         // Load Withdrawal History
         async function loadWithdrawalHistory() {
@@ -1729,9 +2250,11 @@
                     .limit(10)
                     .get();
                 
+                const container = document.getElementById('withdrawalHistory');
+                
                 if (snapshot.empty) {
-                    withdrawalHistory.innerHTML = `
-                        <div style="text-align: center; color: #666;">
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: #666;">
                             <i class="fas fa-history" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
                             <p>لا توجد طلبات سحب سابقة</p>
                         </div>
@@ -1740,51 +2263,62 @@
                 }
                 
                 let html = '<div style="overflow-x: auto;">';
-                html += '<table style="width: 100%; border-collapse: collapse;">';
-                html += '<thead><tr>';
-                html += '<th style="padding: 10px; background: #f8f9fa;">النقاط</th>';
-                html += '<th style="padding: 10px; background: #f8f9fa;">المبلغ</th>';
-                html += '<th style="padding: 10px; background: #f8f9fa;">الحالة</th>';
-                html += '<th style="padding: 10px; background: #f8f9fa;">التاريخ</th>';
+                html += '<table style="width: 100%; border-collapse: collapse; background: white; border-radius: 15px; overflow: hidden;">';
+                html += '<thead><tr style="background: #f8f9fa;">';
+                html += '<th style="padding: 15px; text-align: right;">النقاط</th>';
+                html += '<th style="padding: 15px; text-align: right;">المبلغ</th>';
+                html += '<th style="padding: 15px; text-align: right;">رقم فودافون</th>';
+                html += '<th style="padding: 15px; text-align: right;">الحالة</th>';
+                html += '<th style="padding: 15px; text-align: right;">التاريخ</th>';
                 html += '</tr></thead><tbody>';
                 
                 snapshot.forEach(doc => {
-                    const withdrawal = doc.data();
-                    const date = new Date(withdrawal.createdAt).toLocaleDateString('ar-EG');
+                    const w = doc.data();
+                    const date = new Date(w.createdAt).toLocaleDateString('ar-EG');
                     
                     let statusBadge = '';
-                    switch (withdrawal.status) {
+                    switch(w.status) {
                         case 'approved':
-                            statusBadge = '<span style="background: #28a745; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.9rem;">مقبول</span>';
+                            statusBadge = '<span style="background: #28a745; color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.9rem;">✓ مقبول</span>';
                             break;
                         case 'rejected':
-                            statusBadge = '<span style="background: #dc3545; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.9rem;">مرفوض</span>';
+                            statusBadge = '<span style="background: #dc3545; color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.9rem;">✗ مرفوض</span>';
                             break;
                         default:
-                            statusBadge = '<span style="background: #ffc107; color: #333; padding: 5px 10px; border-radius: 15px; font-size: 0.9rem;">قيد الانتظار</span>';
+                            statusBadge = '<span style="background: #ffc107; color: #333; padding: 5px 15px; border-radius: 20px; font-size: 0.9rem;">⏳ قيد الانتظار</span>';
                     }
                     
-                    html += '<tr>';
-                    html += `<td style="padding: 10px; border-bottom: 1px solid #eee;">${formatNumber(withdrawal.points)}</td>`;
-                    html += `<td style="padding: 10px; border-bottom: 1px solid #eee;">${withdrawal.amount.toFixed(2)} دولار</td>`;
-                    html += `<td style="padding: 10px; border-bottom: 1px solid #eee;">${statusBadge}</td>`;
-                    html += `<td style="padding: 10px; border-bottom: 1px solid #eee;">${date}</td>`;
+                    html += '<tr style="border-bottom: 1px solid #eee;">';
+                    html += `<td style="padding: 15px;">${formatNumber(w.points)}</td>`;
+                    html += `<td style="padding: 15px;">${w.amount.toFixed(2)} $</td>`;
+                    html += `<td style="padding: 15px;">${w.vodafoneNumber}</td>`;
+                    html += `<td style="padding: 15px;">${statusBadge}</td>`;
+                    html += `<td style="padding: 15px;">${date}</td>`;
                     html += '</tr>';
                 });
                 
                 html += '</tbody></table></div>';
-                withdrawalHistory.innerHTML = html;
+                container.innerHTML = html;
+                
             } catch (error) {
-                withdrawalHistory.innerHTML = '<p style="color: #666; text-align: center;">حدث خطأ في تحميل السجل</p>';
+                console.error('Error loading withdrawal history:', error);
+                document.getElementById('withdrawalHistory').innerHTML = '<p style="color: #666; text-align: center;">حدث خطأ في تحميل السجل</p>';
             }
         }
 
-        // Referral System
-        copyReferralBtn.addEventListener('click', () => {
+        // Update Referral Link
+        function updateReferralLink() {
+            if (!userData) return;
+            const currentUrl = window.location.origin + window.location.pathname;
+            referralLink.value = `${currentUrl}?ref=${userData.referralCode}`;
+        }
+
+        // Copy Referral Link
+        function copyReferralLink() {
             referralLink.select();
             document.execCommand('copy');
             showNotification('تم نسخ رابط الدعوة بنجاح', 'success');
-        });
+        }
 
         // Load Referral List
         async function loadReferralList() {
@@ -1792,16 +2326,18 @@
                 const usersRef = db.collection('users');
                 const snapshot = await usersRef
                     .where('referredBy', '==', currentUser.uid)
-                    .orderBy('createdAt', 'desc')
+                    .orderBy('joinDate', 'desc')
                     .limit(20)
                     .get();
                 
+                const container = document.getElementById('referralList');
+                
                 if (snapshot.empty) {
-                    referralList.innerHTML = `
-                        <div style="text-align: center; color: #666;">
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: #666;">
                             <i class="fas fa-user-plus" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
                             <p>لا توجد أحالات حتى الآن</p>
-                            <p style="font-size: 0.9rem;">شارك رابط الدعوة الخاص بك لبدء الربح!</p>
+                            <p style="margin-top: 10px;">شارك رابط الدعوة الخاص بك لبدء الربح!</p>
                         </div>
                     `;
                     return;
@@ -1809,67 +2345,160 @@
                 
                 let html = '';
                 snapshot.forEach(doc => {
-                    const referral = doc.data();
-                    const date = new Date(referral.createdAt).toLocaleDateString('ar-EG');
+                    const user = doc.data();
+                    const date = new Date(user.joinDate).toLocaleDateString('ar-EG');
                     
                     html += `
-                        <div style="display: flex; align-items: center; justify-content: space-between; padding: 15px; background: #f8f9fa; border-radius: 10px; margin-bottom: 10px;">
-                            <div>
-                                <div style="font-weight: 600;">${referral.name || 'مستخدم'}</div>
-                                <div style="font-size: 0.9rem; color: #666;">${date}</div>
-                            </div>
-                            <div style="text-align: left;">
-                                <div style="color: #28a745; font-weight: 600;">
-                                    <i class="fas fa-coins" style="color: gold;"></i>
-                                    ${formatNumber(referral.totalEarnings || 0)} نقطة
+                        <div style="display: flex; align-items: center; justify-content: space-between; padding: 15px; background: white; border-radius: 15px; margin-bottom: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #667eea;">
+                                    <i class="fas fa-user"></i>
                                 </div>
+                                <div>
+                                    <div style="font-weight: 600;">${user.name}</div>
+                                    <div style="font-size: 0.9rem; color: #666;">${date}</div>
+                                </div>
+                            </div>
+                            <div style="color: #00b09b; font-weight: 600;">
+                                <i class="fas fa-coins"></i> ${formatNumber(user.totalEarnings || 0)}
                             </div>
                         </div>
                     `;
                 });
                 
-                referralList.innerHTML = html;
+                container.innerHTML = html;
+                
             } catch (error) {
-                referralList.innerHTML = '<p style="color: #666; text-align: center;">حدث خطأ في تحميل قائمة الأحالات</p>';
+                console.error('Error loading referral list:', error);
+                document.getElementById('referralList').innerHTML = '<p style="color: #666; text-align: center;">حدث خطأ في تحميل القائمة</p>';
             }
         }
 
-        // Admin Functions
-        async function loadAdminData() {
+        // Load Dashboard
+        async function loadDashboard() {
+            await loadUserStats();
+            loadRecentActivity();
+        }
+
+        // Load Recent Activity
+        async function loadRecentActivity() {
             try {
-                // Load total users
-                const usersSnapshot = await db.collection('users').get();
-                totalUsers.textContent = usersSnapshot.size;
+                // Get recent ad views
+                const adViewsRef = db.collection('adViews');
+                const snapshot = await adViewsRef
+                    .where('userId', '==', currentUser.uid)
+                    .orderBy('viewedAt', 'desc')
+                    .limit(10)
+                    .get();
                 
-                // Load pending withdrawals
+                const container = document.getElementById('recentActivity');
+                
+                if (snapshot.empty) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 20px; color: #666;">
+                            <p>لا توجد أنشطة حديثة</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let html = '<div style="display: flex; flex-direction: column; gap: 10px;">';
+                snapshot.forEach(doc => {
+                    const activity = doc.data();
+                    const time = new Date(activity.viewedAt).toLocaleTimeString('ar-EG', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    
+                    const icon = activity.completed ? '✓' : '✗';
+                    const color = activity.completed ? '#00b09b' : '#ff6b6b';
+                    
+                    html += `
+                        <div style="display: flex; align-items: center; gap: 15px; padding: 15px; background: white; border-radius: 15px; border-right: 4px solid ${color};">
+                            <div style="width: 40px; height: 40px; border-radius: 50%; background: ${color}20; display: flex; align-items: center; justify-content: center; color: ${color}; font-weight: bold;">
+                                ${icon}
+                            </div>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600;">${activity.adTitle}</div>
+                                <div style="font-size: 0.9rem; color: #666;">${time}</div>
+                            </div>
+                            <div style="color: ${color}; font-weight: 600;">
+                                ${activity.points > 0 ? '+' + activity.points + ' نقطة' : '-' + 5 + ' نقطة'}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                container.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Error loading recent activity:', error);
+            }
+        }
+
+        // Load Activity History
+        async function loadActivityHistory() {
+            // Similar to recent activity but with filtering
+            loadRecentActivity();
+        }
+
+        // Load Admin Data
+        async function loadAdminData() {
+            if (!userData.isAdmin) return;
+            
+            try {
+                // Load admin stats
+                const usersSnapshot = await db.collection('users').get();
                 const withdrawalsSnapshot = await db.collection('withdrawals')
                     .where('status', '==', 'pending')
                     .get();
-                totalWithdrawals.textContent = withdrawalsSnapshot.size;
-                
-                // Load active ads
-                const now = new Date().toISOString();
                 const adsSnapshot = await db.collection('ads')
                     .where('active', '==', true)
-                    .where('expiryDate', '>', now)
                     .get();
-                totalAds.textContent = adsSnapshot.size;
                 
-                // Load total points distributed
-                let totalPointsDistributed = 0;
+                // Update admin stats
+                document.getElementById('adminTotalUsers').textContent = usersSnapshot.size;
+                document.getElementById('adminPendingWithdrawals').textContent = withdrawalsSnapshot.size;
+                document.getElementById('adminActiveAds').textContent = adsSnapshot.size;
+                
+                // Calculate total points distributed
+                let totalPoints = 0;
                 usersSnapshot.forEach(doc => {
                     const user = doc.data();
-                    totalPointsDistributed += user.totalEarnings || 0;
+                    totalPoints += user.totalEarnings || 0;
                 });
-                totalPoints.textContent = formatNumber(totalPointsDistributed);
+                document.getElementById('adminTotalPoints').textContent = formatNumber(totalPoints);
                 
-                // Load withdrawals for management
-                await loadAdminWithdrawals();
+                // Show withdrawals tab by default
+                showAdminTab('withdrawals');
+                
             } catch (error) {
                 console.error('Error loading admin data:', error);
             }
         }
 
+        // Show Admin Tab
+        async function showAdminTab(tab) {
+            const container = document.getElementById('adminContent');
+            
+            switch(tab) {
+                case 'withdrawals':
+                    await loadAdminWithdrawals();
+                    break;
+                case 'users':
+                    await loadAdminUsers();
+                    break;
+                case 'ads':
+                    await loadAdminAds();
+                    break;
+                case 'addAd':
+                    showAddAdForm();
+                    break;
+            }
+        }
+
+        // Load Admin Withdrawals
         async function loadAdminWithdrawals() {
             try {
                 const withdrawalsRef = db.collection('withdrawals');
@@ -1878,84 +2507,78 @@
                     .limit(50)
                     .get();
                 
-                if (snapshot.empty) {
-                    document.getElementById('adminWithdrawals').innerHTML = `
-                        <div style="text-align: center; color: #666; padding: 40px;">
-                            <i class="fas fa-money-bill-wave" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
-                            <p>لا توجد طلبات سحب للعرض</p>
-                        </div>
-                    `;
-                    return;
-                }
+                const container = document.getElementById('adminContent');
                 
                 let html = '<div style="overflow-x: auto;">';
-                html += '<table class="admin-table">';
-                html += '<thead><tr>';
-                html += '<th>المستخدم</th>';
-                html += '<th>النقاط</th>';
-                html += '<th>المبلغ</th>';
-                html += '<th>رقم فودافون</th>';
-                html += '<th>الحالة</th>';
-                html += '<th>التاريخ</th>';
-                html += '<th>الإجراءات</th>';
+                html += '<table style="width: 100%; border-collapse: collapse; background: white; border-radius: 15px; overflow: hidden;">';
+                html += '<thead><tr style="background: #f8f9fa;">';
+                html += '<th style="padding: 15px; text-align: right;">المستخدم</th>';
+                html += '<th style="padding: 15px; text-align: right;">النقاط</th>';
+                html += '<th style="padding: 15px; text-align: right;">رقم فودافون</th>';
+                html += '<th style="padding: 15px; text-align: right;">الحالة</th>';
+                html += '<th style="padding: 15px; text-align: right;">التاريخ</th>';
+                html += '<th style="padding: 15px; text-align: right;">الإجراءات</th>';
                 html += '</tr></thead><tbody>';
                 
                 snapshot.forEach(doc => {
-                    const withdrawal = doc.data();
-                    const date = new Date(withdrawal.createdAt).toLocaleDateString('ar-EG');
+                    const w = doc.data();
+                    const date = new Date(w.createdAt).toLocaleDateString('ar-EG');
                     
                     let statusBadge = '';
-                    switch (withdrawal.status) {
+                    switch(w.status) {
                         case 'approved':
-                            statusBadge = '<span style="background: #28a745; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.9rem;">مقبول</span>';
+                            statusBadge = '<span style="background: #28a745; color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.9rem;">✓ مقبول</span>';
                             break;
                         case 'rejected':
-                            statusBadge = '<span style="background: #dc3545; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.9rem;">مرفوض</span>';
+                            statusBadge = '<span style="background: #dc3545; color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.9rem;">✗ مرفوض</span>';
                             break;
                         default:
-                            statusBadge = '<span style="background: #ffc107; color: #333; padding: 5px 10px; border-radius: 15px; font-size: 0.9rem;">قيد الانتظار</span>';
+                            statusBadge = '<span style="background: #ffc107; color: #333; padding: 5px 15px; border-radius: 20px; font-size: 0.9rem;">⏳ قيد الانتظار</span>';
                     }
                     
-                    html += '<tr>';
-                    html += `<td>${withdrawal.userName}<br><small>${withdrawal.userEmail}</small></td>`;
-                    html += `<td>${formatNumber(withdrawal.points)}</td>`;
-                    html += `<td>${withdrawal.amount.toFixed(2)} دولار</td>`;
-                    html += `<td>${withdrawal.vodafoneNumber}</td>`;
-                    html += `<td>${statusBadge}</td>`;
-                    html += `<td>${date}</td>`;
-                    html += '<td>';
+                    html += '<tr style="border-bottom: 1px solid #eee;">';
+                    html += `<td style="padding: 15px;">
+                        <div style="font-weight: 600;">${w.userName}</div>
+                        <div style="font-size: 0.9rem; color: #666;">${w.userEmail}</div>
+                    </td>`;
+                    html += `<td style="padding: 15px;">${formatNumber(w.points)}</td>`;
+                    html += `<td style="padding: 15px;">${w.vodafoneNumber}</td>`;
+                    html += `<td style="padding: 15px;">${statusBadge}</td>`;
+                    html += `<td style="padding: 15px;">${date}</td>`;
+                    html += `<td style="padding: 15px;">`;
                     
-                    if (withdrawal.status === 'pending') {
-                        html += `<button onclick="processWithdrawal('${doc.id}', 'approved')" class="btn btn-success" style="padding: 5px 10px; margin-left: 5px; font-size: 0.9rem;">
+                    if (w.status === 'pending') {
+                        html += `<button onclick="processWithdrawal('${doc.id}', 'approved')" class="btn btn-success" style="padding: 8px 15px; margin-left: 5px; font-size: 0.9rem;">
                             <i class="fas fa-check"></i> قبول
                         </button>`;
-                        html += `<button onclick="processWithdrawal('${doc.id}', 'rejected')" class="btn btn-danger" style="padding: 5px 10px; font-size: 0.9rem;">
+                        html += `<button onclick="processWithdrawal('${doc.id}', 'rejected')" class="btn btn-danger" style="padding: 8px 15px; font-size: 0.9rem;">
                             <i class="fas fa-times"></i> رفض
                         </button>`;
                     } else {
-                        html += `<span style="color: #666;">-</span>`;
+                        html += `<span style="color: #666;">تمت المعالجة</span>`;
                     }
                     
-                    html += '</td>';
+                    html += `</td>`;
                     html += '</tr>';
                 });
                 
                 html += '</tbody></table></div>';
-                document.getElementById('adminWithdrawals').innerHTML = html;
+                container.innerHTML = html;
+                
             } catch (error) {
-                document.getElementById('adminWithdrawals').innerHTML = '<p style="color: #666; text-align: center;">حدث خطأ في تحميل طلبات السحب</p>';
+                console.error('Error loading admin withdrawals:', error);
             }
         }
 
         // Process Withdrawal (Admin)
-        window.processWithdrawal = async function(withdrawalId, action) {
+        async function processWithdrawal(withdrawalId, action) {
             try {
                 const withdrawalRef = db.collection('withdrawals').doc(withdrawalId);
                 const withdrawalDoc = await withdrawalRef.get();
                 const withdrawal = withdrawalDoc.data();
                 
                 if (action === 'rejected') {
-                    // Return points to user if rejected
+                    // Return points to user
                     const userRef = db.collection('users').doc(withdrawal.userId);
                     await userRef.update({
                         balance: firebase.firestore.FieldValue.increment(withdrawal.points)
@@ -1968,78 +2591,238 @@
                     processedBy: currentUser.email
                 });
                 
-                showNotification(`تم ${action === 'approved' ? 'قبول' : 'رفض'} طلب السحب بنجاح`, 'success');
-                await loadAdminData();
+                showNotification(`تم ${action === 'approved' ? 'قبول' : 'رفض'} طلب السحب`, 'success');
+                await loadAdminWithdrawals();
+                
             } catch (error) {
+                console.error('Error processing withdrawal:', error);
                 showNotification('حدث خطأ في معالجة طلب السحب', 'error');
             }
-        };
+        }
 
-        // Tab Switching
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                // Remove active class from all tabs
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+        // Load Admin Users
+        async function loadAdminUsers() {
+            try {
+                const usersRef = db.collection('users');
+                const snapshot = await usersRef
+                    .orderBy('joinDate', 'desc')
+                    .limit(50)
+                    .get();
                 
-                // Add active class to clicked tab
-                btn.classList.add('active');
+                const container = document.getElementById('adminContent');
                 
-                // Show corresponding content
-                const tabId = btn.getAttribute('data-tab') + 'Tab';
-                document.getElementById(tabId).style.display = 'block';
+                let html = '<div style="overflow-x: auto;">';
+                html += '<table style="width: 100%; border-collapse: collapse; background: white; border-radius: 15px; overflow: hidden;">';
+                html += '<thead><tr style="background: #f8f9fa;">';
+                html += '<th style="padding: 15px; text-align: right;">الاسم</th>';
+                html += '<th style="padding: 15px; text-align: right;">البريد</th>';
+                html += '<th style="padding: 15px; text-align: right;">الرصيد</th>';
+                html += '<th style="padding: 15px; text-align: right;">تاريخ الانضمام</th>';
+                html += '<th style="padding: 15px; text-align: right;">الحالة</th>';
+                html += '</tr></thead><tbody>';
                 
-                // Special handling for admin tab
-                if (tabId === 'adminTab' && isAdmin) {
-                    loadAdminData();
-                }
-            });
-        });
+                snapshot.forEach(doc => {
+                    const user = doc.data();
+                    const date = new Date(user.joinDate).toLocaleDateString('ar-EG');
+                    
+                    html += '<tr style="border-bottom: 1px solid #eee;">';
+                    html += `<td style="padding: 15px;">${user.name}</td>`;
+                    html += `<td style="padding: 15px;">${user.email}</td>`;
+                    html += `<td style="padding: 15px;">${formatNumber(user.balance)}</td>`;
+                    html += `<td style="padding: 15px;">${date}</td>`;
+                    html += `<td style="padding: 15px;">`;
+                    html += `<span style="background: ${user.status === 'active' ? '#28a745' : '#dc3545'}; color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.9rem;">
+                        ${user.status === 'active' ? 'نشط' : 'موقوف'}
+                    </span>`;
+                    html += `</td>`;
+                    html += '</tr>';
+                });
+                
+                html += '</tbody></table></div>';
+                container.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Error loading admin users:', error);
+            }
+        }
 
-        // Admin Tab Switching
-        document.querySelectorAll('.admin-tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                // Remove active class from all admin tabs
-                document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.admin-tab-content').forEach(c => c.style.display = 'none');
+        // Load Admin Ads
+        async function loadAdminAds() {
+            try {
+                const adsRef = db.collection('ads');
+                const snapshot = await adsRef
+                    .orderBy('createdAt', 'desc')
+                    .limit(50)
+                    .get();
                 
-                // Add active class to clicked tab
-                btn.classList.add('active');
+                const container = document.getElementById('adminContent');
                 
-                // Show corresponding content
-                const tabId = 'admin' + capitalizeFirst(btn.getAttribute('data-admin-tab'));
-                document.getElementById(tabId).style.display = 'block';
-            });
-        });
+                let html = '<div style="overflow-x: auto;">';
+                html += '<table style="width: 100%; border-collapse: collapse; background: white; border-radius: 15px; overflow: hidden;">';
+                html += '<thead><tr style="background: #f8f9fa;">';
+                html += '<th style="padding: 15px; text-align: right;">العنوان</th>';
+                html += '<th style="padding: 15px; text-align: right;">النقاط</th>';
+                html += '<th style="padding: 15px; text-align: right;">المدة</th>';
+                html += '<th style="padding: 15px; text-align: right;">الحالة</th>';
+                html += '<th style="padding: 15px; text-align: right;">تاريخ الانتهاء</th>';
+                html += '<th style="padding: 15px; text-align: right;">الإجراءات</th>';
+                html += '</tr></thead><tbody>';
+                
+                snapshot.forEach(doc => {
+                    const ad = doc.data();
+                    const expiry = new Date(ad.expiryDate).toLocaleDateString('ar-EG');
+                    
+                    html += '<tr style="border-bottom: 1px solid #eee;">';
+                    html += `<td style="padding: 15px;">${ad.title}</td>`;
+                    html += `<td style="padding: 15px;">${ad.points}</td>`;
+                    html += `<td style="padding: 15px;">${ad.duration} ثانية</td>`;
+                    html += `<td style="padding: 15px;">`;
+                    html += `<span style="background: ${ad.active ? '#28a745' : '#dc3545'}; color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.9rem;">
+                        ${ad.active ? 'نشط' : 'معطل'}
+                    </span>`;
+                    html += `</td>`;
+                    html += `<td style="padding: 15px;">${expiry}</td>`;
+                    html += `<td style="padding: 15px;">`;
+                    html += `<button onclick="toggleAdStatus('${doc.id}', ${ad.active})" class="btn ${ad.active ? 'btn-warning' : 'btn-success'}" style="padding: 8px 15px; font-size: 0.9rem;">
+                        <i class="fas fa-power-off"></i> ${ad.active ? 'تعطيل' : 'تفعيل'}
+                    </button>`;
+                    html += `<button onclick="deleteAd('${doc.id}')" class="btn btn-danger" style="padding: 8px 15px; margin-right: 5px; font-size: 0.9rem;">
+                        <i class="fas fa-trash"></i> حذف
+                    </button>`;
+                    html += `</td>`;
+                    html += '</tr>';
+                });
+                
+                html += '</tbody></table></div>';
+                container.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Error loading admin ads:', error);
+            }
+        }
 
-        // Add Ad (Admin)
-        document.getElementById('addAdBtn').addEventListener('click', async () => {
-            const title = document.getElementById('adTitle').value.trim();
-            const description = document.getElementById('adDescription').value.trim();
-            const link = document.getElementById('adLink').value.trim();
-            const image = document.getElementById('adImage').value.trim();
-            const points = parseInt(document.getElementById('adPoints').value);
-            const duration = parseInt(document.getElementById('adDuration').value);
-            const expiry = document.getElementById('adExpiry').value;
-            const dailyLimit = parseInt(document.getElementById('adDailyLimit').value) || 0;
-            
-            if (!title || !description || !link || !image || !points || !duration || !expiry) {
-                showNotification('يرجى ملء جميع الحقول المطلوبة', 'error');
-                return;
+        // Toggle Ad Status
+        async function toggleAdStatus(adId, currentStatus) {
+            try {
+                const adRef = db.collection('ads').doc(adId);
+                await adRef.update({
+                    active: !currentStatus,
+                    updatedAt: new Date().toISOString()
+                });
+                
+                showNotification(`تم ${!currentStatus ? 'تفعيل' : 'تعطيل'} الإعلان`, 'success');
+                await loadAdminAds();
+                
+            } catch (error) {
+                console.error('Error toggling ad status:', error);
+                showNotification('حدث خطأ في تغيير حالة الإعلان', 'error');
             }
-            
-            if (points < 1) {
-                showNotification('عدد النقاط يجب أن يكون أكبر من صفر', 'error');
-                return;
-            }
-            
-            if (duration < 30 || duration > 45) {
-                showNotification('مدة المشاهدة يجب أن تكون بين 30 و 45 ثانية', 'error');
-                return;
-            }
+        }
+
+        // Delete Ad
+        async function deleteAd(adId) {
+            if (!confirm('هل أنت متأكد من حذف هذا الإعلان؟')) return;
             
             try {
-                const adId = 'ad_' + Date.now();
+                const adRef = db.collection('ads').doc(adId);
+                await adRef.delete();
+                
+                showNotification('تم حذف الإعلان بنجاح', 'success');
+                await loadAdminAds();
+                
+            } catch (error) {
+                console.error('Error deleting ad:', error);
+                showNotification('حدث خطأ في حذف الإعلان', 'error');
+            }
+        }
+
+        // Show Add Ad Form
+        function showAddAdForm() {
+            const container = document.getElementById('adminContent');
+            
+            const html = `
+                <div style="max-width: 600px; margin: 0 auto;">
+                    <h3 style="margin-bottom: 25px; color: #333;">إضافة إعلان جديد</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">عنوان الإعلان</label>
+                        <input type="text" id="adTitle" class="form-control" placeholder="أدخل عنوان الإعلان">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">وصف الإعلان</label>
+                        <textarea id="adDescription" class="form-control" rows="3" placeholder="أدخل وصف الإعلان"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">رابط الإعلان</label>
+                        <input type="url" id="adLink" class="form-control" placeholder="https://example.com" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">صورة الإعلان (اختياري)</label>
+                        <input type="url" id="adImage" class="form-control" placeholder="https://example.com/image.jpg">
+                        <small style="color: #666;">اتركه فارغاً لاستخدام صورة افتراضية</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">النقاط المقدمة</label>
+                        <input type="number" id="adPoints" class="form-control" placeholder="عدد النقاط" min="1" value="50">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">مدة المشاهدة (ثانية)</label>
+                        <input type="number" id="adDuration" class="form-control" placeholder="30-45" min="30" max="45" value="30">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">تاريخ الانتهاء</label>
+                        <input type="date" id="adExpiry" class="form-control" value="${new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">الحد اليومي للمشاهدات</label>
+                        <input type="number" id="adDailyLimit" class="form-control" placeholder="0 = لا يوجد حد" min="0" value="1000">
+                    </div>
+                    
+                    <button onclick="addNewAdToFirestore()" class="btn btn-success" style="width: 100%; padding: 18px; margin-top: 20px;">
+                        <i class="fas fa-plus"></i> إضافة الإعلان
+                    </button>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        }
+
+        // Add New Ad to Firestore
+        async function addNewAdToFirestore() {
+            try {
+                const title = document.getElementById('adTitle').value.trim();
+                const description = document.getElementById('adDescription').value.trim();
+                const link = document.getElementById('adLink').value.trim();
+                const image = document.getElementById('adImage').value.trim();
+                const points = parseInt(document.getElementById('adPoints').value);
+                const duration = parseInt(document.getElementById('adDuration').value);
+                const expiry = document.getElementById('adExpiry').value;
+                const dailyLimit = parseInt(document.getElementById('adDailyLimit').value) || 0;
+                
+                // Validation
+                if (!title || !description || !link || !points || !duration || !expiry) {
+                    showNotification('يرجى ملء جميع الحقول المطلوبة', 'error');
+                    return;
+                }
+                
+                if (points < 1) {
+                    showNotification('عدد النقاط يجب أن يكون أكبر من صفر', 'error');
+                    return;
+                }
+                
+                if (duration < 30 || duration > 45) {
+                    showNotification('مدة المشاهدة يجب أن تكون بين 30 و 45 ثانية', 'error');
+                    return;
+                }
+                
+                const adId = 'ad_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
                 const adRef = db.collection('ads').doc(adId);
                 
                 await adRef.set({
@@ -2047,44 +2830,81 @@
                     title: title,
                     description: description,
                     link: link,
-                    image: image,
+                    image: image || 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400',
                     points: points,
                     duration: duration,
                     dailyLimit: dailyLimit,
                     totalViews: 0,
                     expiryDate: expiry + 'T23:59:59.999Z',
                     active: true,
+                    category: 'عام',
                     createdAt: new Date().toISOString(),
-                    createdBy: currentUser.email
+                    createdBy: currentUser.email,
+                    updatedAt: new Date().toISOString()
                 });
                 
-                showNotification('تم إضافة الإعلان بنجاح', 'success');
+                showNotification('تم إضافة الإعلان بنجاح وسيظهر للمستخدمين', 'success');
                 
                 // Clear form
-                document.querySelectorAll('#adminAddAd input, #adminAddAd textarea').forEach(input => {
-                    input.value = '';
-                });
+                document.getElementById('adTitle').value = '';
+                document.getElementById('adDescription').value = '';
+                document.getElementById('adLink').value = '';
+                document.getElementById('adImage').value = '';
                 
-                // Reload ads
-                await loadAds();
-                await loadAdminData();
+                // Show ads tab
+                showAdminTab('ads');
+                
             } catch (error) {
+                console.error('Error adding ad:', error);
                 showNotification('حدث خطأ في إضافة الإعلان', 'error');
-            }
-        });
-
-        // Check Referral Parameter
-        function checkReferral() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const refCode = urlParams.get('ref');
-            
-            if (refCode && currentUser) {
-                applyReferral(refCode);
             }
         }
 
-        // Apply Referral
-        async function applyReferral(refCode) {
+        // Utility Functions
+        function formatNumber(num) {
+            return new Intl.NumberFormat('ar-EG').format(num);
+        }
+
+        function generateReferralCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let code = '';
+            for (let i = 0; i < 8; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return code;
+        }
+
+        function generateSessionId() {
+            return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        async function getUserIP() {
+            try {
+                const response = await fetch('https://api.ipify.org?format=json');
+                const data = await response.json();
+                return data.ip;
+            } catch (error) {
+                return 'unknown';
+            }
+        }
+
+        async function checkSuspiciousActivity(userData, currentIp) {
+            // Check for suspicious login activity
+            if (userData.ipAddress && userData.ipAddress !== currentIp) {
+                // IP changed - could be suspicious
+                console.log('IP address changed:', userData.ipAddress, '->', currentIp);
+            }
+        }
+
+        function checkReferralCode() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('ref');
+        }
+
+        async function applyReferralCode() {
+            const refCode = checkReferralCode();
+            if (!refCode || !currentUser) return;
+            
             try {
                 const usersRef = db.collection('users');
                 const snapshot = await usersRef.where('referralCode', '==', refCode).get();
@@ -2096,20 +2916,16 @@
                     // Don't allow self-referral
                     if (referrerId !== currentUser.uid) {
                         const userRef = db.collection('users').doc(currentUser.uid);
-                        const userDoc = await userRef.get();
+                        await userRef.update({
+                            referredBy: referrerId
+                        });
                         
-                        if (userDoc.exists && !userDoc.data().referredBy) {
-                            await userRef.update({
-                                referredBy: referrerId
-                            });
-                            
-                            // Update referrer's count
-                            await db.collection('users').doc(referrerId).update({
-                                referralsCount: firebase.firestore.FieldValue.increment(1)
-                            });
-                            
-                            showNotification('تم تطبيق كود الدعوة بنجاح!', 'success');
-                        }
+                        // Update referrer's count
+                        await db.collection('users').doc(referrerId).update({
+                            referralsCount: firebase.firestore.FieldValue.increment(1)
+                        });
+                        
+                        showNotification('تم تطبيق كود الدعوة بنجاح!', 'success');
                     }
                 }
             } catch (error) {
@@ -2117,45 +2933,157 @@
             }
         }
 
-        // Utility Functions
-        function formatNumber(num) {
-            return new Intl.NumberFormat('ar-EG').format(num);
-        }
-
-        function generateReferralCode() {
-            return Math.random().toString(36).substr(2, 8).toUpperCase();
-        }
-
-        function capitalizeFirst(string) {
-            return string.charAt(0).toUpperCase() + string.slice(1);
-        }
-
         function showNotification(message, type = 'info') {
+            const container = document.getElementById('notificationContainer');
             const notification = document.createElement('div');
             notification.className = `notification ${type}`;
+            
+            let icon = 'info-circle';
+            if (type === 'success') icon = 'check-circle';
+            if (type === 'error') icon = 'exclamation-circle';
+            if (type === 'warning') icon = 'exclamation-triangle';
+            
             notification.innerHTML = `
-                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <i class="fas fa-${icon}"></i>
                 <span>${message}</span>
             `;
             
-            document.getElementById('notificationContainer').appendChild(notification);
+            container.appendChild(notification);
             
+            // Remove after 5 seconds
             setTimeout(() => {
-                notification.remove();
+                notification.style.animation = 'slideInRight 0.5s ease reverse forwards';
+                setTimeout(() => notification.remove(), 500);
             }, 5000);
         }
 
-        // Cancel Ad Button
-        cancelAdBtn.addEventListener('click', () => {
-            if (confirm('هل أنت متأكد من إلغاء مشاهدة الإعلان؟ سيتم خصم 5 نقاط من رصيدك.')) {
-                finishAdView(false);
+        // UI Helper Functions
+        function toggleUserMenu() {
+            const dropdown = document.getElementById('userMenuDropdown');
+            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+            
+            // Update dropdown content
+            document.getElementById('dropdownUserName').textContent = userData.name;
+            document.getElementById('dropdownUserEmail').textContent = userData.email;
+        }
+
+        function showProfile() {
+            showSection('dashboard');
+            toggleUserMenu();
+        }
+
+        function showSettings() {
+            alert('صفحة الإعدادات قيد التطوير');
+            toggleUserMenu();
+        }
+
+        function logout() {
+            auth.signOut();
+            toggleUserMenu();
+        }
+
+        function refreshData() {
+            loadUserData();
+            loadUserStats();
+            showNotification('تم تحديث البيانات', 'success');
+        }
+
+        function refreshAds() {
+            loadFirestoreAds();
+            showNotification('تم تحديث الإعلانات', 'success');
+        }
+
+        function showAds() {
+            showSection('ads');
+        }
+
+        function showWithdraw() {
+            showSection('withdraw');
+        }
+
+        function showReferral() {
+            showSection('referral');
+        }
+
+        function showSupport() {
+            alert('الدعم الفني: يمكنك التواصل عبر البريد الإلكتروني أو صفحة التواصل');
+        }
+
+        function addNewAd() {
+            showSection('admin');
+            setTimeout(() => showAdminTab('addAd'), 100);
+        }
+
+        function shareReferral() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'انضم إلى Advista واربح المال',
+                    text: 'انضم إلى Advista وابدأ رحلتك في ربح المال من مشاهدة الإعلانات!',
+                    url: referralLink.value
+                });
+            } else {
+                copyReferralLink();
+            }
+        }
+
+        function showTerms() {
+            alert('شروط الخدمة: \n1. يجب أن يكون عمرك 18 سنة أو أكثر\n2. لا يمكن إنشاء أكثر من حساب واحد\n3. يحق للإدارة إيقاف الحساب في حال مخالفة الشروط');
+        }
+
+        function showPrivacy() {
+            alert('سياسة الخصوصية: \nنحن نحترم خصوصيتك ولا نشارك بياناتك الشخصية مع أي طرف ثالث دون موافقتك.');
+        }
+
+        // Load User Data
+        async function loadUserData() {
+            if (!currentUser) return;
+            
+            try {
+                const userRef = db.collection('users').doc(currentUser.uid);
+                const userDoc = await userRef.get();
+                
+                if (userDoc.exists) {
+                    userData = userDoc.data();
+                    updateUserUI();
+                    updateStatsUI();
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+            }
+        }
+
+        // Load Notifications
+        async function loadNotifications() {
+            // Implement notification system
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('userMenuDropdown');
+            const avatar = document.getElementById('userAvatar');
+            
+            if (dropdown && dropdown.style.display === 'block' && 
+                !dropdown.contains(event.target) && 
+                !avatar.contains(event.target)) {
+                dropdown.style.display = 'none';
             }
         });
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            checkReferral();
+        // Handle page visibility for ad timer
+        let hiddenTime = 0;
+        let hiddenStart = 0;
+
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden && isViewingAd) {
+                hiddenStart = Date.now();
+            } else if (!document.hidden && isViewingAd) {
+                hiddenTime = Date.now() - hiddenStart;
+                if (hiddenTime > 3000) { // If hidden for more than 3 seconds
+                    showNotification('تم اكتشاف تغيير النافذة!', 'warning');
+                }
+            }
         });
+
     </script>
 </body>
 </html>
