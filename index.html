@@ -233,6 +233,10 @@
             background: linear-gradient(to right, #00b09b, #96c93d);
         }
         
+        .btn-warning {
+            background: linear-gradient(to right, #f7971e, #ffd200);
+        }
+        
         .timer-container {
             text-align: center;
             margin: 20px 0;
@@ -556,6 +560,75 @@
             border-right: 4px solid #ffc107;
         }
         
+        .post-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .post-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #4facfe;
+        }
+        
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .post-author {
+            font-weight: 600;
+            color: #4facfe;
+        }
+        
+        .post-date {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        .post-content {
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .post-stats {
+            display: flex;
+            gap: 15px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .membership-badges {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .badge {
+            background: linear-gradient(to right, #f7971e, #ffd200);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .badge.vip {
+            background: linear-gradient(to right, #8a2387, #e94057, #f27121);
+        }
+        
+        .badge.premium {
+            background: linear-gradient(to right, #00b09b, #96c93d);
+        }
+        
         footer {
             text-align: center;
             padding: 20px 0;
@@ -563,6 +636,23 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             font-size: 0.9rem;
             opacity: 0.7;
+        }
+        
+        .ad-counter {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .counter-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #00f2fe;
         }
         
         @media (max-width: 768px) {
@@ -655,6 +745,9 @@
             <button class="nav-tab" data-tab="withdrawal">
                 <i class="fas fa-money-bill-wave"></i> السحب
             </button>
+            <button class="nav-tab" data-tab="posts">
+                <i class="fas fa-newspaper"></i> المنشورات
+            </button>
             <button class="nav-tab" id="adminTab" style="display: none;" data-tab="admin">
                 <i class="fas fa-crown"></i> لوحة الإدارة
             </button>
@@ -723,6 +816,12 @@
                 <h2><i class="fas fa-ad"></i> تصفح الإعلانات واربح النقاط</h2>
                 <p style="margin-bottom: 20px; opacity: 0.8;">اضغط على أي إعلان لمشاهدته وانتظر 30 ثانية للحصول على النقاط. إذا غادرت قبل انتهاء الوقت سيتم خصم 5 نقاط.</p>
                 
+                <div class="ad-counter">
+                    <span>عدد الإعلانات التي شاهدتها اليوم:</span>
+                    <div class="counter-value" id="adsWatchedToday">0</div>
+                    <span>/ 25</span>
+                </div>
+                
                 <div id="adsContainer">
                     <!-- سيتم ملؤها بواسطة JavaScript -->
                 </div>
@@ -760,6 +859,25 @@
                         <div class="stat-label">أرباح الإحالات (نقاط)</div>
                     </div>
                 </div>
+                
+                <h3><i class="fas fa-users"></i> قائمة المُحالين</h3>
+                <div class="table-container">
+                    <table id="referralsList">
+                        <thead>
+                            <tr>
+                                <th>البريد الإلكتروني</th>
+                                <th>تاريخ التسجيل</th>
+                                <th>حالة الحساب</th>
+                                <th>الأرباح المولدة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="4" style="text-align: center;">لا توجد إحالات حتى الآن</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
         
@@ -777,12 +895,12 @@
                 <div class="withdrawal-form">
                     <div class="form-group">
                         <label for="vodafoneNumber">رقم فودافون كاش</label>
-                        <input type="text" id="vodafoneNumber" class="form-control" placeholder="أدخل رقم فودافون كاش (مثال: 01012345678)" maxlength="11">
+                        <input type="text" id="vodafoneNumber" class="form-control withdrawal-text" placeholder="أدخل رقم فودافون كاش (مثال: 01012345678)" maxlength="11">
                     </div>
                     
                     <div class="form-group">
                         <label for="withdrawalAmount">عدد النقاط المراد سحبها</label>
-                        <input type="number" id="withdrawalAmount" class="form-control" placeholder="أدخل عدد النقاط (الحد الأدنى: 30000)" min="30000" step="100">
+                        <input type="number" id="withdrawalAmount" class="form-control withdrawal-text" placeholder="أدخل عدد النقاط (الحد الأدنى: 30000)" min="30000" step="100">
                         <small style="opacity: 0.7; margin-top: 5px;">المبلغ بالدولار: <span id="dollarAmount">0</span> دولار</small>
                     </div>
                     
@@ -813,6 +931,56 @@
             </div>
         </div>
         
+        <!-- تبويب المنشورات -->
+        <div id="postsTab" class="tab-content">
+            <div class="card">
+                <h2><i class="fas fa-newspaper"></i> المنشورات والمجتمع</h2>
+                
+                <div id="postFormContainer" style="display: none;">
+                    <h3><i class="fas fa-edit"></i> إنشاء منشور جديد</h3>
+                    <div class="post-form">
+                        <div class="form-group">
+                            <label for="postTitle">عنوان المنشور</label>
+                            <input type="text" id="postTitle" class="form-control" placeholder="عنوان المنشور">
+                        </div>
+                        <div class="form-group">
+                            <label for="postContent">محتوى المنشور</label>
+                            <textarea id="postContent" class="form-control" placeholder="اكتب منشورك هنا..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="postCategory">تصنيف المنشور</label>
+                            <select id="postCategory" class="form-control">
+                                <option value="عام">عام</option>
+                                <option value="نصائح">نصائح للربح</option>
+                                <option value="تجارب">تجارب شخصية</option>
+                                <option value="استفسارات">استفسارات</option>
+                                <option value="إعلانات">إعلانات الموقع</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-success" onclick="createPost()">
+                                <i class="fas fa-paper-plane"></i> نشر المنشور
+                            </button>
+                            <button class="btn btn-danger" onclick="cancelPost()">
+                                <i class="fas fa-times"></i> إلغاء
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <button class="btn" onclick="showPostForm()" id="createPostBtn">
+                        <i class="fas fa-plus"></i> إنشاء منشور جديد
+                    </button>
+                </div>
+                
+                <h3><i class="fas fa-stream"></i> أحدث المنشورات</h3>
+                <div id="postsContainer">
+                    <!-- سيتم ملؤها بواسطة JavaScript -->
+                </div>
+            </div>
+        </div>
+        
         <!-- تبويب لوحة الإدارة (للأدمن فقط) -->
         <div id="adminTab" class="tab-content admin-panel">
             <div class="card">
@@ -836,6 +1004,14 @@
                         <div class="form-group">
                             <label for="adDuration">المدة (ثانية)</label>
                             <input type="number" id="adDuration" class="form-control" placeholder="30" min="10" value="30">
+                        </div>
+                        <div class="form-group">
+                            <label for="adSource">مصدر الإعلان</label>
+                            <select id="adSource" class="form-control">
+                                <option value="linkjust">LinkJust (45 إعلان)</option>
+                                <option value="otieu">Otiue (25 إعلان)</option>
+                                <option value="custom">مخصص</option>
+                            </select>
                         </div>
                         <button class="btn btn-success" onclick="addNewAd()">
                             <i class="fas fa-plus"></i> إضافة إعلان
@@ -910,6 +1086,28 @@
                         </table>
                     </div>
                 </div>
+                
+                <div class="admin-section">
+                    <h3><i class="fas fa-newspaper"></i> إدارة المنشورات</h3>
+                    <div class="table-container">
+                        <table id="postsManagementTable">
+                            <thead>
+                                <tr>
+                                    <th>العنوان</th>
+                                    <th>المؤلف</th>
+                                    <th>التصنيف</th>
+                                    <th>التاريخ</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="5" style="text-align: center;">لا توجد منشورات</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
         
@@ -977,11 +1175,13 @@
         let currentUser = null;
         let userData = null;
         let ads = [];
+        let posts = [];
         let currentAd = null;
         let timerInterval = null;
         let timeLeft = 30;
         let adCompleted = false;
         let captchaCode = "";
+        let adsWatchedToday = 0;
         
         // تهيئة تسجيل الدخول عبر جوجل
         function initializeGoogleSignIn() {
@@ -1030,11 +1230,14 @@
                     totalEarned: 0,
                     referralEarnings: 0,
                     dailyStats: {},
+                    adsWatchedToday: 0,
+                    lastAdWatch: null,
                     createdAt: new Date().toISOString(),
                     lastLogin: new Date().toISOString(),
                     referralCode: generateReferralCode(),
                     referredBy: getReferralFromURL() || null,
-                    membership: "free"
+                    membership: "free",
+                    isAdmin: userData.email === 'bo2584668@gmail.com' ? true : false
                 };
                 
                 console.log("تم تسجيل الدخول بنجاح للمستخدم:", user.email);
@@ -1095,11 +1298,23 @@
                         lastLogin: new Date().toISOString()
                     });
                     console.log("تم تحديث آخر تسجيل دخول للمستخدم:", user.email);
+                    
+                    // تحميل عدد الإعلانات التي شاهدها اليوم
+                    const userData = doc.data();
+                    const today = new Date().toDateString();
+                    const lastAdWatchDate = userData.lastAdWatch ? new Date(userData.lastAdWatch).toDateString() : null;
+                    
+                    if (lastAdWatchDate !== today) {
+                        await userRef.update({
+                            adsWatchedToday: 0
+                        });
+                    }
                 }
                 
                 // تعيين المستخدم الحالي
                 currentUser = user;
-                userData = doc.exists ? doc.data() : user;
+                const userDoc = await userRef.get();
+                userData = userDoc.data();
                 userData.uid = user.uid;
                 
                 // تحديث واجهة المستخدم
@@ -1110,6 +1325,10 @@
                     document.getElementById('adminTab').style.display = 'inline-block';
                     loadAdminData();
                 }
+                
+                // تحميل عدد الإعلانات التي شاهدها اليوم
+                adsWatchedToday = userData.adsWatchedToday || 0;
+                document.getElementById('adsWatchedToday').textContent = adsWatchedToday;
                 
             } catch (error) {
                 console.error("خطأ في حفظ المستخدم:", error);
@@ -1148,6 +1367,7 @@
                     await db.collection('referrals').add({
                         referrerId: referrerId,
                         refereeId: newUserId,
+                        refereeEmail: currentUser.email,
                         timestamp: new Date().toISOString(),
                         status: 'active'
                     });
@@ -1159,6 +1379,14 @@
                     });
                     
                     console.log("تم تسجيل إحالة ناجحة من:", referrerId, "إلى:", newUserId);
+                    
+                    // إشعار للمستخدم الذي قام بالإحالة
+                    await db.collection('notifications').add({
+                        userId: referrerId,
+                        message: `لقد قام ${currentUser.email} بالتسجيل عبر رابط الإحالة الخاص بك!`,
+                        timestamp: new Date().toISOString(),
+                        read: false
+                    });
                 }
             } catch (error) {
                 console.error("خطأ في معالجة الإحالة:", error);
@@ -1173,6 +1401,7 @@
             // تحميل بيانات المستخدم والإعلانات
             loadUserData();
             loadAds();
+            loadPosts();
             setupNavigation();
         }
         
@@ -1181,7 +1410,12 @@
             if (userData) {
                 document.getElementById('userPoints').textContent = userData.points || 0;
                 document.getElementById('currentBalance').textContent = userData.points || 0;
-                document.getElementById('todayEarnings').textContent = userData.todayEarnings || 0;
+                
+                // حساب أرباح اليوم
+                const today = new Date().toISOString().split('T')[0];
+                const todayEarnings = userData.dailyStats && userData.dailyStats[today] ? userData.dailyStats[today] : 0;
+                document.getElementById('todayEarnings').textContent = todayEarnings;
+                
                 document.getElementById('totalEarnings').textContent = userData.totalEarned || 0;
                 document.getElementById('referralEarnings').textContent = userData.referralEarnings || 0;
                 document.getElementById('referralEarningsTab').textContent = userData.referralEarnings || 0;
@@ -1194,6 +1428,11 @@
                 const userAvatar = document.getElementById('userAvatar');
                 userAvatar.innerHTML = `<i class="fas fa-user"></i>`;
                 userAvatar.title = userData.name || userData.email;
+                
+                // إذا كان أدمن، عرض تبويب الإدارة
+                if (userData.isAdmin) {
+                    document.getElementById('adminTab').style.display = 'inline-block';
+                }
             }
         }
         
@@ -1215,6 +1454,9 @@
                     
                     // تحميل إحصائيات الإحالات
                     loadReferralStats();
+                    
+                    // تحميل قائمة المحالين
+                    loadReferralsList();
                 }
             } catch (error) {
                 console.error("خطأ في تحميل بيانات المستخدم:", error);
@@ -1232,9 +1474,9 @@
                     ads.push({ id: doc.id, ...doc.data() });
                 });
                 
-                // إذا لم توجد إعلانات، إنشاء بعض الإعلانات الافتراضية
+                // إذا لم توجد إعلانات، إنشاء الإعلانات المطلوبة
                 if (ads.length === 0) {
-                    await createDefaultAds();
+                    await createRequiredAds();
                     await loadAds(); // إعادة تحميل الإعلانات
                     return;
                 }
@@ -1243,51 +1485,62 @@
                 
             } catch (error) {
                 console.error("خطأ في تحميل الإعلانات:", error);
-                // إنشاء إعلانات افتراضية في حالة الخطأ
-                await createDefaultAds();
+                // إنشاء إعلانات مطلوبة في حالة الخطأ
+                await createRequiredAds();
                 await loadAds();
             }
         }
         
-        // إنشاء إعلانات افتراضية
-        async function createDefaultAds() {
-            const defaultAds = [
-                {
-                    title: "إعلان تجريبي 1",
+        // إنشاء الإعلانات المطلوبة (45 من الرابط الأول، 25 من الرابط الثاني)
+        async function createRequiredAds() {
+            const linkjustAds = [];
+            const otieuAds = [];
+            
+            // إنشاء 45 إعلان من الرابط الأول
+            for (let i = 1; i <= 45; i++) {
+                linkjustAds.push({
+                    title: `إعلان LinkJust ${i}`,
                     url: "https://linkjust.com/xbTIX",
-                    reward: 10,
+                    reward: Math.floor(Math.random() * 20) + 5, // 5-25 نقطة
                     duration: 30,
                     category: "عام",
+                    source: "linkjust",
                     active: true,
+                    clicks: 0,
                     createdAt: new Date().toISOString()
-                },
-                {
-                    title: "إعلان تجريبي 2",
-                    url: "https://example.com",
-                    reward: 15,
+                });
+            }
+            
+            // إنشاء 25 إعلان من الرابط الثاني
+            for (let i = 1; i <= 25; i++) {
+                otieuAds.push({
+                    title: `إعلان Otiue ${i}`,
+                    url: "https://otieu.com/4/10528245",
+                    reward: Math.floor(Math.random() * 30) + 10, // 10-40 نقطة
                     duration: 30,
-                    category: "تكنولوجيا",
+                    category: "خاص",
+                    source: "otieu",
                     active: true,
+                    clicks: 0,
                     createdAt: new Date().toISOString()
-                },
-                {
-                    title: "إعلان تجريبي 3",
-                    url: "https://example.com",
-                    reward: 20,
-                    duration: 30,
-                    category: "تسوق",
-                    active: true,
-                    createdAt: new Date().toISOString()
-                }
-            ];
+                });
+            }
             
             try {
-                for (const ad of defaultAds) {
+                // إضافة إعلانات LinkJust
+                for (const ad of linkjustAds) {
                     await db.collection('ads').add(ad);
                 }
-                console.log("تم إنشاء الإعلانات الافتراضية بنجاح");
+                
+                // إضافة إعلانات Otiue
+                for (const ad of otieuAds) {
+                    await db.collection('ads').add(ad);
+                }
+                
+                console.log("تم إنشاء 70 إعلان بنجاح (45 من LinkJust، 25 من Otiue)");
+                showNotification("تم تحميل 70 إعلان جديد!", "success");
             } catch (error) {
-                console.error("خطأ في إنشاء الإعلانات الافتراضية:", error);
+                console.error("خطأ في إنشاء الإعلانات المطلوبة:", error);
             }
         }
         
@@ -1302,28 +1555,41 @@
             adsContainer.innerHTML = '';
             availableAds.innerHTML = '';
             
-            // عرض 45 إعلانًا (أو العدد المتاح)
-            const adsToShow = ads.slice(0, 45);
+            // فصل الإعلانات حسب المصدر
+            const linkjustAds = ads.filter(ad => ad.source === 'linkjust').slice(0, 45);
+            const otieuAds = ads.filter(ad => ad.source === 'otieu').slice(0, 25);
             
-            adsToShow.forEach((ad, index) => {
-                const adElement = createAdElement(ad, index);
-                adsContainer.appendChild(adElement.cloneNode(true));
+            // عرض الإعلانات
+            let adIndex = 0;
+            
+            // عرض إعلانات LinkJust أولاً (45 إعلان)
+            linkjustAds.forEach((ad, index) => {
+                const adElement = createAdElement(ad, adIndex);
+                adsContainer.appendChild(adElement);
+                adIndex++;
                 
                 // للإعلانات المتاحة في لوحة التحكم (عرض 5 فقط)
                 if (index < 5) {
-                    availableAds.appendChild(adElement);
+                    availableAds.appendChild(adElement.cloneNode(true));
                 }
             });
             
-            // إذا كان هناك أكثر من 25 إعلانًا، إضافة رسالة الانتظار
-            if (adsToShow.length > 25) {
+            // ثم عرض إعلانات Otiue (25 إعلان)
+            otieuAds.forEach((ad, index) => {
+                const adElement = createAdElement(ad, adIndex);
+                adsContainer.appendChild(adElement);
+                adIndex++;
+            });
+            
+            // إذا كان المستخدم قد شاهد 25 إعلانًا اليوم، إضافة رسالة الانتظار
+            if (adsWatchedToday >= 25) {
                 const waitMessage = document.createElement('div');
                 waitMessage.className = 'ad-item';
                 waitMessage.innerHTML = `
                     <div class="ad-info">
                         <h3>إعلانات إضافية</h3>
-                        <p>لديك ${adsToShow.length - 25} إعلان إضافي متاح</p>
-                        <p class="ad-timer">يجب الانتظار 24 ساعة لفتح هذه الإعلانات</p>
+                        <p>لقد شاهدت ${adsWatchedToday} إعلان اليوم</p>
+                        <p class="ad-timer">يجب الانتظار 24 ساعة لمشاهدة المزيد من الإعلانات</p>
                     </div>
                     <button class="btn" disabled>
                         <i class="fas fa-clock"></i> انتظر 24 ساعة
@@ -1337,24 +1603,36 @@
         function createAdElement(ad, index) {
             const div = document.createElement('div');
             div.className = 'ad-item';
+            
+            // تحديد إذا كان الإعلان متاحًا للمشاهدة
+            const isAvailable = index < 25 && adsWatchedToday < 25;
+            const buttonText = isAvailable ? 'مشاهدة الإعلان' : 'غير متاح';
+            
             div.innerHTML = `
                 <div class="ad-info">
                     <h3>${ad.title}</h3>
-                    <p>${ad.category || 'عام'}</p>
+                    <p>${ad.category || 'عام'} - ${ad.source === 'linkjust' ? 'LinkJust' : 'Otiue'}</p>
                     <p class="ad-reward"><i class="fas fa-coins"></i> ${ad.reward} نقطة</p>
                     <p class="ad-timer"><i class="fas fa-clock"></i> ${ad.duration} ثانية</p>
                 </div>
-                <button class="btn" onclick="viewAd('${ad.id}', ${index})" ${index >= 25 ? 'disabled' : ''}>
-                    <i class="fas fa-play"></i> مشاهدة الإعلان
+                <button class="btn" onclick="viewAd('${ad.id}', ${index})" ${!isAvailable ? 'disabled' : ''}>
+                    <i class="fas fa-play"></i> ${buttonText}
                 </button>
             `;
             return div;
         }
         
         // مشاهدة الإعلان
-        function viewAd(adId, adIndex) {
+        async function viewAd(adId, adIndex) {
+            // التحقق من عدد الإعلانات التي شاهدها اليوم
+            if (adsWatchedToday >= 25) {
+                showNotification("لقد وصلت للحد الأقصى للإعلانات اليوم (25 إعلان). يجب الانتظار 24 ساعة.", "warning");
+                return;
+            }
+            
+            // التحقق من أن الإعلان ضمن أول 25 إعلان
             if (adIndex >= 25) {
-                showNotification("يجب الانتظار 24 ساعة لمشاهدة الإعلانات الإضافية.", "warning");
+                showNotification("يجب مشاهدة الإعلانات بالترتيب. هذا الإعلان غير متاح الآن.", "warning");
                 return;
             }
             
@@ -1460,6 +1738,9 @@
                 // تسجيل النقرة
                 await recordAdClick();
                 
+                // تحديث عدد الإعلانات التي شاهدها اليوم
+                await updateAdsWatchedToday();
+                
                 // إغلاق النافذة
                 closeAdModal();
                 
@@ -1488,6 +1769,11 @@
                 // تحديث واجهة المستخدم
                 userData.points += points;
                 userData.totalEarned += points;
+                
+                // تحديث أرباح اليوم
+                if (!userData.dailyStats) userData.dailyStats = {};
+                userData.dailyStats[today] = (userData.dailyStats[today] || 0) + points;
+                
                 updateUserUI();
                 
             } catch (error) {
@@ -1519,6 +1805,30 @@
             }
         }
         
+        // تحديث عدد الإعلانات التي شاهدها اليوم
+        async function updateAdsWatchedToday() {
+            if (!currentUser) return;
+            
+            try {
+                const userRef = db.collection('users').doc(currentUser.uid);
+                await userRef.update({
+                    adsWatchedToday: firebase.firestore.FieldValue.increment(1),
+                    lastAdWatch: new Date().toISOString()
+                });
+                
+                // تحديث العداد المحلي
+                adsWatchedToday++;
+                userData.adsWatchedToday = adsWatchedToday;
+                document.getElementById('adsWatchedToday').textContent = adsWatchedToday;
+                
+                // إعادة تحميل الإعلانات لتحديث حالة الأزرار
+                displayAds();
+                
+            } catch (error) {
+                console.error("خطأ في تحديث عدد الإعلانات:", error);
+            }
+        }
+        
         // نسخ رابط الإحالة
         function copyReferralLink() {
             const referralLink = document.getElementById('referralLink').textContent;
@@ -1543,30 +1853,71 @@
                 const totalReferrals = querySnapshot.size;
                 let activeReferrals = 0;
                 
-                // حساب الإحالات النشطة (الذين سجلوا دخولهم خلال آخر 7 أيام)
-                const weekAgo = new Date();
-                weekAgo.setDate(weekAgo.getDate() - 7);
+                document.getElementById('totalReferrals').textContent = totalReferrals;
+                document.getElementById('activeReferrals').textContent = activeReferrals;
+                
+            } catch (error) {
+                console.error("خطأ في تحميل إحصائيات الإحالات:", error);
+            }
+        }
+        
+        // تحميل قائمة المحالين
+        async function loadReferralsList() {
+            if (!currentUser) return;
+            
+            try {
+                const referralsRef = db.collection('referrals');
+                const querySnapshot = await referralsRef.where('referrerId', '==', currentUser.uid).get();
+                
+                const tbody = document.getElementById('referralsList').getElementsByTagName('tbody')[0];
+                tbody.innerHTML = '';
+                
+                if (querySnapshot.empty) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="4" style="text-align: center;">لا توجد إحالات حتى الآن</td>
+                        </tr>
+                    `;
+                    return;
+                }
                 
                 for (const doc of querySnapshot.docs) {
                     const referral = doc.data();
                     const userRef = db.collection('users').doc(referral.refereeId);
                     const userDoc = await userRef.get();
                     
+                    let userEmail = 'مستخدم غير معروف';
+                    let userCreatedAt = 'غير معروف';
+                    let userStatus = 'غير نشط';
+                    let userEarnings = 0;
+                    
                     if (userDoc.exists) {
                         const user = userDoc.data();
-                        const lastLogin = new Date(user.lastLogin || user.createdAt);
+                        userEmail = user.email;
+                        userCreatedAt = new Date(user.createdAt).toLocaleDateString('ar-EG');
                         
-                        if (lastLogin > weekAgo) {
-                            activeReferrals++;
-                        }
+                        // تحديد حالة الحساب (آخر تسجيل دخول خلال 7 أيام)
+                        const lastLogin = user.lastLogin ? new Date(user.lastLogin) : new Date(user.createdAt);
+                        const weekAgo = new Date();
+                        weekAgo.setDate(weekAgo.getDate() - 7);
+                        
+                        userStatus = lastLogin > weekAgo ? 'نشط' : 'غير نشط';
+                        
+                        // حساب الأرباح المولدة (10% من إجمالي أرباح المحال)
+                        userEarnings = Math.floor((user.totalEarned || 0) * 0.1);
                     }
+                    
+                    const row = tbody.insertRow();
+                    row.innerHTML = `
+                        <td>${userEmail}</td>
+                        <td>${userCreatedAt}</td>
+                        <td>${userStatus}</td>
+                        <td>${userEarnings} نقطة</td>
+                    `;
                 }
                 
-                document.getElementById('totalReferrals').textContent = totalReferrals;
-                document.getElementById('activeReferrals').textContent = activeReferrals;
-                
             } catch (error) {
-                console.error("خطأ في تحميل إحصائيات الإحالات:", error);
+                console.error("خطأ في تحميل قائمة المحالين:", error);
             }
         }
         
@@ -1674,11 +2025,12 @@
                 updateUserUI();
                 
                 // إرسال إشعار للأدمن
-                await sendAdminNotification(`طلب سحب جديد من ${userData.email} بمبلغ ${amount} نقطة (${amount/300} دولار) إلى رقم ${vodafoneNumber}`);
+                await sendAdminNotification(`طلب سحب جديد من ${userData.email} بمبلغ ${amount} نقطة (${(amount/300).toFixed(2)} دولار) إلى رقم ${vodafoneNumber}`);
                 
                 // إعادة تعيين النموذج
                 document.getElementById('vodafoneNumber').value = '';
                 document.getElementById('withdrawalAmount').value = '';
+                document.getElementById('dollarAmount').textContent = '0';
                 
                 showNotification("تم إرسال طلب السحب بنجاح. سيتم مراجعته من قبل الإدارة.", "success");
                 
@@ -1706,6 +2058,136 @@
             }
         }
         
+        // تحميل المنشورات
+        async function loadPosts() {
+            try {
+                const postsRef = db.collection('posts');
+                const querySnapshot = await postsRef.orderBy('timestamp', 'desc').limit(20).get();
+                
+                posts = [];
+                querySnapshot.forEach(doc => {
+                    posts.push({ id: doc.id, ...doc.data() });
+                });
+                
+                displayPosts();
+                
+            } catch (error) {
+                console.error("خطأ في تحميل المنشورات:", error);
+            }
+        }
+        
+        // عرض المنشورات
+        function displayPosts() {
+            const postsContainer = document.getElementById('postsContainer');
+            if (!postsContainer) return;
+            
+            postsContainer.innerHTML = '';
+            
+            if (posts.length === 0) {
+                postsContainer.innerHTML = `
+                    <div class="post-item">
+                        <p style="text-align: center; opacity: 0.7;">لا توجد منشورات بعد. كن أول من ينشر!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            posts.forEach(post => {
+                const postElement = createPostElement(post);
+                postsContainer.appendChild(postElement);
+            });
+        }
+        
+        // إنشاء عنصر منشور
+        function createPostElement(post) {
+            const div = document.createElement('div');
+            div.className = 'post-item';
+            
+            const date = new Date(post.timestamp).toLocaleDateString('ar-EG', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            div.innerHTML = `
+                <div class="post-header">
+                    <div class="post-author">${post.authorName || post.authorEmail}</div>
+                    <div class="post-date">${date}</div>
+                </div>
+                <h3>${post.title}</h3>
+                <div class="post-content">${post.content}</div>
+                <div class="post-stats">
+                    <span><i class="fas fa-tag"></i> ${post.category}</span>
+                </div>
+                ${post.isAdmin ? '<div class="membership-badges"><span class="badge vip"><i class="fas fa-crown"></i> مسؤول</span></div>' : ''}
+            `;
+            
+            return div;
+        }
+        
+        // عرض نموذج إنشاء منشور
+        function showPostForm() {
+            document.getElementById('postFormContainer').style.display = 'block';
+            document.getElementById('createPostBtn').style.display = 'none';
+        }
+        
+        // إلغاء إنشاء منشور
+        function cancelPost() {
+            document.getElementById('postFormContainer').style.display = 'none';
+            document.getElementById('createPostBtn').style.display = 'inline-block';
+            document.getElementById('postTitle').value = '';
+            document.getElementById('postContent').value = '';
+        }
+        
+        // إنشاء منشور جديد
+        async function createPost() {
+            const title = document.getElementById('postTitle').value;
+            const content = document.getElementById('postContent').value;
+            const category = document.getElementById('postCategory').value;
+            
+            if (!title || !content) {
+                showNotification("يرجى ملء عنوان ومحتوى المنشور.", "error");
+                return;
+            }
+            
+            try {
+                await db.collection('posts').add({
+                    title: title,
+                    content: content,
+                    category: category,
+                    authorId: currentUser.uid,
+                    authorEmail: userData.email,
+                    authorName: userData.name || userData.email.split('@')[0],
+                    isAdmin: userData.isAdmin || false,
+                    timestamp: new Date().toISOString(),
+                    likes: 0,
+                    comments: 0
+                });
+                
+                // إعادة تعيين النموذج
+                document.getElementById('postTitle').value = '';
+                document.getElementById('postContent').value = '';
+                document.getElementById('postFormContainer').style.display = 'none';
+                document.getElementById('createPostBtn').style.display = 'inline-block';
+                
+                showNotification("تم نشر المنشور بنجاح!", "success");
+                
+                // إعادة تحميل المنشورات
+                loadPosts();
+                
+                // إذا كان أدمن، تحديث لوحة الإدارة
+                if (userData.isAdmin) {
+                    loadAdminData();
+                }
+                
+            } catch (error) {
+                console.error("خطأ في إنشاء المنشور:", error);
+                showNotification("حدث خطأ أثناء نشر المنشور.", "error");
+            }
+        }
+        
         // تحميل بيانات الأدمن
         async function loadAdminData() {
             try {
@@ -1714,6 +2196,7 @@
                 const adsSnapshot = await db.collection('ads').get();
                 const clicksSnapshot = await db.collection('clicks').get();
                 const withdrawalsSnapshot = await db.collection('withdrawals').get();
+                const postsSnapshot = await db.collection('posts').get();
                 
                 document.getElementById('totalUsers').textContent = usersSnapshot.size;
                 document.getElementById('totalAds').textContent = adsSnapshot.size;
@@ -1787,6 +2270,35 @@
                     }
                 }
                 
+                // إدارة المنشورات
+                const postsTable = document.getElementById('postsManagementTable').getElementsByTagName('tbody')[0];
+                postsTable.innerHTML = '';
+                
+                if (postsSnapshot.empty) {
+                    postsTable.innerHTML = `
+                        <tr>
+                            <td colspan="5" style="text-align: center;">لا توجد منشورات</td>
+                        </tr>
+                    `;
+                } else {
+                    for (const doc of postsSnapshot.docs) {
+                        const post = doc.data();
+                        const date = new Date(post.timestamp).toLocaleDateString('ar-EG');
+                        const row = postsTable.insertRow();
+                        row.innerHTML = `
+                            <td>${post.title.substring(0, 30)}${post.title.length > 30 ? '...' : ''}</td>
+                            <td>${post.authorEmail}</td>
+                            <td>${post.category}</td>
+                            <td>${date}</td>
+                            <td>
+                                <button class="btn btn-danger" onclick="deletePost('${doc.id}')">
+                                    <i class="fas fa-trash"></i> حذف
+                                </button>
+                            </td>
+                        `;
+                    }
+                }
+                
             } catch (error) {
                 console.error("خطأ في تحميل بيانات الأدمن:", error);
             }
@@ -1795,9 +2307,22 @@
         // الموافقة على طلب السحب
         async function approveWithdrawal(withdrawalId) {
             try {
+                const withdrawalDoc = await db.collection('withdrawals').doc(withdrawalId).get();
+                const withdrawal = withdrawalDoc.data();
+                
+                // تحديث حالة السحب
                 await db.collection('withdrawals').doc(withdrawalId).update({
                     status: 'approved',
-                    approvedAt: new Date().toISOString()
+                    approvedAt: new Date().toISOString(),
+                    approvedBy: currentUser.email
+                });
+                
+                // إرسال إشعار للمستخدم
+                await db.collection('notifications').add({
+                    userId: withdrawal.userId,
+                    message: `تمت الموافقة على طلب سحبك بقيمة ${withdrawal.amount} نقطة (${(withdrawal.amount/300).toFixed(2)} دولار). سيتم تحويل المبلغ إلى رقم فودافون ${withdrawal.vodafoneNumber} خلال 24 ساعة.`,
+                    timestamp: new Date().toISOString(),
+                    read: false
                 });
                 
                 showNotification("تم قبول طلب السحب بنجاح.", "success");
@@ -1823,7 +2348,16 @@
                 // تحديث حالة السحب
                 await db.collection('withdrawals').doc(withdrawalId).update({
                     status: 'rejected',
-                    rejectedAt: new Date().toISOString()
+                    rejectedAt: new Date().toISOString(),
+                    rejectedBy: currentUser.email
+                });
+                
+                // إرسال إشعار للمستخدم
+                await db.collection('notifications').add({
+                    userId: withdrawal.userId,
+                    message: `تم رفض طلب سحبك بقيمة ${withdrawal.amount} نقطة. تم إعادة النقاط إلى رصيدك.`,
+                    timestamp: new Date().toISOString(),
+                    read: false
                 });
                 
                 showNotification("تم رفض طلب السحب وإعادة النقاط للمستخدم.", "success");
@@ -1850,12 +2384,28 @@
             }
         }
         
+        // حذف منشور
+        async function deletePost(postId) {
+            if (confirm("هل أنت متأكد من حذف هذا المنشور؟")) {
+                try {
+                    await db.collection('posts').doc(postId).delete();
+                    showNotification("تم حذف المنشور بنجاح.", "success");
+                    loadAdminData();
+                    loadPosts(); // تحديث المنشورات للمستخدمين
+                } catch (error) {
+                    console.error("خطأ في حذف المنشور:", error);
+                    showNotification("حدث خطأ أثناء حذف المنشور.", "error");
+                }
+            }
+        }
+        
         // إضافة إعلان جديد
         async function addNewAd() {
             const title = document.getElementById('adTitle').value;
             const url = document.getElementById('adUrl').value;
             const reward = parseInt(document.getElementById('adReward').value);
             const duration = parseInt(document.getElementById('adDuration').value);
+            const source = document.getElementById('adSource').value;
             
             if (!title || !url || !reward || !duration) {
                 showNotification("يرجى ملء جميع الحقول.", "error");
@@ -1878,6 +2428,7 @@
                     url: url,
                     reward: reward,
                     duration: duration,
+                    source: source,
                     category: "عام",
                     active: true,
                     clicks: 0,
@@ -1921,6 +2472,11 @@
                     if (tabId === 'withdrawal') {
                         document.getElementById('withdrawalAmount').addEventListener('input', updateDollarAmount);
                         updateDollarAmount();
+                    }
+                    
+                    // إذا كان تبويب الإدارة وكان المستخدم أدمن
+                    if (tabId === 'admin' && userData.isAdmin) {
+                        loadAdminData();
                     }
                 });
             });
@@ -1977,7 +2533,7 @@
                         showDashboard();
                         
                         // إذا كان المستخدم هو الأدمن
-                        if (user.email === 'bo2584668@gmail.com') {
+                        if (userData.isAdmin) {
                             document.getElementById('adminTab').style.display = 'inline-block';
                         }
                     }
@@ -2014,6 +2570,9 @@
                     showNotification("نسخ النص غير مسموح به في هذا الموقع.", "warning");
                 }
             });
+            
+            // إعداد تحديث مبلغ الدولار في تبويب السحب
+            document.getElementById('withdrawalAmount').addEventListener('input', updateDollarAmount);
         });
     </script>
 </body>
