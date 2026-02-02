@@ -22,7 +22,6 @@
             user-select: none;
         }
         
-        /* السماح بنسخ نص الإحالة فقط */
         .referral-text, .withdrawal-text {
             -webkit-user-select: text;
             -moz-user-select: text;
@@ -261,37 +260,6 @@
         .penalty {
             color: #ff416c;
             font-weight: 600;
-        }
-        
-        .captcha-container {
-            text-align: center;
-            margin: 20px 0;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-        }
-        
-        .captcha-box {
-            background: white;
-            color: #333;
-            font-size: 1.5rem;
-            font-weight: bold;
-            letter-spacing: 5px;
-            padding: 15px;
-            border-radius: 5px;
-            display: inline-block;
-            margin: 15px 0;
-        }
-        
-        .captcha-input {
-            width: 200px;
-            padding: 12px;
-            border-radius: 5px;
-            border: none;
-            font-family: 'Cairo', sans-serif;
-            font-size: 1.1rem;
-            text-align: center;
-            margin: 10px 0;
         }
         
         .login-container {
@@ -655,6 +623,40 @@
             color: #00f2fe;
         }
         
+        .ad-frame-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .fake-ad {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .fake-ad h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+        
+        .fake-ad p {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+        
         @media (max-width: 768px) {
             .container {
                 padding: 15px;
@@ -680,19 +682,18 @@
                 padding: 20px;
             }
             
-            .ad-frame {
+            .ad-frame, .ad-frame-container {
                 height: 300px;
             }
         }
         
-        /* منع التكبير والتصغير على الهواتف */
         @media (max-width: 768px) {
             body {
                 touch-action: pan-y;
             }
             
             input, textarea, select {
-                font-size: 16px; /* منع التكبير التلقائي في iOS */
+                font-size: 16px;
             }
         }
     </style>
@@ -744,9 +745,6 @@
             </button>
             <button class="nav-tab" data-tab="withdrawal">
                 <i class="fas fa-money-bill-wave"></i> السحب
-            </button>
-            <button class="nav-tab" data-tab="posts">
-                <i class="fas fa-newspaper"></i> المنشورات
             </button>
             <button class="nav-tab" id="adminTab" style="display: none;" data-tab="admin">
                 <i class="fas fa-crown"></i> لوحة الإدارة
@@ -887,8 +885,8 @@
                 <h2><i class="fas fa-money-bill-wave"></i> سحب الأرباح</h2>
                 
                 <div class="withdrawal-info">
-                    <p><i class="fas fa-info-circle"></i> الحد الأدنى للسحب هو 30,000 نقطة (100 دولار)</p>
-                    <p>300 نقطة = 1 دولار</p>
+                    <p><i class="fas fa-info-circle"></i> 30,000 نقطة = 1 دولار</p>
+                    <p>الحد الأدنى للسحب هو 30,000 نقطة (1 دولار)</p>
                     <p>طريقة السحب: فودافون كاش فقط</p>
                 </div>
                 
@@ -931,56 +929,6 @@
             </div>
         </div>
         
-        <!-- تبويب المنشورات -->
-        <div id="postsTab" class="tab-content">
-            <div class="card">
-                <h2><i class="fas fa-newspaper"></i> المنشورات والمجتمع</h2>
-                
-                <div id="postFormContainer" style="display: none;">
-                    <h3><i class="fas fa-edit"></i> إنشاء منشور جديد</h3>
-                    <div class="post-form">
-                        <div class="form-group">
-                            <label for="postTitle">عنوان المنشور</label>
-                            <input type="text" id="postTitle" class="form-control" placeholder="عنوان المنشور">
-                        </div>
-                        <div class="form-group">
-                            <label for="postContent">محتوى المنشور</label>
-                            <textarea id="postContent" class="form-control" placeholder="اكتب منشورك هنا..."></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="postCategory">تصنيف المنشور</label>
-                            <select id="postCategory" class="form-control">
-                                <option value="عام">عام</option>
-                                <option value="نصائح">نصائح للربح</option>
-                                <option value="تجارب">تجارب شخصية</option>
-                                <option value="استفسارات">استفسارات</option>
-                                <option value="إعلانات">إعلانات الموقع</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <button class="btn btn-success" onclick="createPost()">
-                                <i class="fas fa-paper-plane"></i> نشر المنشور
-                            </button>
-                            <button class="btn btn-danger" onclick="cancelPost()">
-                                <i class="fas fa-times"></i> إلغاء
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div style="text-align: center; margin-bottom: 20px;">
-                    <button class="btn" onclick="showPostForm()" id="createPostBtn">
-                        <i class="fas fa-plus"></i> إنشاء منشور جديد
-                    </button>
-                </div>
-                
-                <h3><i class="fas fa-stream"></i> أحدث المنشورات</h3>
-                <div id="postsContainer">
-                    <!-- سيتم ملؤها بواسطة JavaScript -->
-                </div>
-            </div>
-        </div>
-        
         <!-- تبويب لوحة الإدارة (للأدمن فقط) -->
         <div id="adminTab" class="tab-content admin-panel">
             <div class="card">
@@ -988,33 +936,29 @@
                 
                 <div class="admin-controls">
                     <div class="card">
-                        <h3><i class="fas fa-ad"></i> إضافة إعلان جديد</h3>
+                        <h3><i class="fas fa-ad"></i> نشر إعلان جديد</h3>
                         <div class="form-group">
-                            <label for="adTitle">عنوان الإعلان</label>
+                            <label for="adTitle">عنوان الإعلان (نص الزرار)</label>
                             <input type="text" id="adTitle" class="form-control" placeholder="عنوان الإعلان">
                         </div>
                         <div class="form-group">
-                            <label for="adUrl">رابط الإعلان</label>
-                            <input type="url" id="adUrl" class="form-control" placeholder="https://example.com">
+                            <label for="adDescription">وصف الإعلان (اختياري)</label>
+                            <textarea id="adDescription" class="form-control" placeholder="وصف الإعلان"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="adLink">رابط الإعلان</label>
+                            <input type="url" id="adLink" class="form-control" placeholder="https://example.com">
                         </div>
                         <div class="form-group">
                             <label for="adReward">عدد النقاط</label>
-                            <input type="number" id="adReward" class="form-control" placeholder="10" min="1">
+                            <input type="number" id="adReward" class="form-control" placeholder="10" min="1" value="10">
                         </div>
                         <div class="form-group">
                             <label for="adDuration">المدة (ثانية)</label>
                             <input type="number" id="adDuration" class="form-control" placeholder="30" min="10" value="30">
                         </div>
-                        <div class="form-group">
-                            <label for="adSource">مصدر الإعلان</label>
-                            <select id="adSource" class="form-control">
-                                <option value="linkjust">LinkJust (45 إعلان)</option>
-                                <option value="otieu">Otiue (25 إعلان)</option>
-                                <option value="custom">مخصص</option>
-                            </select>
-                        </div>
                         <button class="btn btn-success" onclick="addNewAd()">
-                            <i class="fas fa-plus"></i> إضافة إعلان
+                            <i class="fas fa-plus"></i> نشر الإعلان
                         </button>
                     </div>
                     
@@ -1071,38 +1015,16 @@
                             <thead>
                                 <tr>
                                     <th>العنوان</th>
+                                    <th>الوصف</th>
                                     <th>الرابط</th>
                                     <th>النقاط</th>
                                     <th>المدة</th>
-                                    <th>النقرات</th>
                                     <th>الإجراءات</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td colspan="6" style="text-align: center;">لا توجد إعلانات</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                
-                <div class="admin-section">
-                    <h3><i class="fas fa-newspaper"></i> إدارة المنشورات</h3>
-                    <div class="table-container">
-                        <table id="postsManagementTable">
-                            <thead>
-                                <tr>
-                                    <th>العنوان</th>
-                                    <th>المؤلف</th>
-                                    <th>التصنيف</th>
-                                    <th>التاريخ</th>
-                                    <th>الإجراءات</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td colspan="5" style="text-align: center;">لا توجد منشورات</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1124,19 +1046,19 @@
                     <p class="warning">تحذير: إذا غادرت قبل انتهاء الوقت سيتم خصم <span class="penalty">5 نقاط</span> من رصيدك!</p>
                 </div>
                 
-                <div id="adFrameContainer">
-                    <iframe class="ad-frame" id="adFrame" src="about:blank"></iframe>
+                <div class="ad-frame-container">
+                    <div class="fake-ad" id="fakeAdContent">
+                        <h3 id="adDisplayTitle">جاري تحميل الإعلان...</h3>
+                        <p id="adDisplayDescription">شاهد هذا الإعلان لمدة 30 ثانية لتحصل على النقاط</p>
+                        <div style="margin-top: 20px; font-size: 2rem;">
+                            <i class="fas fa-ad"></i>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="captcha-container" id="captchaContainer" style="display: none;">
-                    <p>أدخل الرمز الظاهر في الصورة للتأكد من أنك لست روبوت:</p>
-                    <div class="captcha-box" id="captchaText">A3B8</div>
-                    <input type="text" class="captcha-input" id="captchaInput" placeholder="أدخل الرمز" maxlength="5">
-                    <button class="btn btn-success" onclick="verifyCaptcha()">
-                        <i class="fas fa-check"></i> تأكيد
-                    </button>
-                    <button class="btn" onclick="generateNewCaptcha()">
-                        <i class="fas fa-redo"></i> تحديث الرمز
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="btn btn-success" id="completeAdBtn" style="display: none;" onclick="completeAd()">
+                        <i class="fas fa-check"></i> تمت مشاهدة الإعلان
                     </button>
                 </div>
             </div>
@@ -1175,12 +1097,10 @@
         let currentUser = null;
         let userData = null;
         let ads = [];
-        let posts = [];
         let currentAd = null;
         let timerInterval = null;
         let timeLeft = 30;
         let adCompleted = false;
-        let captchaCode = "";
         let adsWatchedToday = 0;
         
         // تهيئة تسجيل الدخول عبر جوجل
@@ -1221,7 +1141,7 @@
                 // فك تشفير التوكن للحصول على البيانات
                 const userData = parseJwt(response.credential);
                 
-                // إنشاء كائن المستخدم بالبيانات التي طلبتها
+                // إنشاء كائن المستخدم
                 const user = {
                     uid: userData.sub,
                     email: userData.email,
@@ -1401,7 +1321,6 @@
             // تحميل بيانات المستخدم والإعلانات
             loadUserData();
             loadAds();
-            loadPosts();
             setupNavigation();
         }
         
@@ -1500,7 +1419,8 @@
             for (let i = 1; i <= 45; i++) {
                 linkjustAds.push({
                     title: `إعلان LinkJust ${i}`,
-                    url: "https://linkjust.com/xbTIX",
+                    description: `إعلان تجريبي من LinkJust - ${i}`,
+                    link: "https://linkjust.com/xbTIX",
                     reward: Math.floor(Math.random() * 20) + 5, // 5-25 نقطة
                     duration: 30,
                     category: "عام",
@@ -1515,7 +1435,8 @@
             for (let i = 1; i <= 25; i++) {
                 otieuAds.push({
                     title: `إعلان Otiue ${i}`,
-                    url: "https://otieu.com/4/10528245",
+                    description: `إعلان تجريبي من Otiue - ${i}`,
+                    link: "https://otieu.com/4/10528245",
                     reward: Math.floor(Math.random() * 30) + 10, // 10-40 نقطة
                     duration: 30,
                     category: "خاص",
@@ -1529,18 +1450,44 @@
             try {
                 // إضافة إعلانات LinkJust
                 for (const ad of linkjustAds) {
-                    await db.collection('ads').add(ad);
+                    await saveAdToFirestore(ad);
                 }
                 
                 // إضافة إعلانات Otiue
                 for (const ad of otieuAds) {
-                    await db.collection('ads').add(ad);
+                    await saveAdToFirestore(ad);
                 }
                 
                 console.log("تم إنشاء 70 إعلان بنجاح (45 من LinkJust، 25 من Otiue)");
                 showNotification("تم تحميل 70 إعلان جديد!", "success");
             } catch (error) {
                 console.error("خطأ في إنشاء الإعلانات المطلوبة:", error);
+            }
+        }
+        
+        // حفظ الإعلان في Firestore
+        async function saveAdToFirestore(adData) {
+            try {
+                const adsRef = db.collection('ads');
+                
+                await adsRef.add({
+                    title: adData.title,        // نص الزرار
+                    description: adData.description || '', // وصف تحت الزرار (اختياري)
+                    link: adData.link,          // الرابط المرتبط بالزرار
+                    reward: adData.reward || 10,
+                    duration: adData.duration || 30,
+                    category: adData.category || "عام",
+                    source: adData.source || "custom",
+                    active: true,
+                    clicks: 0,
+                    createdAt: new Date().toISOString()
+                });
+                
+                console.log("تم حفظ الإعلان بنجاح.");
+                return true;
+            } catch (error) {
+                console.error("خطأ في حفظ الإعلان:", error);
+                return false;
             }
         }
         
@@ -1611,7 +1558,7 @@
             div.innerHTML = `
                 <div class="ad-info">
                     <h3>${ad.title}</h3>
-                    <p>${ad.category || 'عام'} - ${ad.source === 'linkjust' ? 'LinkJust' : 'Otiue'}</p>
+                    <p>${ad.description || ''}</p>
                     <p class="ad-reward"><i class="fas fa-coins"></i> ${ad.reward} نقطة</p>
                     <p class="ad-timer"><i class="fas fa-clock"></i> ${ad.duration} ثانية</p>
                 </div>
@@ -1644,10 +1591,13 @@
             document.getElementById('adModalTitle').textContent = currentAd.title;
             document.getElementById('adDurationDisplay').textContent = currentAd.duration;
             document.getElementById('adTimer').textContent = currentAd.duration;
-            document.getElementById('adFrame').src = currentAd.url;
             
-            // إخفاء اختبار CAPTCHA في البداية
-            document.getElementById('captchaContainer').style.display = 'none';
+            // عرض محتوى الإعلان
+            document.getElementById('adDisplayTitle').textContent = currentAd.title;
+            document.getElementById('adDisplayDescription').textContent = currentAd.description || 'شاهد هذا الإعلان لمدة 30 ثانية لتحصل على النقاط';
+            
+            // إخفاء زر الإكمال في البداية
+            document.getElementById('completeAdBtn').style.display = 'none';
             
             // بدء العداد
             timeLeft = currentAd.duration;
@@ -1662,11 +1612,32 @@
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
                     adCompleted = true;
-                    // إظهار اختبار CAPTCHA
-                    document.getElementById('captchaContainer').style.display = 'block';
-                    generateCaptcha();
+                    // إظهار زر الإكمال
+                    document.getElementById('completeAdBtn').style.display = 'inline-block';
                 }
             }, 1000);
+        }
+        
+        // إكمال مشاهدة الإعلان
+        async function completeAd() {
+            if (!adCompleted || timeLeft > 0) {
+                showNotification("يجب الانتظار حتى انتهاء الوقت!", "warning");
+                return;
+            }
+            
+            // منح النقاط
+            await addPoints(currentAd.reward);
+            
+            // تسجيل النقرة
+            await recordAdClick();
+            
+            // تحديث عدد الإعلانات التي شاهدها اليوم
+            await updateAdsWatchedToday();
+            
+            // إغلاق النافذة
+            closeAdModal();
+            
+            showNotification(`مبروك! لقد ربحت ${currentAd.reward} نقطة من مشاهدة الإعلان.`, "success");
         }
         
         // إغلاق نافذة الإعلان
@@ -1680,7 +1651,6 @@
             
             // إعادة تعيين المتغيرات
             document.getElementById('adModal').style.display = 'none';
-            document.getElementById('adFrame').src = "about:blank";
             
             if (timerInterval) {
                 clearInterval(timerInterval);
@@ -1706,48 +1676,6 @@
                 
             } catch (error) {
                 console.error("خطأ في خصم النقاط:", error);
-            }
-        }
-        
-        // توليد كود CAPTCHA
-        function generateCaptcha() {
-            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
-            captchaCode = '';
-            
-            for (let i = 0; i < 4; i++) {
-                captchaCode += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            
-            document.getElementById('captchaText').textContent = captchaCode;
-            document.getElementById('captchaInput').value = '';
-        }
-        
-        // توليد كود CAPTCHA جديد
-        function generateNewCaptcha() {
-            generateCaptcha();
-        }
-        
-        // التحقق من CAPTCHA
-        async function verifyCaptcha() {
-            const userInput = document.getElementById('captchaInput').value;
-            
-            if (userInput.toUpperCase() === captchaCode.toUpperCase()) {
-                // منح النقاط
-                await addPoints(currentAd.reward);
-                
-                // تسجيل النقرة
-                await recordAdClick();
-                
-                // تحديث عدد الإعلانات التي شاهدها اليوم
-                await updateAdsWatchedToday();
-                
-                // إغلاق النافذة
-                closeAdModal();
-                
-                showNotification(`مبروك! لقد ربحت ${currentAd.reward} نقطة من مشاهدة الإعلان.`, "success");
-            } else {
-                showNotification("كود التحقق غير صحيح. حاول مرة أخرى.", "error");
-                generateNewCaptcha();
             }
         }
         
@@ -1944,7 +1872,8 @@
                 querySnapshot.forEach(doc => {
                     const withdrawal = doc.data();
                     const date = new Date(withdrawal.timestamp).toLocaleDateString('ar-EG');
-                    const amountInDollars = (withdrawal.amount / 300).toFixed(2);
+                    // 30,000 نقطة = 1 دولار
+                    const amountInDollars = (withdrawal.amount / 30000).toFixed(2);
                     
                     let statusClass = '';
                     let statusText = '';
@@ -1980,6 +1909,14 @@
             }
         }
         
+        // تحديث مبلغ الدولار في تبويب السحب
+        function updateDollarAmount() {
+            const points = parseInt(document.getElementById('withdrawalAmount').value) || 0;
+            // 30,000 نقطة = 1 دولار
+            const dollars = (points / 30000).toFixed(2);
+            document.getElementById('dollarAmount').textContent = dollars;
+        }
+        
         // طلب سحب
         async function requestWithdrawal() {
             if (!currentUser) return;
@@ -1993,8 +1930,9 @@
                 return;
             }
             
+            // 30,000 نقطة = 1 دولار
             if (amount < 30000) {
-                showNotification("الحد الأدنى للسحب هو 30,000 نقطة.", "error");
+                showNotification("الحد الأدنى للسحب هو 30,000 نقطة (1 دولار).", "error");
                 return;
             }
             
@@ -2025,7 +1963,7 @@
                 updateUserUI();
                 
                 // إرسال إشعار للأدمن
-                await sendAdminNotification(`طلب سحب جديد من ${userData.email} بمبلغ ${amount} نقطة (${(amount/300).toFixed(2)} دولار) إلى رقم ${vodafoneNumber}`);
+                await sendAdminNotification(`طلب سحب جديد من ${userData.email} بمبلغ ${amount} نقطة (${(amount/30000).toFixed(2)} دولار) إلى رقم ${vodafoneNumber}`);
                 
                 // إعادة تعيين النموذج
                 document.getElementById('vodafoneNumber').value = '';
@@ -2058,136 +1996,6 @@
             }
         }
         
-        // تحميل المنشورات
-        async function loadPosts() {
-            try {
-                const postsRef = db.collection('posts');
-                const querySnapshot = await postsRef.orderBy('timestamp', 'desc').limit(20).get();
-                
-                posts = [];
-                querySnapshot.forEach(doc => {
-                    posts.push({ id: doc.id, ...doc.data() });
-                });
-                
-                displayPosts();
-                
-            } catch (error) {
-                console.error("خطأ في تحميل المنشورات:", error);
-            }
-        }
-        
-        // عرض المنشورات
-        function displayPosts() {
-            const postsContainer = document.getElementById('postsContainer');
-            if (!postsContainer) return;
-            
-            postsContainer.innerHTML = '';
-            
-            if (posts.length === 0) {
-                postsContainer.innerHTML = `
-                    <div class="post-item">
-                        <p style="text-align: center; opacity: 0.7;">لا توجد منشورات بعد. كن أول من ينشر!</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            posts.forEach(post => {
-                const postElement = createPostElement(post);
-                postsContainer.appendChild(postElement);
-            });
-        }
-        
-        // إنشاء عنصر منشور
-        function createPostElement(post) {
-            const div = document.createElement('div');
-            div.className = 'post-item';
-            
-            const date = new Date(post.timestamp).toLocaleDateString('ar-EG', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-            
-            div.innerHTML = `
-                <div class="post-header">
-                    <div class="post-author">${post.authorName || post.authorEmail}</div>
-                    <div class="post-date">${date}</div>
-                </div>
-                <h3>${post.title}</h3>
-                <div class="post-content">${post.content}</div>
-                <div class="post-stats">
-                    <span><i class="fas fa-tag"></i> ${post.category}</span>
-                </div>
-                ${post.isAdmin ? '<div class="membership-badges"><span class="badge vip"><i class="fas fa-crown"></i> مسؤول</span></div>' : ''}
-            `;
-            
-            return div;
-        }
-        
-        // عرض نموذج إنشاء منشور
-        function showPostForm() {
-            document.getElementById('postFormContainer').style.display = 'block';
-            document.getElementById('createPostBtn').style.display = 'none';
-        }
-        
-        // إلغاء إنشاء منشور
-        function cancelPost() {
-            document.getElementById('postFormContainer').style.display = 'none';
-            document.getElementById('createPostBtn').style.display = 'inline-block';
-            document.getElementById('postTitle').value = '';
-            document.getElementById('postContent').value = '';
-        }
-        
-        // إنشاء منشور جديد
-        async function createPost() {
-            const title = document.getElementById('postTitle').value;
-            const content = document.getElementById('postContent').value;
-            const category = document.getElementById('postCategory').value;
-            
-            if (!title || !content) {
-                showNotification("يرجى ملء عنوان ومحتوى المنشور.", "error");
-                return;
-            }
-            
-            try {
-                await db.collection('posts').add({
-                    title: title,
-                    content: content,
-                    category: category,
-                    authorId: currentUser.uid,
-                    authorEmail: userData.email,
-                    authorName: userData.name || userData.email.split('@')[0],
-                    isAdmin: userData.isAdmin || false,
-                    timestamp: new Date().toISOString(),
-                    likes: 0,
-                    comments: 0
-                });
-                
-                // إعادة تعيين النموذج
-                document.getElementById('postTitle').value = '';
-                document.getElementById('postContent').value = '';
-                document.getElementById('postFormContainer').style.display = 'none';
-                document.getElementById('createPostBtn').style.display = 'inline-block';
-                
-                showNotification("تم نشر المنشور بنجاح!", "success");
-                
-                // إعادة تحميل المنشورات
-                loadPosts();
-                
-                // إذا كان أدمن، تحديث لوحة الإدارة
-                if (userData.isAdmin) {
-                    loadAdminData();
-                }
-                
-            } catch (error) {
-                console.error("خطأ في إنشاء المنشور:", error);
-                showNotification("حدث خطأ أثناء نشر المنشور.", "error");
-            }
-        }
-        
         // تحميل بيانات الأدمن
         async function loadAdminData() {
             try {
@@ -2196,7 +2004,6 @@
                 const adsSnapshot = await db.collection('ads').get();
                 const clicksSnapshot = await db.collection('clicks').get();
                 const withdrawalsSnapshot = await db.collection('withdrawals').get();
-                const postsSnapshot = await db.collection('posts').get();
                 
                 document.getElementById('totalUsers').textContent = usersSnapshot.size;
                 document.getElementById('totalAds').textContent = adsSnapshot.size;
@@ -2220,7 +2027,8 @@
                         const userDoc = await db.collection('users').doc(withdrawal.userId).get();
                         const userName = userDoc.exists ? userDoc.data().email : 'مستخدم غير معروف';
                         const date = new Date(withdrawal.timestamp).toLocaleDateString('ar-EG');
-                        const amountInDollars = (withdrawal.amount / 300).toFixed(2);
+                        // 30,000 نقطة = 1 دولار
+                        const amountInDollars = (withdrawal.amount / 30000).toFixed(2);
                         
                         const row = pendingTable.insertRow();
                         row.innerHTML = `
@@ -2257,41 +2065,12 @@
                         const row = adsTable.insertRow();
                         row.innerHTML = `
                             <td>${ad.title}</td>
-                            <td><a href="${ad.url}" target="_blank">${ad.url.substring(0, 30)}...</a></td>
+                            <td>${ad.description ? ad.description.substring(0, 30) + (ad.description.length > 30 ? '...' : '') : 'لا يوجد وصف'}</td>
+                            <td><a href="${ad.link}" target="_blank">${ad.link.substring(0, 20)}...</a></td>
                             <td>${ad.reward}</td>
                             <td>${ad.duration} ثانية</td>
-                            <td>${ad.clicks || 0}</td>
                             <td>
                                 <button class="btn btn-danger" onclick="deleteAd('${doc.id}')">
-                                    <i class="fas fa-trash"></i> حذف
-                                </button>
-                            </td>
-                        `;
-                    }
-                }
-                
-                // إدارة المنشورات
-                const postsTable = document.getElementById('postsManagementTable').getElementsByTagName('tbody')[0];
-                postsTable.innerHTML = '';
-                
-                if (postsSnapshot.empty) {
-                    postsTable.innerHTML = `
-                        <tr>
-                            <td colspan="5" style="text-align: center;">لا توجد منشورات</td>
-                        </tr>
-                    `;
-                } else {
-                    for (const doc of postsSnapshot.docs) {
-                        const post = doc.data();
-                        const date = new Date(post.timestamp).toLocaleDateString('ar-EG');
-                        const row = postsTable.insertRow();
-                        row.innerHTML = `
-                            <td>${post.title.substring(0, 30)}${post.title.length > 30 ? '...' : ''}</td>
-                            <td>${post.authorEmail}</td>
-                            <td>${post.category}</td>
-                            <td>${date}</td>
-                            <td>
-                                <button class="btn btn-danger" onclick="deletePost('${doc.id}')">
                                     <i class="fas fa-trash"></i> حذف
                                 </button>
                             </td>
@@ -2307,22 +2086,9 @@
         // الموافقة على طلب السحب
         async function approveWithdrawal(withdrawalId) {
             try {
-                const withdrawalDoc = await db.collection('withdrawals').doc(withdrawalId).get();
-                const withdrawal = withdrawalDoc.data();
-                
-                // تحديث حالة السحب
                 await db.collection('withdrawals').doc(withdrawalId).update({
                     status: 'approved',
-                    approvedAt: new Date().toISOString(),
-                    approvedBy: currentUser.email
-                });
-                
-                // إرسال إشعار للمستخدم
-                await db.collection('notifications').add({
-                    userId: withdrawal.userId,
-                    message: `تمت الموافقة على طلب سحبك بقيمة ${withdrawal.amount} نقطة (${(withdrawal.amount/300).toFixed(2)} دولار). سيتم تحويل المبلغ إلى رقم فودافون ${withdrawal.vodafoneNumber} خلال 24 ساعة.`,
-                    timestamp: new Date().toISOString(),
-                    read: false
+                    approvedAt: new Date().toISOString()
                 });
                 
                 showNotification("تم قبول طلب السحب بنجاح.", "success");
@@ -2348,16 +2114,7 @@
                 // تحديث حالة السحب
                 await db.collection('withdrawals').doc(withdrawalId).update({
                     status: 'rejected',
-                    rejectedAt: new Date().toISOString(),
-                    rejectedBy: currentUser.email
-                });
-                
-                // إرسال إشعار للمستخدم
-                await db.collection('notifications').add({
-                    userId: withdrawal.userId,
-                    message: `تم رفض طلب سحبك بقيمة ${withdrawal.amount} نقطة. تم إعادة النقاط إلى رصيدك.`,
-                    timestamp: new Date().toISOString(),
-                    read: false
+                    rejectedAt: new Date().toISOString()
                 });
                 
                 showNotification("تم رفض طلب السحب وإعادة النقاط للمستخدم.", "success");
@@ -2384,31 +2141,16 @@
             }
         }
         
-        // حذف منشور
-        async function deletePost(postId) {
-            if (confirm("هل أنت متأكد من حذف هذا المنشور؟")) {
-                try {
-                    await db.collection('posts').doc(postId).delete();
-                    showNotification("تم حذف المنشور بنجاح.", "success");
-                    loadAdminData();
-                    loadPosts(); // تحديث المنشورات للمستخدمين
-                } catch (error) {
-                    console.error("خطأ في حذف المنشور:", error);
-                    showNotification("حدث خطأ أثناء حذف المنشور.", "error");
-                }
-            }
-        }
-        
-        // إضافة إعلان جديد
+        // إضافة إعلان جديد (للأدمن)
         async function addNewAd() {
             const title = document.getElementById('adTitle').value;
-            const url = document.getElementById('adUrl').value;
+            const description = document.getElementById('adDescription').value;
+            const link = document.getElementById('adLink').value;
             const reward = parseInt(document.getElementById('adReward').value);
             const duration = parseInt(document.getElementById('adDuration').value);
-            const source = document.getElementById('adSource').value;
             
-            if (!title || !url || !reward || !duration) {
-                showNotification("يرجى ملء جميع الحقول.", "error");
+            if (!title || !link) {
+                showNotification("يرجى ملء عنوان الإعلان والرابط.", "error");
                 return;
             }
             
@@ -2423,27 +2165,31 @@
             }
             
             try {
-                await db.collection('ads').add({
+                // استخدام دالة saveAdToFirestore التي طلبتها
+                const success = await saveAdToFirestore({
                     title: title,
-                    url: url,
+                    description: description,
+                    link: link,
                     reward: reward,
                     duration: duration,
-                    source: source,
-                    category: "عام",
-                    active: true,
-                    clicks: 0,
-                    createdAt: new Date().toISOString()
+                    category: "إعلان من الإدارة",
+                    source: "admin"
                 });
                 
-                // إعادة تعيين النموذج
-                document.getElementById('adTitle').value = '';
-                document.getElementById('adUrl').value = '';
-                document.getElementById('adReward').value = '';
-                document.getElementById('adDuration').value = '30';
-                
-                showNotification("تم إضافة الإعلان الجديد بنجاح.", "success");
-                loadAdminData();
-                loadAds();
+                if (success) {
+                    // إعادة تعيين النموذج
+                    document.getElementById('adTitle').value = '';
+                    document.getElementById('adDescription').value = '';
+                    document.getElementById('adLink').value = '';
+                    document.getElementById('adReward').value = '10';
+                    document.getElementById('adDuration').value = '30';
+                    
+                    showNotification("تم نشر الإعلان الجديد بنجاح.", "success");
+                    loadAdminData();
+                    loadAds();
+                } else {
+                    showNotification("حدث خطأ أثناء نشر الإعلان.", "error");
+                }
                 
             } catch (error) {
                 console.error("خطأ في إضافة الإعلان:", error);
@@ -2470,28 +2216,19 @@
                     
                     // إذا كان تبويب السحب، تحديث مبلغ الدولار
                     if (tabId === 'withdrawal') {
-                        document.getElementById('withdrawalAmount').addEventListener('input', updateDollarAmount);
                         updateDollarAmount();
                     }
                     
                     // إذا كان تبويب الإدارة وكان المستخدم أدمن
-                    if (tabId === 'admin' && userData.isAdmin) {
+                    if (tabId === 'admin' && userData && userData.isAdmin) {
                         loadAdminData();
                     }
                 });
             });
         }
         
-        // تحديث مبلغ الدولار في تبويب السحب
-        function updateDollarAmount() {
-            const points = parseInt(document.getElementById('withdrawalAmount').value) || 0;
-            const dollars = (points / 300).toFixed(2);
-            document.getElementById('dollarAmount').textContent = dollars;
-        }
-        
         // تبديل قائمة المستخدم
         function toggleUserMenu() {
-            // يمكن إضافة قائمة منسدلة هنا
             showNotification(`مرحباً ${userData.name || userData.email}`, "success");
         }
         
@@ -2576,4 +2313,4 @@
         });
     </script>
 </body>
-    </html>
+</html>
