@@ -1542,13 +1542,13 @@
                     </h2>
                     <div class="ads-counter">
                         <i class="fas fa-eye"></i>
-                        <span id="adsViewedCount">0</span> / <span id="dailyLimit">10</span>
+                        <span id="adsViewedCount">0</span> / <span id="dailyLimit">50</span>
                     </div>
                 </div>
                 
                 <div id="adsContainer" class="ads-container">
                     <div id="adsGrid" class="ads-grid">
-                        <!-- Ads will be loaded here -->
+                        <!-- Ads will be loaded here from Firestore -->
                     </div>
                 </div>
             </section>
@@ -1827,9 +1827,6 @@
                     <button id="cancelAdBtn" class="btn btn-danger">
                         <i class="fas fa-times"></i> إلغاء
                     </button>
-                    <button id="openAdLinkBtn" class="btn btn-success" style="display: none;">
-                        <i class="fas fa-external-link-alt"></i> زيارة الإعلان
-                    </button>
                 </div>
             </div>
         </div>
@@ -1895,7 +1892,6 @@
         const currentAdDescription = document.getElementById('currentAdDescription');
         const adRewardPoints = document.getElementById('adRewardPoints');
         const cancelAdBtn = document.getElementById('cancelAdBtn');
-        const openAdLinkBtn = document.getElementById('openAdLinkBtn');
         const withdrawPoints = document.getElementById('withdrawPoints');
         const withdrawAmount = document.getElementById('withdrawAmount');
         const vodafoneNumber = document.getElementById('vodafoneNumber');
@@ -1903,106 +1899,6 @@
         const referralLink = document.getElementById('referralLink');
         const copyReferralBtn = document.getElementById('copyReferralBtn');
         const adminNavItem = document.getElementById('adminNavItem');
-
-        // Sample Ads (Hardcoded for instant display)
-        const sampleAds = [
-            {
-                id: 'ad_sample_1',
-                title: 'عروض خاصة على الهواتف الذكية',
-                description: 'احصل على خصومات تصل إلى 50% على أحدث الهواتف الذكية من المتاجر الرائدة',
-                image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400',
-                link: 'https://linkjust.com/xbTIX',
-                points: 50,
-                duration: 30,
-                category: 'تكنولوجيا',
-                active: true,
-                createdAt: new Date().toISOString()
-            },
-            {
-                id: 'ad_sample_2',
-                title: 'منتجات التخسيس والرجيم',
-                description: 'احصل على جسم مثالي مع منتجاتنا الطبيعية المضمونة',
-                image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400',
-                link: 'https://linkjust.com/xbTIX',
-                points: 45,
-                duration: 35,
-                category: 'صحة',
-                active: true,
-                createdAt: new Date().toISOString()
-            },
-            {
-                id: 'ad_sample_3',
-                title: 'دورات البرمجة الاحترافية',
-                description: 'تعلم البرمجة واحصل على وظيفة بأعلى راتب في مجال التكنولوجيا',
-                image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400',
-                link: 'https://linkjust.com/xbTIX',
-                points: 60,
-                duration: 40,
-                category: 'تعليم',
-                active: true,
-                createdAt: new Date().toISOString()
-            },
-            {
-                id: 'ad_sample_4',
-                title: 'عروض السفر والسياحة',
-                description: 'احجز رحلتك القادمة بأسعار مخفضة إلى أفضل الوجهات السياحية',
-                image: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400',
-                link: 'https://otieu.com/4/10528245',
-                points: 55,
-                duration: 38,
-                category: 'سفر',
-                active: true,
-                createdAt: new Date().toISOString()
-            },
-            {
-                id: 'ad_sample_5',
-                title: 'تطبيقات الربح من الإنترنت',
-                description: 'اربح المال من خلال هاتفك الذكي مع أفضل التطبيقات المثبتة',
-                image: 'https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400',
-                link: 'https://otieu.com/4/10528245',
-                points: 65,
-                duration: 45,
-                category: 'ربح',
-                active: true,
-                createdAt: new Date().toISOString()
-            },
-            {
-                id: 'ad_sample_6',
-                title: 'منتجات العناية بالبشرة',
-                description: 'احصل على بشرة نقية وصافية مع منتجاتنا الفعالة',
-                image: 'https://images.unsplash.com/photo-1522338242990-e1c0c1e0d1c5?w=400',
-                link: 'https://otieu.com/4/10528245',
-                points: 40,
-                duration: 32,
-                category: 'جمال',
-                active: true,
-                createdAt: new Date().toISOString()
-            },
-            {
-                id: 'ad_sample_7',
-                title: 'خدمات التسويق الإلكتروني',
-                description: 'طور مشروعك مع أفضل استراتيجيات التسويق الرقمي',
-                image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=400',
-                link: 'https://otieu.com/4/10528245',
-                points: 70,
-                duration: 42,
-                category: 'أعمال',
-                active: true,
-                createdAt: new Date().toISOString()
-            },
-            {
-                id: 'ad_sample_8',
-                title: 'ألعاب الجوال المربحة',
-                description: 'العب واربح جوائز حقيقية من خلال الألعاب المسلية',
-                image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400',
-                link: 'https://otieu.com/4/10528245',
-                points: 75,
-                duration: 44,
-                category: 'ترفيه',
-                active: true,
-                createdAt: new Date().toISOString()
-            }
-        ];
 
         // Initialize Application
         document.addEventListener('DOMContentLoaded', function() {
@@ -2022,9 +1918,6 @@
             
             // Check for referral code in URL
             checkReferralCode();
-            
-            // Initialize sample ads in Firestore if not exists
-            await initializeSampleAds();
             
             // Set up auth state listener
             auth.onAuthStateChanged(handleAuthStateChange);
@@ -2070,6 +1963,17 @@
                 } else {
                     // New user
                     const referralCode = generateReferralCode();
+                    
+                    // Get referrer from URL if exists
+                    let referredBy = null;
+                    const refCode = checkReferralCode();
+                    if (refCode) {
+                        const referrerSnapshot = await db.collection('users').where('referralCode', '==', refCode).get();
+                        if (!referrerSnapshot.empty) {
+                            referredBy = referrerSnapshot.docs[0].id;
+                        }
+                    }
+                    
                     userData = {
                         uid: user.uid,
                         email: user.email,
@@ -2081,9 +1985,10 @@
                         referralsCount: 0,
                         referralEarnings: 0,
                         adsViewedToday: 0,
-                        dailyAdsLimit: 10,
+                        dailyAdsLimit: 50, // 50 ads per day limit
                         lastAdViewDate: null,
                         totalAdsViewed: 0,
+                        viewedAdsToday: [], // Array to track ads viewed today
                         joinDate: new Date().toISOString(),
                         lastLogin: new Date().toISOString(),
                         ipAddress: userIp,
@@ -2091,14 +1996,20 @@
                         isAdmin: user.email === 'bo2584668@gmail.com',
                         loginCount: 1,
                         sessionId: userSessionId,
-                        status: 'active'
+                        status: 'active',
+                        referredBy: referredBy // Track who referred this user
                     };
                     
                     await userRef.set(userData);
                     showNotification('مرحباً بك في Advista!', 'success');
                     
-                    // Apply referral code if exists
-                    await applyReferralCode();
+                    // Update referrer's referral count if exists
+                    if (referredBy) {
+                        await db.collection('users').doc(referredBy).update({
+                            referralsCount: firebase.firestore.FieldValue.increment(1)
+                        });
+                        showNotification('تم تسجيلك من خلال دعوة صديق!', 'success');
+                    }
                 }
                 
                 // Load user data
@@ -2167,17 +2078,19 @@
                 // Get today's date
                 const today = new Date().toDateString();
                 
-                // Check if need to reset daily earnings
+                // Check if need to reset daily earnings and viewed ads
                 if (userData.lastAdViewDate) {
                     const lastAdDate = new Date(userData.lastAdViewDate).toDateString();
                     if (lastAdDate !== today) {
                         const userRef = db.collection('users').doc(currentUser.uid);
                         await userRef.update({
                             adsViewedToday: 0,
-                            dailyEarnings: 0
+                            dailyEarnings: 0,
+                            viewedAdsToday: []
                         });
                         userData.adsViewedToday = 0;
                         userData.dailyEarnings = 0;
+                        userData.viewedAdsToday = [];
                     }
                 }
                 
@@ -2197,7 +2110,7 @@
             totalEarnings.textContent = formatNumber(userData.totalEarnings);
             referralCount.textContent = userData.referralsCount || 0;
             adsViewedCount.textContent = userData.adsViewedToday || 0;
-            dailyLimit.textContent = userData.dailyAdsLimit || 10;
+            dailyLimit.textContent = userData.dailyAdsLimit || 50;
             
             // Calculate USD
             const balanceUSD = (userData.balance / 30000).toFixed(2);
@@ -2250,7 +2163,6 @@
             
             // Timer modal buttons
             cancelAdBtn.addEventListener('click', cancelAdView);
-            openAdLinkBtn.addEventListener('click', openAdLink);
         }
 
         async function loadInitialData() {
@@ -2272,50 +2184,49 @@
             }
         }
 
-        async function initializeSampleAds() {
-            try {
-                const adsRef = db.collection('ads');
-                const snapshot = await adsRef.limit(1).get();
-                
-                if (snapshot.empty) {
-                    // Add sample ads
-                    for (const ad of sampleAds) {
-                        await adsRef.doc(ad.id).set(ad);
-                    }
-                }
-            } catch (error) {
-                console.error('Error initializing sample ads:', error);
-            }
-        }
-
         async function loadAds() {
             const adsGrid = document.getElementById('adsGrid');
             
-            // Show sample ads immediately
-            displayAds(sampleAds);
+            // Clear the grid
+            adsGrid.innerHTML = '<div class="spinner" style="grid-column: 1 / -1; margin: 40px auto;"></div>';
             
-            // Then try to load from Firestore
             try {
                 const now = new Date().toISOString();
                 const adsRef = db.collection('ads');
                 const snapshot = await adsRef
                     .where('active', '==', true)
-                    .where('createdAt', '<=', now)
-                    .limit(20)
+                    .where('expiryDate', '>', now)
+                    .orderBy('expiryDate', 'desc')
+                    .limit(100)
                     .get();
                 
-                if (!snapshot.empty) {
-                    const firestoreAds = [];
-                    snapshot.forEach(doc => {
-                        firestoreAds.push({ id: doc.id, ...doc.data() });
-                    });
-                    
-                    // Display Firestore ads
-                    displayAds(firestoreAds);
+                if (snapshot.empty) {
+                    adsGrid.innerHTML = `
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px;">
+                            <i class="fas fa-ad" style="font-size: 4rem; color: #ddd; margin-bottom: 20px;"></i>
+                            <h3 style="color: #666;">لا توجد إعلانات متاحة حالياً</h3>
+                            <p style="color: #888;">يرجى العودة لاحقاً لمشاهدة إعلانات جديدة</p>
+                        </div>
+                    `;
+                    return;
                 }
+                
+                const adsArray = [];
+                snapshot.forEach(doc => {
+                    adsArray.push({ id: doc.id, ...doc.data() });
+                });
+                
+                displayAds(adsArray);
+                
             } catch (error) {
-                console.error('Error loading Firestore ads:', error);
-                // Keep showing sample ads
+                console.error('Error loading ads:', error);
+                adsGrid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 4rem; color: #ddd; margin-bottom: 20px;"></i>
+                        <h3 style="color: #666;">حدث خطأ في تحميل الإعلانات</h3>
+                        <p style="color: #888;">يرجى المحاولة مرة أخرى</p>
+                    </div>
+                `;
             }
         }
 
@@ -2336,10 +2247,14 @@
             let html = '';
             
             adsArray.forEach(ad => {
+                // Check if user has already viewed this ad today
+                const hasViewed = userData.viewedAdsToday && userData.viewedAdsToday.includes(ad.id);
+                const isDisabled = hasViewed || userData.adsViewedToday >= userData.dailyAdsLimit;
+                
                 html += `
-                    <div class="ad-card" onclick="startAdView(${JSON.stringify(ad).replace(/"/g, '&quot;')})">
-                        <div class="ad-badge">${ad.category}</div>
-                        <img src="${ad.image}" alt="${ad.title}" class="ad-image">
+                    <div class="ad-card" onclick="${isDisabled ? '' : `startAdView('${ad.id}')`}" style="${isDisabled ? 'opacity: 0.7; cursor: not-allowed;' : ''}">
+                        ${hasViewed ? '<div class="ad-badge">تمت المشاهدة</div>' : ''}
+                        <img src="${ad.image || 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400'}" alt="${ad.title}" class="ad-image">
                         <div class="ad-content">
                             <h3 class="ad-title">${ad.title}</h3>
                             <p class="ad-description">${ad.description}</p>
@@ -2353,6 +2268,14 @@
                                     <span>${ad.duration} ثانية</span>
                                 </div>
                             </div>
+                            ${isDisabled ? 
+                                `<div style="margin-top: 15px; text-align: center;">
+                                    <span style="color: ${hasViewed ? 'var(--success)' : 'var(--danger)'}; font-weight: 600;">
+                                        ${hasViewed ? 'تمت المشاهدة اليوم' : 'وصلت للحد اليومي'}
+                                    </span>
+                                </div>` 
+                                : ''
+                            }
                         </div>
                     </div>
                 `;
@@ -2361,7 +2284,7 @@
             adsGrid.innerHTML = html;
         }
 
-        function startAdView(ad) {
+        async function startAdView(adId) {
             if (isViewingAd) {
                 showNotification('أنت تشاهد إعلاناً بالفعل', 'warning');
                 return;
@@ -2369,29 +2292,52 @@
             
             // Check daily limit
             if (userData.adsViewedToday >= userData.dailyAdsLimit) {
-                showNotification('لقد وصلت إلى الحد اليومي لمشاهدة الإعلانات', 'warning');
+                showNotification('لقد وصلت إلى الحد اليومي (50 إعلان)', 'warning');
                 return;
             }
             
-            currentAd = ad;
-            timerSeconds = ad.duration;
-            totalTimerSeconds = ad.duration;
-            isViewingAd = true;
+            // Check if user already viewed this ad today
+            if (userData.viewedAdsToday && userData.viewedAdsToday.includes(adId)) {
+                showNotification('لقد شاهدت هذا الإعلان اليوم بالفعل', 'warning');
+                return;
+            }
             
-            // Update modal
-            currentAdTitle.textContent = ad.title;
-            currentAdDescription.textContent = ad.description;
-            adRewardPoints.textContent = ad.points;
-            
-            // Start timer
-            startTimer();
-            
-            // Show modal
-            timerModal.classList.add('active');
-            
-            // Add visibility listeners
-            document.addEventListener('visibilitychange', handleVisibilityChange);
-            window.addEventListener('beforeunload', handleBeforeUnload);
+            try {
+                // Get ad details
+                const adRef = db.collection('ads').doc(adId);
+                const adDoc = await adRef.get();
+                
+                if (!adDoc.exists) {
+                    showNotification('الإعلان غير موجود', 'error');
+                    return;
+                }
+                
+                const ad = { id: adDoc.id, ...adDoc.data() };
+                
+                currentAd = ad;
+                timerSeconds = ad.duration;
+                totalTimerSeconds = ad.duration;
+                isViewingAd = true;
+                
+                // Update modal
+                currentAdTitle.textContent = ad.title;
+                currentAdDescription.textContent = ad.description;
+                adRewardPoints.textContent = ad.points;
+                
+                // Start timer
+                startTimer();
+                
+                // Show modal
+                timerModal.classList.add('active');
+                
+                // Add visibility listeners
+                document.addEventListener('visibilitychange', handleVisibilityChange);
+                window.addEventListener('beforeunload', handleBeforeUnload);
+                
+            } catch (error) {
+                console.error('Error starting ad view:', error);
+                showNotification('حدث خطأ في تشغيل الإعلان', 'error');
+            }
         }
 
         function startTimer() {
@@ -2454,7 +2400,13 @@
                 await rewardUser(currentAd.points);
                 showNotification(`مبروك! لقد ربحت ${currentAd.points} نقطة`, 'success');
                 await recordAdView(true);
-                openAdLinkBtn.style.display = 'inline-block';
+                
+                // Open ad link automatically
+                setTimeout(() => {
+                    if (currentAd.link) {
+                        window.open(currentAd.link, '_blank');
+                    }
+                }, 500);
             } else {
                 await penalizeUser(5);
                 showNotification('تم خصم 5 نقاط بسبب ترك الإعلان', 'error');
@@ -2479,7 +2431,8 @@
                         totalEarnings: firebase.firestore.FieldValue.increment(points),
                         adsViewedToday: firebase.firestore.FieldValue.increment(1),
                         totalAdsViewed: firebase.firestore.FieldValue.increment(1),
-                        lastAdViewDate: new Date().toISOString()
+                        lastAdViewDate: new Date().toISOString(),
+                        viewedAdsToday: firebase.firestore.FieldValue.arrayUnion(currentAd.id)
                     });
                     
                     // Reward referrer
@@ -2491,6 +2444,13 @@
                             referralEarnings: firebase.firestore.FieldValue.increment(referralBonus)
                         });
                     }
+                    
+                    // Update ad views count
+                    const adRef = db.collection('ads').doc(currentAd.id);
+                    transaction.update(adRef, {
+                        totalViews: firebase.firestore.FieldValue.increment(1),
+                        lastViewed: new Date().toISOString()
+                    });
                 });
                 
                 await loadUserData();
@@ -2535,13 +2495,6 @@
         function cancelAdView() {
             if (confirm('هل أنت متأكد من إلغاء مشاهدة الإعلان؟ سيتم خصم 5 نقاط من رصيدك.')) {
                 finishAdView(false);
-            }
-        }
-
-        function openAdLink() {
-            if (currentAd && currentAd.link) {
-                window.open(currentAd.link, '_blank');
-                openAdLinkBtn.style.display = 'none';
             }
         }
 
@@ -3285,7 +3238,7 @@
                     
                     <div class="form-group">
                         <label class="form-label">الحد اليومي للإعلانات</label>
-                        <input type="number" id="dailyAdsLimit" class="form-control" value="10" min="1" max="50">
+                        <input type="number" id="dailyAdsLimit" class="form-control" value="50" min="1" max="100">
                     </div>
                     
                     <div class="form-group">
@@ -3525,6 +3478,10 @@
             return Math.random().toString(36).substr(2, 8).toUpperCase();
         }
 
+        function generateSessionId() {
+            return 'sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
         async function getUserIP() {
             try {
                 const response = await fetch('https://api.ipify.org?format=json');
@@ -3538,36 +3495,6 @@
         function checkReferralCode() {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get('ref');
-        }
-
-        async function applyReferralCode() {
-            const refCode = checkReferralCode();
-            if (!refCode || !currentUser) return;
-            
-            try {
-                const usersRef = db.collection('users');
-                const snapshot = await usersRef.where('referralCode', '==', refCode).get();
-                
-                if (!snapshot.empty) {
-                    const referrerDoc = snapshot.docs[0];
-                    const referrerId = referrerDoc.id;
-                    
-                    if (referrerId !== currentUser.uid) {
-                        const userRef = db.collection('users').doc(currentUser.uid);
-                        await userRef.update({
-                            referredBy: referrerId
-                        });
-                        
-                        await db.collection('users').doc(referrerId).update({
-                            referralsCount: firebase.firestore.FieldValue.increment(1)
-                        });
-                        
-                        showNotification('تم تطبيق كود الدعوة بنجاح!', 'success');
-                    }
-                }
-            } catch (error) {
-                console.error('Error applying referral:', error);
-            }
         }
 
         function showNotification(message, type = 'info') {
@@ -3639,6 +3566,7 @@
 
         function refreshData() {
             loadUserData();
+            loadAds();
             showNotification('تم تحديث البيانات', 'success');
         }
 
