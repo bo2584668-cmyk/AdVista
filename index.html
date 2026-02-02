@@ -666,6 +666,32 @@
             color: #333;
         }
         
+        /* Ad Warning Modal */
+        .warning-modal {
+            background: white;
+            border-radius: 30px;
+            width: 90%;
+            max-width: 400px;
+            overflow: hidden;
+            text-align: center;
+        }
+        
+        .warning-header {
+            background: var(--warning-gradient);
+            color: white;
+            padding: 25px;
+        }
+        
+        .warning-body {
+            padding: 30px;
+        }
+        
+        .warning-icon {
+            font-size: 4rem;
+            color: #f7971e;
+            margin-bottom: 20px;
+        }
+        
         /* Notifications */
         .notification-container {
             position: fixed;
@@ -742,6 +768,20 @@
             border-top: 5px solid #667eea;
             border-radius: 50%;
             animation: spin 1s linear infinite;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            color: #ccc;
+            margin-bottom: 20px;
+            display: block;
         }
         
         /* Animations */
@@ -1090,9 +1130,6 @@
                             <button class="btn btn-warning" onclick="showReferral()">
                                 <i class="fas fa-share-alt"></i> مشاركة رابط الدعوة
                             </button>
-                            <button class="btn btn-danger" onclick="showSupport()">
-                                <i class="fas fa-headset"></i> الدعم الفني
-                            </button>
                         </div>
                     </div>
                     
@@ -1287,7 +1324,7 @@
                             لوحة تحكم الأدمن
                         </h2>
                         <div style="display: flex; gap: 10px;">
-                            <button class="btn btn-success" onclick="addNewAd()">
+                            <button class="btn btn-success" onclick="showAddAdForm()">
                                 <i class="fas fa-plus"></i> إعلان جديد
                             </button>
                         </div>
@@ -1328,20 +1365,20 @@
                         </div>
                     </div>
                     
-                    <!-- Admin Tabs -->
-                    <div style="margin: 30px 0; border-bottom: 2px solid #eee;">
-                        <div style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;">
-                            <button class="admin-tab-btn active" data-tab="withdrawals">طلبات السحب</button>
-                            <button class="admin-tab-btn" data-tab="users">المستخدمين</button>
-                            <button class="admin-tab-btn" data-tab="ads">الإعلانات</button>
-                            <button class="admin-tab-btn" data-tab="addAd">إضافة إعلان</button>
-                        </div>
-                    </div>
-                    
                     <!-- Admin Content -->
                     <div id="adminContent">
-                        <div class="spinner-container">
-                            <div class="spinner"></div>
+                        <div style="margin: 30px 0; border-bottom: 2px solid #eee;">
+                            <div style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;">
+                                <button class="admin-tab-btn active" data-tab="withdrawals" onclick="showAdminTab('withdrawals')">طلبات السحب</button>
+                                <button class="admin-tab-btn" data-tab="users" onclick="showAdminTab('users')">المستخدمين</button>
+                                <button class="admin-tab-btn" data-tab="ads" onclick="showAdminTab('ads')">الإعلانات</button>
+                            </div>
+                        </div>
+                        
+                        <div id="adminTabContent">
+                            <div class="spinner-container">
+                                <div class="spinner"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1393,102 +1430,34 @@
         </div>
     </div>
     
+    <!-- Warning Modal -->
+    <div id="warningModal" class="modal-overlay">
+        <div class="warning-modal">
+            <div class="warning-header">
+                <h2 style="margin: 0; font-size: 1.5rem;">تنبيه!</h2>
+            </div>
+            <div class="warning-body">
+                <div class="warning-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h3 id="warningTitle" style="margin-bottom: 15px; color: #333;">انتبه!</h3>
+                <p id="warningMessage" style="color: #666; margin-bottom: 25px; line-height: 1.6;">
+                    يجب أن تبقى في هذه الصفحة حتى تنتهي المدة للحصول على النقاط.
+                </p>
+                <div style="display: flex; gap: 10px; justify-content: center;">
+                    <button id="confirmWatchBtn" class="btn btn-success">
+                        <i class="fas fa-play"></i> بدء المشاهدة
+                    </button>
+                    <button id="cancelWatchBtn" class="btn btn-danger">
+                        <i class="fas fa-times"></i> إلغاء
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- Notification Container -->
     <div class="notification-container" id="notificationContainer"></div>
-
-    <!-- Sample Ads (Hardcoded for initial display) -->
-    <script id="sampleAds" type="application/json">
-        [
-            {
-                "id": "ad_sample_1",
-                "title": "عروض خاصة على الهواتف الذكية",
-                "description": "احصل على خصومات تصل إلى 50% على أحدث الهواتف الذكية",
-                "image": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400",
-                "link": "https://linkjust.com/xbTIX",
-                "points": 50,
-                "duration": 30,
-                "category": "تكنولوجيا",
-                "active": true
-            },
-            {
-                "id": "ad_sample_2",
-                "title": "منتجات التخسيس والرجيم",
-                "description": "احصل على جسم مثالي مع منتجاتنا الطبيعية",
-                "image": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400",
-                "link": "https://linkjust.com/xbTIX",
-                "points": 45,
-                "duration": 35,
-                "category": "صحة",
-                "active": true
-            },
-            {
-                "id": "ad_sample_3",
-                "title": "دورات البرمجة الاحترافية",
-                "description": "تعلم البرمجة واحصل على وظيفة بأعلى راتب",
-                "image": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400",
-                "link": "https://linkjust.com/xbTIX",
-                "points": 60,
-                "duration": 40,
-                "category": "تعليم",
-                "active": true
-            },
-            {
-                "id": "ad_sample_4",
-                "title": "عروض السفر والسياحة",
-                "description": "احجز رحلتك القادمة بأسعار مخفضة",
-                "image": "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400",
-                "link": "https://linkjust.com/xbTIX",
-                "points": 55,
-                "duration": 38,
-                "category": "سفر",
-                "active": true
-            },
-            {
-                "id": "ad_sample_5",
-                "title": "تطبيقات الربح من الإنترنت",
-                "description": "اربح المال من خلال هاتفك الذكي",
-                "image": "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400",
-                "link": "https://otieu.com/4/10528245",
-                "points": 65,
-                "duration": 45,
-                "category": "ربح",
-                "active": true
-            },
-            {
-                "id": "ad_sample_6",
-                "title": "منتجات العناية بالبشرة",
-                "description": "احصل على بشرة نقية وصافية",
-                "image": "https://images.unsplash.com/photo-1522338242990-e1c0c1e0d1c5?w=400",
-                "link": "https://otieu.com/4/10528245",
-                "points": 40,
-                "duration": 32,
-                "category": "جمال",
-                "active": true
-            },
-            {
-                "id": "ad_sample_7",
-                "title": "خدمات التسويق الإلكتروني",
-                "description": "طور مشروعك مع أفضل استراتيجيات التسويق",
-                "image": "https://images.unsplash.com/photo-1552664730-d307ca884978?w=400",
-                "link": "https://otieu.com/4/10528245",
-                "points": 70,
-                "duration": 42,
-                "category": "أعمال",
-                "active": true
-            },
-            {
-                "id": "ad_sample_8",
-                "title": "ألعاب الجوال المربحة",
-                "description": "العب واربح جوائز حقيقية",
-                "image": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400",
-                "link": "https://otieu.com/4/10528245",
-                "points": 75,
-                "duration": 44,
-                "category": "ترفيه",
-                "active": true
-            }
-        ]
-    </script>
 
     <script>
         // Firebase Configuration
@@ -1522,6 +1491,7 @@
         let isAdmin = false;
         let isViewingAd = false;
         let userSessionId = null;
+        let ads = [];
 
         // DOM Elements
         const loginScreen = document.getElementById('loginScreen');
@@ -1549,6 +1519,11 @@
         const submitWithdrawalBtn = document.getElementById('submitWithdrawalBtn');
         const referralLink = document.getElementById('referralLink');
         const copyReferralBtn = document.getElementById('copyReferralBtn');
+        const warningModal = document.getElementById('warningModal');
+        const warningTitle = document.getElementById('warningTitle');
+        const warningMessage = document.getElementById('warningMessage');
+        const confirmWatchBtn = document.getElementById('confirmWatchBtn');
+        const cancelWatchBtn = document.getElementById('cancelWatchBtn');
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
@@ -1596,6 +1571,7 @@
                 if (userDoc.exists) {
                     // Existing user - update last login
                     userData = userDoc.data();
+                    isAdmin = userData.isAdmin || false;
                     
                     // Check for suspicious activity
                     await checkSuspiciousActivity(userData, userIp);
@@ -1699,7 +1675,7 @@
             }
             
             // Show admin nav if admin
-            if (userData.isAdmin) {
+            if (isAdmin) {
                 document.getElementById('adminNavItem').style.display = 'block';
             }
             
@@ -1753,6 +1729,9 @@
             if (userStats) {
                 document.getElementById('totalAdsViewed').textContent = userStats.totalAdsWatched || 0;
                 document.getElementById('referralEarnings').textContent = userData.referralEarnings || 0;
+                document.getElementById('adsToday').textContent = userData.adsViewedToday || 0;
+                document.getElementById('refCount').textContent = userData.referralsCount || 0;
+                document.getElementById('refEarnings').textContent = userData.referralEarnings || 0;
             }
         }
 
@@ -1789,16 +1768,9 @@
             cancelAdBtn.addEventListener('click', cancelAdView);
             openAdLinkBtn.addEventListener('click', openAdLink);
             
-            // Admin tabs
-            document.querySelectorAll('.admin-tab-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const tab = this.getAttribute('data-tab');
-                    showAdminTab(tab);
-                    
-                    document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                });
-            });
+            // Warning modal buttons
+            confirmWatchBtn.addEventListener('click', confirmAdWatch);
+            cancelWatchBtn.addEventListener('click', cancelAdWatch);
         }
 
         // Show Section
@@ -1836,25 +1808,11 @@
 
         // Load Initial Data
         async function loadInitialData() {
-            // Load ads (show sample ads immediately, then load from Firestore)
-            loadSampleAds();
-            loadFirestoreAds();
+            // Load ads from Firestore
+            await loadFirestoreAds();
             
             // Load recent activity
             loadRecentActivity();
-            
-            // Load notifications
-            loadNotifications();
-        }
-
-        // Load Sample Ads (Hardcoded for instant display)
-        function loadSampleAds() {
-            try {
-                const sampleAds = JSON.parse(document.getElementById('sampleAds').textContent);
-                displayAds(sampleAds);
-            } catch (error) {
-                console.error('Error loading sample ads:', error);
-            }
         }
 
         // Load Firestore Ads
@@ -1865,45 +1823,40 @@
                 const snapshot = await adsRef
                     .where('active', '==', true)
                     .where('expiryDate', '>', now)
-                    .limit(20)
+                    .orderBy('expiryDate', 'asc')
+                    .limit(50)
                     .get();
                 
+                ads = [];
                 if (!snapshot.empty) {
-                    const firestoreAds = [];
                     snapshot.forEach(doc => {
-                        firestoreAds.push({ id: doc.id, ...doc.data() });
+                        ads.push({ id: doc.id, ...doc.data() });
                     });
-                    
-                    // Display Firestore ads (replace sample ads)
-                    displayAds(firestoreAds);
                 }
+                
+                displayAds();
             } catch (error) {
                 console.error('Error loading Firestore ads:', error);
-                // Keep showing sample ads if Firestore fails
+                showNotification('حدث خطأ في تحميل الإعلانات', 'error');
+                displayEmptyAds();
             }
         }
 
         // Display Ads
-        function displayAds(adsArray) {
+        function displayAds() {
             const adsContainer = document.getElementById('adsContainer');
             
-            if (!adsArray || adsArray.length === 0) {
-                adsContainer.innerHTML = `
-                    <div style="text-align: center; padding: 50px;">
-                        <i class="fas fa-ad" style="font-size: 4rem; color: #ccc; margin-bottom: 20px;"></i>
-                        <h3 style="color: #666;">لا توجد إعلانات متاحة حالياً</h3>
-                        <p>يرجى العودة لاحقاً لمشاهدة إعلانات جديدة</p>
-                    </div>
-                `;
+            if (!ads || ads.length === 0) {
+                displayEmptyAds();
                 return;
             }
             
             let html = '<div class="ads-grid">';
             
-            adsArray.forEach(ad => {
+            ads.forEach(ad => {
                 html += `
-                    <div class="ad-card" onclick="startAdView(${JSON.stringify(ad).replace(/"/g, '&quot;')})">
-                        <img src="${ad.image}" alt="${ad.title}" class="ad-image">
+                    <div class="ad-card" onclick="showAdWarning('${ad.id.replace(/'/g, "\\'")}')">
+                        <img src="${ad.image || 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400'}" alt="${ad.title}" class="ad-image">
                         <div class="ad-content">
                             <h3 class="ad-title">${ad.title}</h3>
                             <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">${ad.description}</p>
@@ -1926,12 +1879,23 @@
             adsContainer.innerHTML = html;
         }
 
-        // Start Ad View
-        function startAdView(ad) {
-            if (isViewingAd) {
-                showNotification('أنت تشاهد إعلاناً بالفعل', 'warning');
-                return;
-            }
+        // Display Empty Ads State
+        function displayEmptyAds() {
+            const adsContainer = document.getElementById('adsContainer');
+            adsContainer.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-ad"></i>
+                    <h3 style="margin-bottom: 10px; color: #666;">لا توجد إعلانات متاحة حالياً</h3>
+                    <p>يرجى العودة لاحقاً لمشاهدة إعلانات جديدة</p>
+                    ${isAdmin ? '<button class="btn btn-success" style="margin-top: 20px;" onclick="showAddAdForm()"><i class="fas fa-plus"></i> إضافة إعلان جديد</button>' : ''}
+                </div>
+            `;
+        }
+
+        // Show Ad Warning
+        async function showAdWarning(adId) {
+            const ad = ads.find(a => a.id === adId);
+            if (!ad) return;
             
             // Check daily limit
             if (userData.adsViewedToday >= userData.dailyAdsLimit) {
@@ -1939,22 +1903,52 @@
                 return;
             }
             
-            // Check if ad was viewed today
+            // Check if ad was already viewed today
             const today = new Date().toDateString();
-            if (userData.lastAdViewDate) {
-                const lastAdDate = new Date(userData.lastAdViewDate).toDateString();
-                // For now, allow viewing - we'll check per ad in Firestore
+            const adViewsRef = db.collection('adViews');
+            const viewedToday = await adViewsRef
+                .where('userId', '==', currentUser.uid)
+                .where('adId', '==', ad.id)
+                .where('viewedAt', '>=', new Date(today).toISOString())
+                .get();
+            
+            if (!viewedToday.empty) {
+                showNotification('لقد شاهدت هذا الإعلان اليوم بالفعل', 'warning');
+                return;
             }
             
             currentAd = ad;
-            timerSeconds = ad.duration;
-            totalTimerSeconds = ad.duration;
+            
+            // Show warning modal
+            warningTitle.textContent = 'تأكيد مشاهدة الإعلان';
+            warningMessage.textContent = `سوف تبدأ مشاهدة إعلان "${ad.title}" لمدة ${ad.duration} ثانية. يجب أن تبقى في هذه الصفحة حتى تنتهي المدة للحصول على ${ad.points} نقطة.`;
+            warningModal.classList.add('active');
+        }
+
+        // Confirm Ad Watch
+        function confirmAdWatch() {
+            warningModal.classList.remove('active');
+            startAdView();
+        }
+
+        // Cancel Ad Watch
+        function cancelAdWatch() {
+            warningModal.classList.remove('active');
+            currentAd = null;
+        }
+
+        // Start Ad View
+        function startAdView() {
+            if (!currentAd) return;
+            
+            timerSeconds = currentAd.duration;
+            totalTimerSeconds = currentAd.duration;
             isViewingAd = true;
             
             // Update modal
-            currentAdTitle.textContent = ad.title;
-            currentAdDescription.textContent = ad.description;
-            adRewardPoints.textContent = ad.points;
+            currentAdTitle.textContent = currentAd.title;
+            currentAdDescription.textContent = currentAd.description;
+            adRewardPoints.textContent = currentAd.points;
             
             // Start timer
             startTimer();
@@ -2005,8 +1999,8 @@
         // Handle Visibility Change
         function handleVisibilityChange() {
             if (document.hidden && isViewingAd) {
-                showNotification('تم اكتشاف تغيير النافذة! سيتم خصم 5 نقاط', 'warning');
-                finishAdView(false);
+                // User switched tabs or minimized window
+                showNotification('تم اكتشاف تغيير النافذة! الرجاء العودة إلى الصفحة', 'warning');
             }
         }
 
@@ -2014,7 +2008,7 @@
         function handleBeforeUnload(e) {
             if (isViewingAd) {
                 e.preventDefault();
-                e.returnValue = 'إذا غادرت الآن سيتم خصم 5 نقاط. هل أنت متأكد؟';
+                e.returnValue = 'إذا غادرت الآن سيتم خصم 5 نقاط من رصيدك. هل أنت متأكد؟';
             }
         }
 
@@ -2254,9 +2248,9 @@
                 
                 if (snapshot.empty) {
                     container.innerHTML = `
-                        <div style="text-align: center; padding: 40px; color: #666;">
-                            <i class="fas fa-history" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
-                            <p>لا توجد طلبات سحب سابقة</p>
+                        <div class="empty-state">
+                            <i class="fas fa-history"></i>
+                            <h3 style="margin-bottom: 10px; color: #666;">لا توجد طلبات سحب سابقة</h3>
                         </div>
                     `;
                     return;
@@ -2334,10 +2328,10 @@
                 
                 if (snapshot.empty) {
                     container.innerHTML = `
-                        <div style="text-align: center; padding: 40px; color: #666;">
-                            <i class="fas fa-user-plus" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
-                            <p>لا توجد أحالات حتى الآن</p>
-                            <p style="margin-top: 10px;">شارك رابط الدعوة الخاص بك لبدء الربح!</p>
+                        <div class="empty-state">
+                            <i class="fas fa-user-plus"></i>
+                            <h3 style="margin-bottom: 10px; color: #666;">لا توجد أحالات حتى الآن</h3>
+                            <p>شارك رابط الدعوة الخاص بك لبدء الربح!</p>
                         </div>
                     `;
                     return;
@@ -2388,15 +2382,16 @@
                 const snapshot = await adViewsRef
                     .where('userId', '==', currentUser.uid)
                     .orderBy('viewedAt', 'desc')
-                    .limit(10)
+                    .limit(5)
                     .get();
                 
                 const container = document.getElementById('recentActivity');
                 
                 if (snapshot.empty) {
                     container.innerHTML = `
-                        <div style="text-align: center; padding: 20px; color: #666;">
-                            <p>لا توجد أنشطة حديثة</p>
+                        <div class="empty-state">
+                            <i class="fas fa-history"></i>
+                            <h3 style="margin-bottom: 10px; color: #666;">لا توجد أنشطة حديثة</h3>
                         </div>
                     `;
                     return;
@@ -2439,13 +2434,67 @@
 
         // Load Activity History
         async function loadActivityHistory() {
-            // Similar to recent activity but with filtering
-            loadRecentActivity();
+            try {
+                const filter = document.getElementById('historyFilter').value;
+                let query = db.collection('adViews').where('userId', '==', currentUser.uid);
+                
+                const snapshot = await query
+                    .orderBy('viewedAt', 'desc')
+                    .limit(20)
+                    .get();
+                
+                const container = document.getElementById('activityHistory');
+                
+                if (snapshot.empty) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-history"></i>
+                            <h3 style="margin-bottom: 10px; color: #666;">لا توجد أنشطة سابقة</h3>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let html = '<div style="overflow-x: auto;">';
+                html += '<table style="width: 100%; border-collapse: collapse; background: white; border-radius: 15px; overflow: hidden;">';
+                html += '<thead><tr style="background: #f8f9fa;">';
+                html += '<th style="padding: 15px; text-align: right;">النشاط</th>';
+                html += '<th style="padding: 15px; text-align: right;">النقاط</th>';
+                html += '<th style="padding: 15px; text-align: right;">التاريخ</th>';
+                html += '<th style="padding: 15px; text-align: right;">الوقت</th>';
+                html += '</tr></thead><tbody>';
+                
+                snapshot.forEach(doc => {
+                    const activity = doc.data();
+                    const date = new Date(activity.viewedAt).toLocaleDateString('ar-EG');
+                    const time = new Date(activity.viewedAt).toLocaleTimeString('ar-EG');
+                    
+                    const status = activity.completed ? 'مكتمل' : 'ملغي';
+                    const points = activity.points > 0 ? '+' + activity.points : '-' + 5;
+                    const color = activity.completed ? '#00b09b' : '#ff6b6b';
+                    
+                    html += '<tr style="border-bottom: 1px solid #eee;">';
+                    html += `<td style="padding: 15px;">
+                        <div style="font-weight: 600;">${activity.adTitle}</div>
+                        <div style="font-size: 0.9rem; color: #666;">${status}</div>
+                    </td>`;
+                    html += `<td style="padding: 15px; color: ${color}; font-weight: 600;">${points}</td>`;
+                    html += `<td style="padding: 15px;">${date}</td>`;
+                    html += `<td style="padding: 15px;">${time}</td>`;
+                    html += '</tr>';
+                });
+                
+                html += '</tbody></table></div>';
+                container.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Error loading activity history:', error);
+            }
         }
 
         // Load Admin Data
         async function loadAdminData() {
-            if (!userData.isAdmin) return;
+            if (!isAdmin) return;
             
             try {
                 // Load admin stats
@@ -2475,12 +2524,21 @@
                 
             } catch (error) {
                 console.error('Error loading admin data:', error);
+                showNotification('حدث خطأ في تحميل بيانات الأدمن', 'error');
             }
         }
 
         // Show Admin Tab
         async function showAdminTab(tab) {
-            const container = document.getElementById('adminContent');
+            const container = document.getElementById('adminTabContent');
+            
+            // Update active tab buttons
+            document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-tab') === tab) {
+                    btn.classList.add('active');
+                }
+            });
             
             switch(tab) {
                 case 'withdrawals':
@@ -2491,9 +2549,6 @@
                     break;
                 case 'ads':
                     await loadAdminAds();
-                    break;
-                case 'addAd':
-                    showAddAdForm();
                     break;
             }
         }
@@ -2507,7 +2562,17 @@
                     .limit(50)
                     .get();
                 
-                const container = document.getElementById('adminContent');
+                const container = document.getElementById('adminTabContent');
+                
+                if (snapshot.empty) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <h3 style="margin-bottom: 10px; color: #666;">لا توجد طلبات سحب</h3>
+                        </div>
+                    `;
+                    return;
+                }
                 
                 let html = '<div style="overflow-x: auto;">';
                 html += '<table style="width: 100%; border-collapse: collapse; background: white; border-radius: 15px; overflow: hidden;">';
@@ -2567,6 +2632,7 @@
                 
             } catch (error) {
                 console.error('Error loading admin withdrawals:', error);
+                container.innerHTML = '<p style="color: #666; text-align: center;">حدث خطأ في تحميل طلبات السحب</p>';
             }
         }
 
@@ -2609,7 +2675,7 @@
                     .limit(50)
                     .get();
                 
-                const container = document.getElementById('adminContent');
+                const container = document.getElementById('adminTabContent');
                 
                 let html = '<div style="overflow-x: auto;">';
                 html += '<table style="width: 100%; border-collapse: collapse; background: white; border-radius: 15px; overflow: hidden;">';
@@ -2643,6 +2709,7 @@
                 
             } catch (error) {
                 console.error('Error loading admin users:', error);
+                container.innerHTML = '<p style="color: #666; text-align: center;">حدث خطأ في تحميل المستخدمين</p>';
             }
         }
 
@@ -2655,7 +2722,7 @@
                     .limit(50)
                     .get();
                 
-                const container = document.getElementById('adminContent');
+                const container = document.getElementById('adminTabContent');
                 
                 let html = '<div style="overflow-x: auto;">';
                 html += '<table style="width: 100%; border-collapse: collapse; background: white; border-radius: 15px; overflow: hidden;">';
@@ -2698,6 +2765,7 @@
                 
             } catch (error) {
                 console.error('Error loading admin ads:', error);
+                container.innerHTML = '<p style="color: #666; text-align: center;">حدث خطأ في تحميل الإعلانات</p>';
             }
         }
 
@@ -2738,7 +2806,8 @@
 
         // Show Add Ad Form
         function showAddAdForm() {
-            const container = document.getElementById('adminContent');
+            showSection('admin');
+            const container = document.getElementById('adminTabContent');
             
             const html = `
                 <div style="max-width: 600px; margin: 0 auto;">
@@ -2760,7 +2829,7 @@
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">صورة الإعلان (اختياري)</label>
+                        <label class="form-label">صورة الإعلان (رابط)</label>
                         <input type="url" id="adImage" class="form-control" placeholder="https://example.com/image.jpg">
                         <small style="color: #666;">اتركه فارغاً لاستخدام صورة افتراضية</small>
                     </div>
@@ -2853,6 +2922,9 @@
                 
                 // Show ads tab
                 showAdminTab('ads');
+                
+                // Reload ads for all users
+                await loadFirestoreAds();
                 
             } catch (error) {
                 console.error('Error adding ad:', error);
@@ -2963,8 +3035,10 @@
             dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
             
             // Update dropdown content
-            document.getElementById('dropdownUserName').textContent = userData.name;
-            document.getElementById('dropdownUserEmail').textContent = userData.email;
+            if (userData) {
+                document.getElementById('dropdownUserName').textContent = userData.name;
+                document.getElementById('dropdownUserEmail').textContent = userData.email;
+            }
         }
 
         function showProfile() {
@@ -3005,15 +3079,6 @@
             showSection('referral');
         }
 
-        function showSupport() {
-            alert('الدعم الفني: يمكنك التواصل عبر البريد الإلكتروني أو صفحة التواصل');
-        }
-
-        function addNewAd() {
-            showSection('admin');
-            setTimeout(() => showAdminTab('addAd'), 100);
-        }
-
         function shareReferral() {
             if (navigator.share) {
                 navigator.share({
@@ -3044,17 +3109,13 @@
                 
                 if (userDoc.exists) {
                     userData = userDoc.data();
+                    isAdmin = userData.isAdmin || false;
                     updateUserUI();
                     updateStatsUI();
                 }
             } catch (error) {
                 console.error('Error loading user data:', error);
             }
-        }
-
-        // Load Notifications
-        async function loadNotifications() {
-            // Implement notification system
         }
 
         // Close dropdown when clicking outside
@@ -3079,7 +3140,7 @@
             } else if (!document.hidden && isViewingAd) {
                 hiddenTime = Date.now() - hiddenStart;
                 if (hiddenTime > 3000) { // If hidden for more than 3 seconds
-                    showNotification('تم اكتشاف تغيير النافذة!', 'warning');
+                    showNotification('تم اكتشاف تغيير النافذة! الرجاء العودة إلى الصفحة', 'warning');
                 }
             }
         });
