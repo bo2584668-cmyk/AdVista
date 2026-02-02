@@ -1221,7 +1221,8 @@
                 showNotification("جاري تسجيل الدخول...", "info");
                 
                 // Decode JWT token
-                const userData = parseJwt(response.credential);
+                const googleUserData = parseJwt(response.credential);
+
                 
                 // Sign in with Firebase
                 const credential = firebase.auth.GoogleAuthProvider.credential(response.credential);
