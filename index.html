@@ -1879,10 +1879,6 @@
             measurementId: "G-VG4S1SMKH8"
         };
 
-        // إعدادات LinkJust API
-        const LINKJUST_API_KEY = '2bb53cbbd70281d876ad360621c0f1026627f7c8';
-        const LINKJUST_API_URL = 'https://linkjust.com/api';
-
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
@@ -1959,6 +1955,9 @@
             // Generate session ID
             userSessionId = generateSessionId();
             
+            // Check for LinkJust verification
+            checkLinkJustVerification();
+            
             // Hide loading after 1.5 seconds max
             setTimeout(() => {
                 if (loadingOverlay.style.display !== 'none') {
@@ -1971,6 +1970,10 @@
             if (user) {
                 currentUser = user;
                 await handleUserLogin(user);
+                // Check for LinkJust verification after login
+                setTimeout(() => {
+                    checkLinkJustVerification();
+                }, 1000);
             } else {
                 showLoginScreen();
             }
@@ -2329,13 +2332,9 @@
                 // استخدام صورة افتراضية إذا لم تكن الصورة موجودة
                 const imageUrl = ad.image && ad.image !== 'لا' ? ad.image : 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400';
                 
-                // تحديد نوع الإعلان (عادي أو مختصر)
-                const isShortAd = ad.type === 'short';
-                
                 html += `
-                    <div class="ad-card" onclick="${isDisabled ? '' : isShortAd ? `handleShortAd('${ad.id}')` : `startAdView('${ad.id}')`}" style="${isDisabled ? 'opacity: 0.8; cursor: not-allowed;' : ''}">
+                    <div class="ad-card" onclick="${isDisabled ? '' : `startAdView('${ad.id}')`}" style="${isDisabled ? 'opacity: 0.8; cursor: not-allowed;' : ''}">
                         ${hasViewed ? '<div class="ad-badge">تمت المشاهدة</div>' : ''}
-                        ${isShortAd ? '<div class="ad-badge" style="background: var(--warning);">مختصر</div>' : ''}
                         <img src="${imageUrl}" alt="${ad.title || 'إعلان'}" class="ad-image">
                         <div class="ad-content">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
@@ -2355,7 +2354,7 @@
                                 </div>
                                 <div class="ad-duration">
                                     <i class="fas fa-clock"></i>
-                                    <span>${isShortAd ? 'عد العداد' : (ad.duration || 30) + ' ثانية'}</span>
+                                    <span>${ad.duration || 30} ثانية</span>
                                 </div>
                             </div>
                             ${isDisabled ? 
@@ -2366,116 +2365,12 @@
                                 </div>` 
                                 : ''
                             }
-                            ${isShortAd && !isDisabled ? 
-                                `<div style="margin-top: 20px; text-align: center;">
-                                    <button class="btn btn-primary" style="padding: 12px 25px;" onclick="event.stopPropagation(); handleShortAd('${ad.id}')">
-                                        <i class="fas fa-external-link-alt"></i> مشاهدة إعلان مختصر
-                                    </button>
-                                </div>` 
-                                : ''
-                            }
                         </div>
                     </div>
                 `;
             });
             
             adsGrid.innerHTML = html;
-        }
-
-        // دالة لإنشاء رابط مختصر باستخدام LinkJust
-        async function createShortenedLink(adId) {
-            try {
-                // الحصول على UID المستخدم
-                const uid = currentUser.uid;
-                
-                // بناء رابط الوجهة مع UID
-                const destination = `https://ad-vista.vercel.app/verify.html?uid=${uid}&ad=${adId}`;
-                
-                // إعداد طلب LinkJust API
-                const response = await fetch(LINKJUST_API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${LINKJUST_API_KEY}`
-                    },
-                    body: JSON.stringify({
-                        url: destination,
-                        title: 'مشاهدة إعلان Advista',
-                        type: 'public'
-                    })
-                });
-                
-                const data = await response.json();
-                
-                if (data.short_url) {
-                    return data.short_url;
-                } else {
-                    throw new Error('فشل في إنشاء الرابط المختصر');
-                }
-                
-            } catch (error) {
-                console.error('Error creating shortened link:', error);
-                showNotification('حدث خطأ في تشغيل الإعلان', 'error');
-                return null;
-            }
-        }
-
-        // دالة لمعالجة الإعلانات المختصرة
-        async function handleShortAd(adId) {
-            if (isViewingAd) {
-                showNotification('أنت تشاهد إعلاناً بالفعل', 'warning');
-                return;
-            }
-            
-            // التحقق من الحد اليومي
-            if (userData.adsViewedToday >= userData.dailyAdsLimit) {
-                showNotification('لقد وصلت إلى الحد اليومي (50 إعلان)', 'warning');
-                return;
-            }
-            
-            // التحقق مما إذا كان المستخدم قد شاهد هذا الإعلان اليوم
-            if (userData.viewedAdsToday && userData.viewedAdsToday.includes(adId)) {
-                showNotification('لقد شاهدت هذا الإعلان اليوم بالفعل', 'warning');
-                return;
-            }
-            
-            try {
-                // جلب تفاصيل الإعلان
-                const adRef = db.collection('ads').doc(adId);
-                const adDoc = await adRef.get();
-                
-                if (!adDoc.exists) {
-                    showNotification('الإعلان غير موجود', 'error');
-                    return;
-                }
-                
-                const ad = { id: adDoc.id, ...adDoc.data() };
-                currentAd = ad;
-                
-                // إنشاء رابط مختصر
-                const shortUrl = await createShortenedLink(adId);
-                
-                if (shortUrl) {
-                    // فتح الرابط المختصر في تبويب جديد
-                    window.open(shortUrl, '_blank');
-                    
-                    // تسجيل بداية المشاهدة
-                    await db.collection('adTracking').doc().set({
-                        userId: currentUser.uid,
-                        adId: adId,
-                        startTime: new Date().toISOString(),
-                        status: 'pending',
-                        shortUrl: shortUrl,
-                        points: ad.points || 50
-                    });
-                    
-                    showNotification('تم فتح الإعلان في تبويب جديد، يرجى الانتظار للعد التنازلي', 'info');
-                }
-                
-            } catch (error) {
-                console.error('Error handling short ad:', error);
-                showNotification('حدث خطأ في تشغيل الإعلان', 'error');
-            }
         }
 
         async function startAdView(adId) {
@@ -2514,6 +2409,24 @@
                 ad.points = ad.points || 50;
                 ad.duration = ad.duration || 30;
                 
+                // التحقق إذا كان الرابط من LinkJust (بدون عداد)
+                const adLink = ad.link || '';
+                if (adLink.includes('linkjust.com') || adLink.includes('linkjust.net')) {
+                    // لروابط LinkJust، نعطي النقاط مباشرة دون عداد
+                    currentAd = ad;
+                    await rewardUser(ad.points);
+                    showNotification(`مبروك! لقد ربحت ${ad.points} نقطة من رابط LinkJust`, 'success');
+                    await recordAdView(true);
+                    
+                    // فتح الرابط مباشرة
+                    if (ad.link) {
+                        window.open(ad.link, '_blank');
+                    }
+                    
+                    return;
+                }
+                
+                // للإعلانات العادية، نستخدم العداد
                 currentAd = ad;
                 timerSeconds = ad.duration;
                 totalTimerSeconds = ad.duration;
@@ -3176,14 +3089,6 @@
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">نوع الإعلان</label>
-                        <select id="adType" class="form-control" required>
-                            <option value="normal">عادي (مشاهدة مباشرة)</option>
-                            <option value="short">مختصر (LinkJust)</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
                         <label class="form-label">تاريخ الانتهاء</label>
                         <input type="date" id="adExpiry" class="form-control" value="${expiryDate}" required>
                     </div>
@@ -3209,12 +3114,11 @@
                 const points = parseInt(document.getElementById('adPoints').value);
                 const duration = parseInt(document.getElementById('adDuration').value);
                 const category = document.getElementById('adCategory').value;
-                const adType = document.getElementById('adType').value;
                 const expiry = document.getElementById('adExpiry').value;
                 const dailyLimit = parseInt(document.getElementById('adDailyLimit').value) || 0;
                 
                 // Validation
-                if (!title || !description || !link || !image || !points || !duration || !category || !adType || !expiry) {
+                if (!title || !description || !link || !image || !points || !duration || !category || !expiry) {
                     showNotification('يرجى ملء جميع الحقول المطلوبة', 'error');
                     return;
                 }
@@ -3241,7 +3145,6 @@
                     points: points,
                     duration: duration,
                     category: category,
-                    type: adType,
                     dailyLimit: dailyLimit,
                     totalViews: 0,
                     expiryDate: expiry + 'T23:59:59.999Z',
@@ -3298,7 +3201,7 @@
                         <div class="table-row">
                             <div class="table-cell">
                                 <div style="font-weight: 800;">${ad.title}</div>
-                                <div style="font-size: 1rem; color: #666;">${ad.category} - ${ad.type === 'short' ? 'مختصر' : 'عادي'}</div>
+                                <div style="font-size: 1rem; color: #666;">${ad.category}</div>
                             </div>
                             <div class="table-cell">${ad.points} نقطة</div>
                             <div class="table-cell">${ad.duration} ثانية</div>
@@ -3709,6 +3612,95 @@
             return urlParams.get('ref');
         }
 
+        // نظام التحقق من روابط LinkJust
+        async function checkLinkJustVerification() {
+            // التحقق من وجود المستخدم الحالي
+            if (!currentUser) return;
+
+            // الحصول على عنوان URL الحالي
+            const currentUrl = window.location.href;
+            const urlParams = new URLSearchParams(window.location.search);
+
+            // الشرط 1: التحقق من وجود المعلمة done=true
+            if (urlParams.has('done') && urlParams.get('done') === 'true') {
+                // الشرط 2: التحقق من أن المصدر هو linkjust.com أو linkjust.net
+                const referrer = document.referrer.toLowerCase();
+                if (referrer.includes('linkjust.com') || referrer.includes('linkjust.net')) {
+                    try {
+                        showNotification('جاري التحقق من رابط LinkJust...', 'info');
+                        
+                        // تحديث رصيد المستخدم بإضافة 50 نقطة
+                        const userRef = db.collection('users').doc(currentUser.uid);
+                        
+                        await db.runTransaction(async (transaction) => {
+                            const userDoc = await transaction.get(userRef);
+                            const user = userDoc.data();
+                            
+                            // التحقق من عدم تكرار العملية
+                            const today = new Date().toDateString();
+                            const lastAdDate = user.lastAdViewDate ? new Date(user.lastAdViewDate).toDateString() : null;
+                            
+                            if (lastAdDate === today) {
+                                // إذا كان اليوم نفسه، تحقق من أن هذا الإعلان لم يتم مشاهدته
+                                if (user.viewedAdsToday && user.viewedAdsToday.includes('linkjust_bonus')) {
+                                    showNotification('لقد حصلت بالفعل على مكافأة LinkJust اليوم', 'warning');
+                                    return;
+                                }
+                            }
+                            
+                            // تحديث بيانات المستخدم
+                            transaction.update(userRef, {
+                                balance: firebase.firestore.FieldValue.increment(50),
+                                dailyEarnings: firebase.firestore.FieldValue.increment(50),
+                                totalEarnings: firebase.firestore.FieldValue.increment(50),
+                                adsViewedToday: firebase.firestore.FieldValue.increment(1),
+                                totalAdsViewed: firebase.firestore.FieldValue.increment(1),
+                                lastAdViewDate: new Date().toISOString(),
+                                viewedAdsToday: firebase.firestore.FieldValue.arrayUnion('linkjust_bonus')
+                            });
+                            
+                            // مكافأة الشخص الذي دعى هذا المستخدم (10%)
+                            if (user.referredBy) {
+                                const referralBonus = Math.floor(50 * 0.1);
+                                const referrerRef = db.collection('users').doc(user.referredBy);
+                                transaction.update(referrerRef, {
+                                    balance: firebase.firestore.FieldValue.increment(referralBonus),
+                                    referralEarnings: firebase.firestore.FieldValue.increment(referralBonus)
+                                });
+                            }
+                        });
+                        
+                        // تسجيل هذه العملية في سجل adViews
+                        const adViewRef = db.collection('adViews').doc();
+                        await adViewRef.set({
+                            id: adViewRef.id,
+                            userId: currentUser.uid,
+                            adTitle: 'LinkJust Short Link',
+                            points: 50,
+                            completed: true,
+                            viewedAt: new Date().toISOString(),
+                            sessionId: userSessionId,
+                            type: 'linkjust'
+                        });
+                        
+                        // تحديث واجهة المستخدم
+                        await loadUserData();
+                        
+                        // إزالة المعلمة done=true من العنوان دون إعادة تحميل الصفحة
+                        const newUrl = window.location.origin + window.location.pathname;
+                        window.history.replaceState({}, document.title, newUrl);
+                        
+                        // إشعار المستخدم
+                        showNotification('تم إضافة 50 نقطة بنجاح من رابط LinkJust!', 'success');
+                        
+                    } catch (error) {
+                        console.error('Error updating balance from LinkJust:', error);
+                        showNotification('حدث خطأ أثناء إضافة النقاط من رابط LinkJust', 'error');
+                    }
+                }
+            }
+        }
+
         function showNotification(message, type = 'info') {
             const container = document.getElementById('notificationContainer');
             const notification = document.createElement('div');
@@ -3837,7 +3829,7 @@
                 const adsList = [];
                 snapshot.forEach(doc => {
                     const ad = doc.data();
-                    console.log(`- ${doc.id}: ${ad.title || 'بدون عنوان'} (نشط: ${ad.active}, نوع: ${ad.type || 'normal'})`);
+                    console.log(`- ${doc.id}: ${ad.title || 'بدون عنوان'} (نشط: ${ad.active})`);
                     adsList.push({
                         id: doc.id,
                         ...ad
@@ -3861,6 +3853,47 @@
 
         // Initialize
         initApp();
+
+        // Firebase Rules Suggestion
+        /*
+        rules_version = '2';
+        service cloud.firestore {
+            match /databases/{database}/documents {
+                // Users collection
+                match /users/{userId} {
+                    allow read: if request.auth != null;
+                    allow write: if request.auth != null && request.auth.uid == userId;
+                    allow create: if request.auth != null;
+                }
+                
+                // Ads collection
+                match /ads/{adId} {
+                    allow read: if request.auth != null;
+                    allow write: if request.auth != null && 
+                        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+                }
+                
+                // Withdrawals collection
+                match /withdrawals/{withdrawalId} {
+                    allow read: if request.auth != null && 
+                        (request.auth.uid == resource.data.userId || 
+                         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true);
+                    allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+                    allow update: if request.auth != null && 
+                        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+                }
+                
+                // AdViews collection
+                match /adViews/{viewId} {
+                    allow read: if request.auth != null && 
+                        (request.auth.uid == resource.data.userId || 
+                         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true);
+                    allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+                }
+            }
+        }
+        */
+
     </script>
 </body>
 </html>
