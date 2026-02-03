@@ -1566,6 +1566,13 @@
                     </div>
                 </div>
                 
+                <!-- زر للتصحيح -->
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <button onclick="debugAds()" class="btn btn-info">
+                        <i class="fas fa-bug"></i> تصحيح الإعلانات
+                    </button>
+                </div>
+                
                 <div id="adsContainer" class="ads-container">
                     <div id="adsGrid" class="ads-grid">
                         <!-- Ads will be loaded here from Firestore -->
@@ -2220,14 +2227,11 @@
             adsGrid.innerHTML = '<div class="spinner" style="grid-column: 1 / -1; margin: 50px auto;"></div>';
             
             try {
-                const now = new Date().toISOString();
+                const now = new Date();
+                
+                // جلب كل الإعلانات بدون شروط
                 const adsRef = db.collection('ads');
-                const snapshot = await adsRef
-                    .where('active', '==', true)
-                    .where('expiryDate', '>', now)
-                    .orderBy('expiryDate', 'desc')
-                    .limit(100)
-                    .get();
+                const snapshot = await adsRef.get();
                 
                 if (snapshot.empty) {
                     adsGrid.innerHTML = `
@@ -2242,10 +2246,36 @@
                 
                 const adsArray = [];
                 snapshot.forEach(doc => {
-                    adsArray.push({ id: doc.id, ...doc.data() });
+                    const ad = { id: doc.id, ...doc.data() };
+                    
+                    // تصفية محلية: الإعلان يجب أن يكون active وأن لا يكون منتهي الصلاحية
+                    if (ad.active !== false) {
+                        // إذا كان هناك تاريخ انتهاء صلاحية، تحقق منه
+                        if (ad.expiryDate) {
+                            const expiryDate = new Date(ad.expiryDate);
+                            if (expiryDate > now) {
+                                adsArray.push(ad);
+                            }
+                        } else {
+                            // إذا لم يكن هناك تاريخ انتهاء، أضفه
+                            adsArray.push(ad);
+                        }
+                    }
                 });
                 
-                // Sort ads by points (higher points first)
+                // إذا لم تنجح أي إعلانات بعد التصفية
+                if (adsArray.length === 0) {
+                    adsGrid.innerHTML = `
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 70px 25px;">
+                            <i class="fas fa-ad" style="font-size: 4.5rem; color: #ddd; margin-bottom: 25px;"></i>
+                            <h3 style="color: #666; font-size: 1.4rem;">لا توجد إعلانات متاحة حالياً</h3>
+                            <p style="color: #888; font-size: 1.1rem;">يرجى العودة لاحقاً لمشاهدة إعلانات جديدة</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // ترتيب الإعلانات حسب النقاط (من الأعلى إلى الأقل)
                 adsArray.sort((a, b) => b.points - a.points);
                 
                 displayAds(adsArray);
@@ -2279,22 +2309,26 @@
             let html = '';
             
             adsArray.forEach(ad => {
-                // Check if user has already viewed this ad today
+                // التحقق مما إذا كان المستخدم قد شاهد هذا الإعلان اليوم
                 const hasViewed = userData.viewedAdsToday && userData.viewedAdsToday.includes(ad.id);
                 const isDisabled = hasViewed || userData.adsViewedToday >= userData.dailyAdsLimit;
                 
-                // Determine ad category color
+                // تحديد لون فئة الإعلان
                 let categoryColor = 'var(--primary)';
                 if (ad.category === 'تكنولوجيا') categoryColor = '#2196f3';
                 if (ad.category === 'صحة') categoryColor = '#4caf50';
                 if (ad.category === 'تعليم') categoryColor = '#ff9800';
                 if (ad.category === 'سفر') categoryColor = '#9c27b0';
                 if (ad.category === 'ربح') categoryColor = '#ff5722';
+                if (ad.category === 'الأطفال') categoryColor = '#ff4081';
+                
+                // استخدام صورة افتراضية إذا لم تكن الصورة موجودة
+                const imageUrl = ad.image && ad.image !== 'لا' ? ad.image : 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400';
                 
                 html += `
                     <div class="ad-card" onclick="${isDisabled ? '' : `startAdView('${ad.id}')`}" style="${isDisabled ? 'opacity: 0.8; cursor: not-allowed;' : ''}">
                         ${hasViewed ? '<div class="ad-badge">تمت المشاهدة</div>' : ''}
-                        <img src="${ad.image || 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400'}" alt="${ad.title}" class="ad-image">
+                        <img src="${imageUrl}" alt="${ad.title || 'إعلان'}" class="ad-image">
                         <div class="ad-content">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                                 <span style="background: ${categoryColor}; color: white; padding: 6px 15px; border-radius: 20px; font-size: 0.9rem; font-weight: 600;">
@@ -2304,16 +2338,16 @@
                                     <i class="fas fa-eye"></i> ${ad.totalViews || 0}
                                 </span>
                             </div>
-                            <h3 class="ad-title">${ad.title}</h3>
-                            <p class="ad-description">${ad.description}</p>
+                            <h3 class="ad-title">${ad.title || 'إعلان'}</h3>
+                            <p class="ad-description">${ad.description || 'شاهد هذا الإعلان لربح النقاط'}</p>
                             <div class="ad-meta">
                                 <div class="ad-reward">
                                     <i class="fas fa-coins"></i>
-                                    <span>${ad.points} نقطة</span>
+                                    <span>${ad.points || 50} نقطة</span>
                                 </div>
                                 <div class="ad-duration">
                                     <i class="fas fa-clock"></i>
-                                    <span>${ad.duration} ثانية</span>
+                                    <span>${ad.duration || 30} ثانية</span>
                                 </div>
                             </div>
                             ${isDisabled ? 
@@ -2338,20 +2372,20 @@
                 return;
             }
             
-            // Check daily limit
+            // التحقق من الحد اليومي
             if (userData.adsViewedToday >= userData.dailyAdsLimit) {
                 showNotification('لقد وصلت إلى الحد اليومي (50 إعلان)', 'warning');
                 return;
             }
             
-            // Check if user already viewed this ad today
+            // التحقق مما إذا كان المستخدم قد شاهد هذا الإعلان اليوم
             if (userData.viewedAdsToday && userData.viewedAdsToday.includes(adId)) {
                 showNotification('لقد شاهدت هذا الإعلان اليوم بالفعل', 'warning');
                 return;
             }
             
             try {
-                // Get ad details
+                // جلب تفاصيل الإعلان
                 const adRef = db.collection('ads').doc(adId);
                 const adDoc = await adRef.get();
                 
@@ -2362,23 +2396,29 @@
                 
                 const ad = { id: adDoc.id, ...adDoc.data() };
                 
+                // استخدام القيم الافتراضية إذا كانت غير موجودة
+                ad.title = ad.title || 'إعلان';
+                ad.description = ad.description || 'شاهد هذا الإعلان لربح النقاط';
+                ad.points = ad.points || 50;
+                ad.duration = ad.duration || 30;
+                
                 currentAd = ad;
                 timerSeconds = ad.duration;
                 totalTimerSeconds = ad.duration;
                 isViewingAd = true;
                 
-                // Update modal
+                // تحديث النافذة المنبثقة
                 currentAdTitle.textContent = ad.title;
                 currentAdDescription.textContent = ad.description;
                 adRewardPoints.textContent = ad.points;
                 
-                // Start timer
+                // بدء المؤقت
                 startTimer();
                 
-                // Show modal
+                // عرض النافذة المنبثقة
                 timerModal.classList.add('active');
                 
-                // Add visibility listeners
+                // إضافة مستمعي الأحداث للرؤية
                 document.addEventListener('visibilitychange', handleVisibilityChange);
                 window.addEventListener('beforeunload', handleBeforeUnload);
                 
@@ -3660,6 +3700,42 @@
 
         // Handle filter change
         document.getElementById('historyFilter')?.addEventListener('change', loadActivityHistory);
+
+        // دالة تصحيح الإعلانات
+        async function debugAds() {
+            try {
+                console.log("=== بدء تصحيح الإعلانات ===");
+                console.log("معلومات المستخدم:", userData);
+                
+                const adsRef = db.collection('ads');
+                const snapshot = await adsRef.get();
+                
+                console.log(`عدد الإعلانات الكلي في Firestore: ${snapshot.size}`);
+                
+                const adsList = [];
+                snapshot.forEach(doc => {
+                    const ad = doc.data();
+                    console.log(`- ${doc.id}: ${ad.title || 'بدون عنوان'} (نشط: ${ad.active})`);
+                    adsList.push({
+                        id: doc.id,
+                        ...ad
+                    });
+                });
+                
+                if (snapshot.size === 0) {
+                    showNotification('لا توجد إعلانات في قاعدة البيانات', 'warning');
+                } else {
+                    showNotification(`تم العثور على ${snapshot.size} إعلان في قاعدة البيانات`, 'success');
+                }
+                
+                // إعادة تحميل الإعلانات
+                await loadAds();
+                
+            } catch (error) {
+                console.error('Error in debug:', error);
+                showNotification(`خطأ في التصحيح: ${error.message}`, 'error');
+            }
+        }
 
         // Initialize
         initApp();
