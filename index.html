@@ -1203,6 +1203,41 @@
             display: block;
         }
         
+        /* Mobile Refresh Button */
+        .mobile-refresh-btn {
+            position: fixed;
+            bottom: 80px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: none;
+        }
+        
+        /* Offline Message */
+        .offline-message {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--danger);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            z-index: 10000;
+            display: none;
+        }
+        
         /* Responsive */
         @media (max-width: 992px) {
             .section-title {
@@ -1269,6 +1304,10 @@
                 height: 45px;
                 font-size: 1.1rem;
             }
+            
+            .mobile-refresh-btn {
+                display: flex !important;
+            }
         }
         
         @media (max-width: 480px) {
@@ -1308,6 +1347,214 @@
             .timer-text {
                 font-size: 3rem;
             }
+            
+            .login-card {
+                padding: 25px 15px !important;
+            }
+            
+            .logo h1 {
+                font-size: 1.8rem !important;
+            }
+            
+            .logo-icon {
+                width: 70px !important;
+                height: 70px !important;
+                font-size: 28px !important;
+            }
+            
+            .stat-value {
+                font-size: 2rem !important;
+            }
+            
+            .ad-title {
+                font-size: 1.2rem !important;
+            }
+            
+            .timer-container {
+                width: 150px !important;
+                height: 150px !important;
+            }
+            
+            .timer-text {
+                font-size: 2.5rem !important;
+            }
+        }
+        
+        /* تحسينات للهواتف الذكية */
+        @media (max-width: 768px) {
+            .login-card {
+                padding: 30px 20px;
+            }
+            
+            .logo h1 {
+                font-size: 2.2rem;
+            }
+            
+            .logo-icon {
+                width: 90px;
+                height: 90px;
+                font-size: 35px;
+            }
+            
+            .app-header {
+                padding: 15px;
+            }
+            
+            .header-logo h1 {
+                font-size: 1.5rem;
+            }
+            
+            .user-profile {
+                padding: 8px 12px;
+            }
+            
+            .user-avatar {
+                width: 45px;
+                height: 45px;
+                font-size: 1.1rem;
+            }
+            
+            .app-nav {
+                padding: 15px;
+                overflow-x: auto;
+            }
+            
+            .nav-link {
+                padding: 12px 20px;
+                font-size: 0.9rem;
+            }
+            
+            .app-content {
+                padding: 15px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .stat-card {
+                padding: 25px;
+            }
+            
+            .stat-icon {
+                width: 70px;
+                height: 70px;
+                font-size: 30px;
+            }
+            
+            .stat-value {
+                font-size: 2.5rem;
+            }
+            
+            .ads-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .section-title i {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+            }
+            
+            .withdrawal-form {
+                padding: 25px;
+            }
+            
+            .form-control {
+                padding: 16px 20px;
+            }
+            
+            .timer-modal {
+                width: 95%;
+            }
+            
+            .timer-container {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .timer-text {
+                font-size: 3.5rem;
+            }
+            
+            .whatsapp-button {
+                bottom: 20px;
+                left: 20px;
+                width: 60px;
+                height: 60px;
+                font-size: 30px;
+            }
+            
+            .notification {
+                min-width: 300px;
+                padding: 20px;
+            }
+        }
+        
+        /* تحسينات للشاشات عالية الدقة */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .logo-icon, .stat-icon, .notification-icon {
+                background-image: var(--gradient) !important;
+            }
+        }
+        
+        /* تحسينات للوضع الأفقي على الموبايل */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .login-screen {
+                padding: 10px !important;
+            }
+            
+            .login-card {
+                padding: 30px 25px !important;
+                max-height: 90vh !important;
+                overflow-y: auto !important;
+            }
+            
+            .timer-modal {
+                max-height: 90vh !important;
+                overflow-y: auto !important;
+            }
+            
+            .timer-body {
+                padding: 25px !important;
+            }
+        }
+        
+        /* تحسينات للظلام/داكن مود */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%) !important;
+            }
+            
+            .login-card, .stat-card, .ads-container, .withdrawal-form, .admin-panel {
+                background: rgba(45, 55, 72, 0.95) !important;
+                color: #e2e8f0 !important;
+            }
+            
+            .stat-label, .stat-sub, .ad-description {
+                color: #a0aec0 !important;
+            }
+            
+            .ad-card {
+                background: #2d3748 !important;
+                color: #e2e8f0 !important;
+            }
+            
+            .ad-description {
+                color: #cbd5e0 !important;
+            }
+        }
+        
+        /* تحسينات للأداء على الموبايل */
+        .ad-image {
+            will-change: transform;
+            backface-visibility: hidden;
+            transform: translateZ(0);
         }
     </style>
 </head>
@@ -1575,7 +1822,7 @@
                 
                 <div id="adsContainer" class="ads-container">
                     <div id="adsGrid" class="ads-grid">
-                        <!-- Ads will be loaded here from Firestore -->
+                        <!-- سيتم تحميل الإعلانات هنا من Firestore -->
                     </div>
                 </div>
             </section>
@@ -1867,6 +2114,11 @@
         <i class="fab fa-whatsapp"></i>
     </a>
 
+    <!-- Offline Message -->
+    <div class="offline-message">
+        <i class="fas fa-wifi-slash"></i> أنت غير متصل بالإنترنت
+    </div>
+
     <script>
         // Firebase Configuration
         const firebaseConfig = {
@@ -1898,6 +2150,8 @@
         let isAdmin = false;
         let isViewingAd = false;
         let userSessionId = null;
+        let lastAdClickTime = 0;
+        const AD_CLICK_DELAY = 500; // تأخير 500 مللي ثانية قبل السماح بالنقر مجدداً
 
         // DOM Elements
         const loginScreen = document.getElementById('loginScreen');
@@ -1954,6 +2208,12 @@
             
             // Generate session ID
             userSessionId = generateSessionId();
+            
+            // إعداد اكتشاف عدم الاتصال
+            setupOfflineDetection();
+            
+            // إضافة زر التحديث للشاشات الصغيرة
+            addMobileRefreshButton();
             
             // Hide loading after 1.5 seconds max
             setTimeout(() => {
@@ -2223,70 +2483,106 @@
         async function loadAds() {
             const adsGrid = document.getElementById('adsGrid');
             
-            // Clear the grid
-            adsGrid.innerHTML = '<div class="spinner" style="grid-column: 1 / -1; margin: 50px auto;"></div>';
+            // إظهار حالة التحميل
+            adsGrid.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 70px 25px;">
+                    <div class="spinner" style="margin: 0 auto 25px;"></div>
+                    <p style="color: #666; font-size: 1.1rem;">جاري تحميل الإعلانات...</p>
+                </div>
+            `;
             
             try {
-                const now = new Date();
+                console.log("بدأ تحميل الإعلانات من Firestore...");
                 
-                // جلب كل الإعلانات بدون شروط
+                // استخدام استعلام أبسط بدون where
                 const adsRef = db.collection('ads');
                 const snapshot = await adsRef.get();
+                
+                console.log(`تم العثور على ${snapshot.size} إعلان في Firestore`);
                 
                 if (snapshot.empty) {
                     adsGrid.innerHTML = `
                         <div style="grid-column: 1 / -1; text-align: center; padding: 70px 25px;">
                             <i class="fas fa-ad" style="font-size: 4.5rem; color: #ddd; margin-bottom: 25px;"></i>
                             <h3 style="color: #666; font-size: 1.4rem;">لا توجد إعلانات متاحة حالياً</h3>
-                            <p style="color: #888; font-size: 1.1rem;">يرجى العودة لاحقاً لمشاهدة إعلانات جديدة</p>
+                            <p style="color: #888; font-size: 1.1rem;">سيكون هناك إعلانات جديدة قريباً</p>
                         </div>
                     `;
                     return;
                 }
                 
                 const adsArray = [];
+                const now = new Date();
+                
                 snapshot.forEach(doc => {
-                    const ad = { id: doc.id, ...doc.data() };
+                    const ad = doc.data();
+                    console.log(`الإعلان: ${doc.id} - ${ad.title || 'بدون عنوان'}`);
                     
-                    // تصفية محلية: الإعلان يجب أن يكون active وأن لا يكون منتهي الصلاحية
+                    // التحقق من أن الإعلان نشط
                     if (ad.active !== false) {
-                        // إذا كان هناك تاريخ انتهاء صلاحية، تحقق منه
+                        // التحقق من تاريخ الانتهاء
+                        let isValid = true;
                         if (ad.expiryDate) {
-                            const expiryDate = new Date(ad.expiryDate);
-                            if (expiryDate > now) {
-                                adsArray.push(ad);
+                            try {
+                                const expiryDate = new Date(ad.expiryDate);
+                                isValid = expiryDate > now;
+                                console.log(`تاريخ انتهاء الإعلان ${doc.id}: ${expiryDate}، صالح: ${isValid}`);
+                            } catch (e) {
+                                console.error(`خطأ في تاريخ الانتهاء للإعلان ${doc.id}:`, e);
                             }
-                        } else {
-                            // إذا لم يكن هناك تاريخ انتهاء، أضفه
-                            adsArray.push(ad);
+                        }
+                        
+                        if (isValid) {
+                            adsArray.push({ 
+                                id: doc.id, 
+                                ...ad,
+                                title: ad.title || 'إعلان',
+                                description: ad.description || 'شاهد هذا الإعلان لربح النقاط',
+                                points: parseInt(ad.points) || 50,
+                                duration: parseInt(ad.duration) || 30,
+                                category: ad.category || 'عام',
+                                image: ad.image || 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400'
+                            });
                         }
                     }
                 });
                 
-                // إذا لم تنجح أي إعلانات بعد التصفية
+                console.log(`عدد الإعلانات النشطة: ${adsArray.length}`);
+                
                 if (adsArray.length === 0) {
                     adsGrid.innerHTML = `
                         <div style="grid-column: 1 / -1; text-align: center; padding: 70px 25px;">
                             <i class="fas fa-ad" style="font-size: 4.5rem; color: #ddd; margin-bottom: 25px;"></i>
-                            <h3 style="color: #666; font-size: 1.4rem;">لا توجد إعلانات متاحة حالياً</h3>
-                            <p style="color: #888; font-size: 1.1rem;">يرجى العودة لاحقاً لمشاهدة إعلانات جديدة</p>
+                            <h3 style="color: #666; font-size: 1.4rem;">لا توجد إعلانات نشطة حالياً</h3>
+                            <p style="color: #888; font-size: 1.1rem;">يرجى العودة لاحقاً</p>
                         </div>
                     `;
                     return;
                 }
                 
-                // ترتيب الإعلانات حسب النقاط (من الأعلى إلى الأقل)
-                adsArray.sort((a, b) => b.points - a.points);
+                // ترتيب الإعلانات حسب النقاط (من الأعلى للأقل)
+                adsArray.sort((a, b) => (b.points || 0) - (a.points || 0));
                 
+                // عرض الإعلانات
                 displayAds(adsArray);
                 
+                // إظهار رسالة نجاح
+                if (adsArray.length > 0) {
+                    setTimeout(() => {
+                        showNotification(`تم تحميل ${adsArray.length} إعلان`, 'success');
+                    }, 500);
+                }
+                
             } catch (error) {
-                console.error('Error loading ads:', error);
+                console.error('خطأ في تحميل الإعلانات:', error);
                 adsGrid.innerHTML = `
                     <div style="grid-column: 1 / -1; text-align: center; padding: 70px 25px;">
                         <i class="fas fa-exclamation-triangle" style="font-size: 4.5rem; color: #ddd; margin-bottom: 25px;"></i>
                         <h3 style="color: #666; font-size: 1.4rem;">حدث خطأ في تحميل الإعلانات</h3>
-                        <p style="color: #888; font-size: 1.1rem;">يرجى المحاولة مرة أخرى</p>
+                        <p style="color: #888; font-size: 1.1rem;">${error.message || 'يرجى التحقق من اتصال الإنترنت'}</p>
+                        <button onclick="loadAds()" class="btn btn-primary" style="margin-top: 20px;">
+                            <i class="fas fa-redo"></i> إعادة المحاولة
+                        </button>
                     </div>
                 `;
             }
@@ -2309,26 +2605,30 @@
             let html = '';
             
             adsArray.forEach(ad => {
-                // التحقق مما إذا كان المستخدم قد شاهد هذا الإعلان اليوم
-                const hasViewed = userData.viewedAdsToday && userData.viewedAdsToday.includes(ad.id);
-                const isDisabled = hasViewed || userData.adsViewedToday >= userData.dailyAdsLimit;
+                // التحقق إذا كان المستخدم قد شاهد الإعلان اليوم
+                const hasViewed = userData?.viewedAdsToday && userData.viewedAdsToday.includes(ad.id);
+                const isDisabled = hasViewed || (userData?.adsViewedToday || 0) >= (userData?.dailyAdsLimit || 50);
                 
-                // تحديد لون فئة الإعلان
+                // تحديد لون الفئة
                 let categoryColor = 'var(--primary)';
                 if (ad.category === 'تكنولوجيا') categoryColor = '#2196f3';
                 if (ad.category === 'صحة') categoryColor = '#4caf50';
                 if (ad.category === 'تعليم') categoryColor = '#ff9800';
                 if (ad.category === 'سفر') categoryColor = '#9c27b0';
                 if (ad.category === 'ربح') categoryColor = '#ff5722';
-                if (ad.category === 'الأطفال') categoryColor = '#ff4081';
-                
-                // استخدام صورة افتراضية إذا لم تكن الصورة موجودة
-                const imageUrl = ad.image && ad.image !== 'لا' ? ad.image : 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400';
+                if (ad.category === 'الأطفال') categoryColor = '#e91e63';
+                if (ad.category === 'جمال') categoryColor = '#ff4081';
                 
                 html += `
-                    <div class="ad-card" onclick="${isDisabled ? '' : `startAdView('${ad.id}')`}" style="${isDisabled ? 'opacity: 0.8; cursor: not-allowed;' : ''}">
-                        ${hasViewed ? '<div class="ad-badge">تمت المشاهدة</div>' : ''}
-                        <img src="${imageUrl}" alt="${ad.title || 'إعلان'}" class="ad-image">
+                    <div class="ad-card" id="ad-${ad.id}" style="${isDisabled ? 'opacity: 0.7;' : ''}">
+                        ${hasViewed ? '<div class="ad-badge" style="background: var(--success);">تمت المشاهدة</div>' : ''}
+                        ${isDisabled && !hasViewed ? '<div class="ad-badge" style="background: var(--danger);">وصلت للحد اليومي</div>' : ''}
+                        
+                        <img src="${ad.image || 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400'}" 
+                             alt="${ad.title}" 
+                             class="ad-image"
+                             onerror="this.src='https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400'">
+                        
                         <div class="ad-content">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                                 <span style="background: ${categoryColor}; color: white; padding: 6px 15px; border-radius: 20px; font-size: 0.9rem; font-weight: 600;">
@@ -2338,8 +2638,10 @@
                                     <i class="fas fa-eye"></i> ${ad.totalViews || 0}
                                 </span>
                             </div>
-                            <h3 class="ad-title">${ad.title || 'إعلان'}</h3>
-                            <p class="ad-description">${ad.description || 'شاهد هذا الإعلان لربح النقاط'}</p>
+                            
+                            <h3 class="ad-title">${ad.title}</h3>
+                            <p class="ad-description">${ad.description}</p>
+                            
                             <div class="ad-meta">
                                 <div class="ad-reward">
                                     <i class="fas fa-coins"></i>
@@ -2350,14 +2652,16 @@
                                     <span>${ad.duration || 30} ثانية</span>
                                 </div>
                             </div>
-                            ${isDisabled ? 
-                                `<div style="margin-top: 20px; text-align: center;">
-                                    <span style="color: ${hasViewed ? 'var(--success)' : 'var(--danger)'}; font-weight: 700;">
-                                        ${hasViewed ? 'تمت المشاهدة اليوم' : 'وصلت للحد اليومي'}
-                                    </span>
-                                </div>` 
-                                : ''
-                            }
+                            
+                            <div style="margin-top: 20px; text-align: center;">
+                                <button onclick="openAdLink('${ad.id}')" 
+                                        class="btn ${isDisabled ? 'btn-secondary' : 'btn-primary'}" 
+                                        style="width: 100%; padding: 15px;"
+                                        ${isDisabled ? 'disabled' : ''}>
+                                    <i class="fas fa-external-link-alt"></i>
+                                    ${isDisabled ? (hasViewed ? 'تمت المشاهدة' : 'وصلت للحد اليومي') : 'مشاهدة الإعلان'}
+                                </button>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -2366,26 +2670,18 @@
             adsGrid.innerHTML = html;
         }
 
-        async function startAdView(adId) {
-            if (isViewingAd) {
-                showNotification('أنت تشاهد إعلاناً بالفعل', 'warning');
-                return;
-            }
+        // دالة جديدة لفتح رابط الإعلان في تبويب جديد
+        async function openAdLink(adId) {
+            const now = Date.now();
             
-            // التحقق من الحد اليومي
-            if (userData.adsViewedToday >= userData.dailyAdsLimit) {
-                showNotification('لقد وصلت إلى الحد اليومي (50 إعلان)', 'warning');
+            // منع النقر المتكرر
+            if (now - lastAdClickTime < AD_CLICK_DELAY) {
                 return;
             }
-            
-            // التحقق مما إذا كان المستخدم قد شاهد هذا الإعلان اليوم
-            if (userData.viewedAdsToday && userData.viewedAdsToday.includes(adId)) {
-                showNotification('لقد شاهدت هذا الإعلان اليوم بالفعل', 'warning');
-                return;
-            }
+            lastAdClickTime = now;
             
             try {
-                // جلب تفاصيل الإعلان
+                // الحصول على تفاصيل الإعلان من Firestore
                 const adRef = db.collection('ads').doc(adId);
                 const adDoc = await adRef.get();
                 
@@ -2394,38 +2690,65 @@
                     return;
                 }
                 
-                const ad = { id: adDoc.id, ...adDoc.data() };
+                const ad = adDoc.data();
                 
-                // استخدام القيم الافتراضية إذا كانت غير موجودة
-                ad.title = ad.title || 'إعلان';
-                ad.description = ad.description || 'شاهد هذا الإعلان لربح النقاط';
-                ad.points = ad.points || 50;
-                ad.duration = ad.duration || 30;
+                // التحقق من الحد اليومي
+                if (userData?.adsViewedToday >= userData?.dailyAdsLimit) {
+                    showNotification('لقد وصلت إلى الحد اليومي (50 إعلان)', 'warning');
+                    return;
+                }
                 
-                currentAd = ad;
-                timerSeconds = ad.duration;
-                totalTimerSeconds = ad.duration;
-                isViewingAd = true;
+                // التحقق إذا تمت المشاهدة اليوم
+                if (userData?.viewedAdsToday && userData.viewedAdsToday.includes(adId)) {
+                    showNotification('لقد شاهدت هذا الإعلان اليوم بالفعل', 'warning');
+                    return;
+                }
                 
-                // تحديث النافذة المنبثقة
-                currentAdTitle.textContent = ad.title;
-                currentAdDescription.textContent = ad.description;
-                adRewardPoints.textContent = ad.points;
-                
-                // بدء المؤقت
-                startTimer();
-                
-                // عرض النافذة المنبثقة
-                timerModal.classList.add('active');
-                
-                // إضافة مستمعي الأحداث للرؤية
-                document.addEventListener('visibilitychange', handleVisibilityChange);
-                window.addEventListener('beforeunload', handleBeforeUnload);
+                // فتح الرابط في تبويب جديد
+                if (ad.link) {
+                    window.open(ad.link, '_blank', 'noopener,noreferrer');
+                    
+                    // بدء العداد بعد فتح الرابط مباشرة
+                    setTimeout(() => {
+                        startAdTimer(adId, ad);
+                    }, 1000);
+                } else {
+                    // إذا لم يكن هناك رابط، ابدأ العداد مباشرة
+                    startAdTimer(adId, ad);
+                }
                 
             } catch (error) {
-                console.error('Error starting ad view:', error);
-                showNotification('حدث خطأ في تشغيل الإعلان', 'error');
+                console.error('Error opening ad:', error);
+                showNotification('حدث خطأ في فتح الإعلان', 'error');
             }
+        }
+
+        // دالة بدء العداد المعدلة
+        async function startAdTimer(adId, ad) {
+            if (isViewingAd) {
+                showNotification('أنت تشاهد إعلاناً بالفعل', 'warning');
+                return;
+            }
+            
+            currentAd = { id: adId, ...ad };
+            timerSeconds = ad.duration || 30;
+            totalTimerSeconds = timerSeconds;
+            isViewingAd = true;
+            
+            // تحديث المودال
+            currentAdTitle.textContent = ad.title || 'إعلان';
+            currentAdDescription.textContent = ad.description || 'شاهد هذا الإعلان لربح النقاط';
+            adRewardPoints.textContent = ad.points || 50;
+            
+            // بدء العداد
+            startTimer();
+            
+            // إظهار المودال
+            timerModal.classList.add('active');
+            
+            // إضافة مستمعات الأحداث
+            document.addEventListener('visibilitychange', handleVisibilityChange);
+            window.addEventListener('beforeunload', handleBeforeUnload);
         }
 
         function startTimer() {
@@ -2488,13 +2811,6 @@
                 await rewardUser(currentAd.points);
                 showNotification(`مبروك! لقد ربحت ${currentAd.points} نقطة`, 'success');
                 await recordAdView(true);
-                
-                // Open ad link automatically
-                setTimeout(() => {
-                    if (currentAd.link) {
-                        window.open(currentAd.link, '_blank');
-                    }
-                }, 500);
             } else {
                 await penalizeUser(5);
                 showNotification('تم خصم 5 نقاط بسبب ترك الإعلان', 'error');
@@ -3737,48 +4053,46 @@
             }
         }
 
-        // Initialize
-        initApp();
-
-        // Firebase Rules Suggestion
-        /*
-        rules_version = '2';
-        service cloud.firestore {
-            match /databases/{database}/documents {
-                // Users collection
-                match /users/{userId} {
-                    allow read: if request.auth != null;
-                    allow write: if request.auth != null && request.auth.uid == userId;
-                    allow create: if request.auth != null;
-                }
-                
-                // Ads collection
-                match /ads/{adId} {
-                    allow read: if request.auth != null;
-                    allow write: if request.auth != null && 
-                        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
-                }
-                
-                // Withdrawals collection
-                match /withdrawals/{withdrawalId} {
-                    allow read: if request.auth != null && 
-                        (request.auth.uid == resource.data.userId || 
-                         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true);
-                    allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
-                    allow update: if request.auth != null && 
-                        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
-                }
-                
-                // AdViews collection
-                match /adViews/{viewId} {
-                    allow read: if request.auth != null && 
-                        (request.auth.uid == resource.data.userId || 
-                         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true);
-                    allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+        // إضافة زر التحديث للشاشات الصغيرة
+        function addMobileRefreshButton() {
+            const refreshBtn = document.createElement('button');
+            refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i>';
+            refreshBtn.className = 'mobile-refresh-btn';
+            refreshBtn.onclick = refreshData;
+            
+            document.body.appendChild(refreshBtn);
+            
+            // إظهار الزر فقط على الشاشات الصغيرة
+            function checkScreenSize() {
+                if (window.innerWidth <= 768) {
+                    refreshBtn.style.display = 'flex';
+                } else {
+                    refreshBtn.style.display = 'none';
                 }
             }
+            
+            window.addEventListener('resize', checkScreenSize);
+            checkScreenSize();
         }
-        */
+
+        // إعداد اكتشاف عدم الاتصال
+        function setupOfflineDetection() {
+            const offlineMessage = document.querySelector('.offline-message');
+            
+            window.addEventListener('online', () => {
+                offlineMessage.style.display = 'none';
+                showNotification('تم استعادة الاتصال بالإنترنت', 'success');
+                loadAds(); // إعادة تحميل الإعلانات عند الاتصال
+            });
+            
+            window.addEventListener('offline', () => {
+                offlineMessage.style.display = 'block';
+                showNotification('فقدت الاتصال بالإنترنت', 'error');
+            });
+        }
+
+        // Initialize
+        initApp();
 
     </script>
 </body>
