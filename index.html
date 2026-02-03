@@ -2004,6 +2004,7 @@
                         }
                     }
                     
+                    // ✅ التعديل: تغيير dailyAdsLimit من 10 إلى 50
                     userData = {
                         uid: user.uid,
                         email: user.email,
@@ -2015,7 +2016,7 @@
                         referralsCount: 0,
                         referralEarnings: 0,
                         adsViewedToday: 0,
-                        dailyAdsLimit: 50, // 50 ads per day limit
+                        dailyAdsLimit: 50, // ✅ تم التغيير من 10 إلى 50
                         lastAdViewDate: null,
                         totalAdsViewed: 0,
                         viewedAdsToday: [], // Array to track ads viewed today
@@ -2433,21 +2434,20 @@
         }
 
         function checkUserReturn() {
-            if (!isViewingAd || !adStartedTime) return;
+            if (!isViewingAd || !adStartedTime || !currentAd) return;
             
             // التحقق من وقت بدء الإعلان
             const currentTime = Date.now();
             const elapsedTime = Math.floor((currentTime - adStartedTime) / 1000); // الوقت المنقضي بالثواني
             
-            // إذا انقضى الوقت الكافي (30 ثانية)
-            if (elapsedTime >= totalTimerSeconds) {
-                if (userReturned) {
-                    finishAdView(true); // منح النقاط
-                }
-            } else {
-                // إذا لم ينقض الوقت الكافي ولكن المستخدم عاد
-                if (userReturned) {
-                    finishAdView(false); // خصم 5 نقاط
+            // ✅ التعديل: تحسين المنطق لحساب النقاط بشكل صحيح
+            if (userReturned) {
+                if (elapsedTime >= totalTimerSeconds) {
+                    // المستخدم عاد بعد انتهاء الوقت - منح النقاط
+                    finishAdView(true);
+                } else if (elapsedTime < totalTimerSeconds) {
+                    // المستخدم عاد قبل انتهاء الوقت - خصم النقاط
+                    finishAdView(false);
                 }
             }
         }
@@ -2459,18 +2459,19 @@
             timerInterval = setInterval(() => {
                 timerSeconds--;
                 
+                updateTimerDisplay();
+                updateTimerCircle();
+                
                 if (timerSeconds <= 0) {
-                    // الوقت انتهى، انتظار عودة المستخدم
-                    if (userReturned) {
-                        finishAdView(true);
-                    }
-                } else {
-                    updateTimerDisplay();
-                    updateTimerCircle();
+                    // ✅ التعديل: عندما ينتهي الوقت، ننتظر عودة المستخدم
+                    clearInterval(timerInterval);
+                    timerDisplay.classList.add('timer-warning');
+                    timerDisplay.textContent = 'انتهى';
                     
-                    if (timerSeconds <= 5) {
-                        timerDisplay.classList.add('timer-warning');
-                    }
+                    // عرض رسالة للمستخدم
+                    currentAdDescription.textContent = 'انتهى وقت المشاهدة! يرجى العودة إلى الصفحة للحصول على النقاط.';
+                } else if (timerSeconds <= 5) {
+                    timerDisplay.classList.add('timer-warning');
                 }
             }, 1000);
         }
@@ -2490,6 +2491,7 @@
             if (!document.hidden && isViewingAd) {
                 // المستخدم عاد إلى الصفحة
                 userReturned = true;
+                // تحقق فورًا من الوقت المنقضي
                 checkUserReturn();
             }
         }
@@ -2517,6 +2519,7 @@
             // Hide modal
             timerModal.classList.remove('active');
             
+            // ✅ التعديل: إصلاح مشكلة حساب النقاط
             if (success) {
                 try {
                     await rewardUser(currentAd.points);
@@ -2528,9 +2531,12 @@
                 }
             } else {
                 try {
-                    await penalizeUser(5);
-                    showNotification('تم خصم 5 نقاط بسبب ترك الإعلان قبل انتهاء الوقت', 'error');
-                    await recordAdView(false);
+                    // ✅ التأكد من أن الخصم يحدث فقط إذا لم يكمل المشاهدة
+                    if (timerSeconds > 0) { // إذا كان الوقت لم ينته بعد
+                        await penalizeUser(5);
+                        showNotification('تم خصم 5 نقاط بسبب ترك الإعلان قبل انتهاء الوقت', 'error');
+                        await recordAdView(false);
+                    }
                 } catch (error) {
                     console.error('Error penalizing user:', error);
                 }
@@ -2554,51 +2560,46 @@
             try {
                 const userRef = db.collection('users').doc(currentUser.uid);
                 
-                // استخدام transaction لضمان سلامة البيانات
-                await db.runTransaction(async (transaction) => {
-                    // جلب بيانات المستخدم الحالية
-                    const userDoc = await transaction.get(userRef);
-                    if (!userDoc.exists) {
-                        throw new Error('المستخدم غير موجود');
-                    }
-                    
-                    const user = userDoc.data();
-                    
-                    // تحديث بيانات المستخدم
-                    transaction.update(userRef, {
-                        balance: firebase.firestore.FieldValue.increment(points),
-                        dailyEarnings: firebase.firestore.FieldValue.increment(points),
-                        totalEarnings: firebase.firestore.FieldValue.increment(points),
-                        adsViewedToday: firebase.firestore.FieldValue.increment(1),
-                        totalAdsViewed: firebase.firestore.FieldValue.increment(1),
-                        lastAdViewDate: new Date().toISOString(),
-                        viewedAdsToday: firebase.firestore.FieldValue.arrayUnion(currentAd.id)
-                    });
-                    
-                    // مكافأة المدعو إذا كان هناك
-                    if (user.referredBy) {
-                        const referralBonus = Math.floor(points * 0.1);
-                        const referrerRef = db.collection('users').doc(user.referredBy);
-                        transaction.update(referrerRef, {
-                            balance: firebase.firestore.FieldValue.increment(referralBonus),
-                            referralEarnings: firebase.firestore.FieldValue.increment(referralBonus)
-                        });
-                    }
-                    
-                    // تحديث عدد مشاهدات الإعلان
-                    const adRef = db.collection('ads').doc(currentAd.id);
-                    transaction.update(adRef, {
-                        totalViews: firebase.firestore.FieldValue.increment(1),
-                        lastViewed: new Date().toISOString()
-                    });
+                // ✅ التعديل: استخدام batch write لضمان التحديث الكامل
+                const batch = db.batch();
+                
+                // تحديث بيانات المستخدم
+                batch.update(userRef, {
+                    balance: firebase.firestore.FieldValue.increment(points),
+                    dailyEarnings: firebase.firestore.FieldValue.increment(points),
+                    totalEarnings: firebase.firestore.FieldValue.increment(points),
+                    adsViewedToday: firebase.firestore.FieldValue.increment(1),
+                    totalAdsViewed: firebase.firestore.FieldValue.increment(1),
+                    lastAdViewDate: new Date().toISOString(),
+                    viewedAdsToday: firebase.firestore.FieldValue.arrayUnion(currentAd.id)
                 });
+                
+                // تحديث الإعلان
+                const adRef = db.collection('ads').doc(currentAd.id);
+                batch.update(adRef, {
+                    totalViews: firebase.firestore.FieldValue.increment(1),
+                    lastViewed: new Date().toISOString()
+                });
+                
+                // مكافأة المدعو إذا كان هناك
+                if (userData.referredBy) {
+                    const referralBonus = Math.floor(points * 0.1);
+                    const referrerRef = db.collection('users').doc(userData.referredBy);
+                    batch.update(referrerRef, {
+                        balance: firebase.firestore.FieldValue.increment(referralBonus),
+                        referralEarnings: firebase.firestore.FieldValue.increment(referralBonus)
+                    });
+                }
+                
+                // تنفيذ كل التحديثات معاً
+                await batch.commit();
                 
                 // تحديث بيانات المستخدم المحلية
                 await loadUserData();
                 
             } catch (error) {
                 console.error('Error rewarding user:', error);
-                throw error; // إعادة رمي الخطأ للتعامل معه في الدالة الأم
+                throw error;
             }
         }
 
@@ -2606,7 +2607,7 @@
             try {
                 const userRef = db.collection('users').doc(currentUser.uid);
                 await userRef.update({
-                    balance: firebase.firestore.FieldValue.increment(-points)
+                    balance: firebase.firestore.FieldValue.increment(-Math.abs(points))
                 });
                 
                 await loadUserData();
@@ -2637,6 +2638,10 @@
 
         function cancelAdView() {
             if (confirm('هل أنت متأكد من إلغاء مشاهدة الإعلان؟ سيتم خصم 5 نقاط من رصيدك.')) {
+                // ✅ التأكد من إغلاق نافذة الإعلان أولاً
+                if (adWindow && !adWindow.closed) {
+                    adWindow.close();
+                }
                 finishAdView(false);
             }
         }
