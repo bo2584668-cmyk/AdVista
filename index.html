@@ -2518,13 +2518,22 @@
             timerModal.classList.remove('active');
             
             if (success) {
-                await rewardUser(currentAd.points);
-                showNotification(`مبروك! لقد ربحت ${currentAd.points} نقطة`, 'success');
-                await recordAdView(true);
+                try {
+                    await rewardUser(currentAd.points);
+                    showNotification(`مبروك! لقد ربحت ${currentAd.points} نقطة`, 'success');
+                    await recordAdView(true);
+                } catch (error) {
+                    console.error('Error rewarding user:', error);
+                    showNotification('حدث خطأ في إضافة النقاط', 'error');
+                }
             } else {
-                await penalizeUser(5);
-                showNotification('تم خصم 5 نقاط بسبب ترك الإعلان قبل انتهاء الوقت', 'error');
-                await recordAdView(false);
+                try {
+                    await penalizeUser(5);
+                    showNotification('تم خصم 5 نقاط بسبب ترك الإعلان قبل انتهاء الوقت', 'error');
+                    await recordAdView(false);
+                } catch (error) {
+                    console.error('Error penalizing user:', error);
+                }
             }
             
             // Reset
@@ -2533,19 +2542,29 @@
             userReturned = false;
             
             // تحديث البيانات
-            await loadUserData();
-            await loadAds();
+            try {
+                await loadUserData();
+                await loadAds();
+            } catch (error) {
+                console.error('Error refreshing data:', error);
+            }
         }
 
         async function rewardUser(points) {
             try {
                 const userRef = db.collection('users').doc(currentUser.uid);
                 
+                // استخدام transaction لضمان سلامة البيانات
                 await db.runTransaction(async (transaction) => {
+                    // جلب بيانات المستخدم الحالية
                     const userDoc = await transaction.get(userRef);
+                    if (!userDoc.exists) {
+                        throw new Error('المستخدم غير موجود');
+                    }
+                    
                     const user = userDoc.data();
                     
-                    // Update user
+                    // تحديث بيانات المستخدم
                     transaction.update(userRef, {
                         balance: firebase.firestore.FieldValue.increment(points),
                         dailyEarnings: firebase.firestore.FieldValue.increment(points),
@@ -2556,7 +2575,7 @@
                         viewedAdsToday: firebase.firestore.FieldValue.arrayUnion(currentAd.id)
                     });
                     
-                    // Reward referrer
+                    // مكافأة المدعو إذا كان هناك
                     if (user.referredBy) {
                         const referralBonus = Math.floor(points * 0.1);
                         const referrerRef = db.collection('users').doc(user.referredBy);
@@ -2566,7 +2585,7 @@
                         });
                     }
                     
-                    // Update ad views count
+                    // تحديث عدد مشاهدات الإعلان
                     const adRef = db.collection('ads').doc(currentAd.id);
                     transaction.update(adRef, {
                         totalViews: firebase.firestore.FieldValue.increment(1),
@@ -2574,11 +2593,12 @@
                     });
                 });
                 
+                // تحديث بيانات المستخدم المحلية
                 await loadUserData();
                 
             } catch (error) {
                 console.error('Error rewarding user:', error);
-                showNotification('حدث خطأ في إضافة النقاط', 'error');
+                throw error; // إعادة رمي الخطأ للتعامل معه في الدالة الأم
             }
         }
 
@@ -2592,6 +2612,7 @@
                 await loadUserData();
             } catch (error) {
                 console.error('Error penalizing user:', error);
+                throw error;
             }
         }
 
