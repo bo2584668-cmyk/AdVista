@@ -1985,10 +1985,10 @@
                         referralsCount: 0,
                         referralEarnings: 0,
                         adsViewedToday: 0,
-                        dailyAdsLimit: 50, // 50 ads per day limit
+                        dailyAdsLimit: 50,
                         lastAdViewDate: null,
                         totalAdsViewed: 0,
-                        viewedAdsToday: [], // Array to track ads viewed today
+                        viewedAdsToday: [],
                         joinDate: new Date().toISOString(),
                         lastLogin: new Date().toISOString(),
                         ipAddress: userIp,
@@ -1997,7 +1997,7 @@
                         loginCount: 1,
                         sessionId: userSessionId,
                         status: 'active',
-                        referredBy: referredBy // Track who referred this user
+                        referredBy: referredBy
                     };
                     
                     await userRef.set(userData);
@@ -3254,21 +3254,6 @@
                     <button onclick="saveSystemSettings()" class="btn btn-primary btn-lg btn-block" style="margin-top: 30px;">
                         <i class="fas fa-save"></i> حفظ الإعدادات
                     </button>
-                    
-                    <div style="margin-top: 40px; padding-top: 20px; border-top: 2px solid #eee;">
-                        <h4 style="margin-bottom: 20px; color: var(--dark);">إجراءات سريعة</h4>
-                        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                            <button onclick="resetAllCounters()" class="btn btn-warning">
-                                <i class="fas fa-redo"></i> إعادة تعيين العدادات
-                            </button>
-                            <button onclick="backupDatabase()" class="btn btn-success">
-                                <i class="fas fa-download"></i> نسخ احتياطي
-                            </button>
-                            <button onclick="clearOldData()" class="btn btn-danger">
-                                <i class="fas fa-trash"></i> حذف البيانات القديمة
-                            </button>
-                        </div>
-                    </div>
                 </div>
             `;
         }
@@ -3368,7 +3353,7 @@
                     if (filter !== 'all') {
                         if (filter === 'ads' && activity.type !== 'ad') return;
                         if (filter === 'withdrawals' && activity.type !== 'withdrawal') return;
-                        if (filter === 'referrals') return; // You might want to add referral activities
+                        if (filter === 'referrals') return;
                     }
                     
                     if (activity.type === 'ad') {
