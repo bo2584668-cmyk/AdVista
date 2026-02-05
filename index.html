@@ -43,6 +43,7 @@
             padding: 0;
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
         
         body {
@@ -70,7 +71,7 @@
         
         /* Scrollbar */
         ::-webkit-scrollbar {
-            width: 12px;
+            width: 8px;
         }
         
         ::-webkit-scrollbar-track {
@@ -110,9 +111,10 @@
             animation: slideUp 0.8s ease;
         }
         
-        .login-card:hover {
-            transform: translateY(-15px);
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.25);
+        @media (max-width: 768px) {
+            .login-card {
+                padding: 30px;
+            }
         }
         
         .logo {
@@ -201,6 +203,8 @@
             outline: none;
             transform: translateY(0);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            -webkit-user-select: none;
+            user-select: none;
         }
         
         .btn:hover {
@@ -363,6 +367,7 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.25);
             overflow-x: auto;
             scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
         }
         
         .app-nav::-webkit-scrollbar {
@@ -386,6 +391,7 @@
             transition: var(--transition);
             border: 2px solid transparent;
             white-space: nowrap;
+            -webkit-tap-highlight-color: transparent;
         }
         
         .nav-link:hover {
@@ -826,6 +832,7 @@
             overflow-x: auto;
             padding-bottom: 15px;
             scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
         }
         
         .admin-tabs::-webkit-scrollbar {
@@ -1269,6 +1276,23 @@
                 height: 45px;
                 font-size: 1.1rem;
             }
+            
+            .timer-container {
+                width: 180px;
+                height: 180px;
+            }
+            
+            .timer-text {
+                font-size: 3rem;
+            }
+            
+            .notification {
+                min-width: 280px;
+                padding: 20px;
+                right: 15px;
+                top: 15px;
+                max-width: calc(100vw - 30px);
+            }
         }
         
         @media (max-width: 480px) {
@@ -1296,18 +1320,49 @@
             }
             
             .notification {
-                min-width: 300px;
-                padding: 25px;
+                min-width: 280px;
+                padding: 20px;
             }
             
             .timer-container {
-                width: 170px;
-                height: 170px;
+                width: 150px;
+                height: 150px;
             }
             
             .timer-text {
-                font-size: 3rem;
+                font-size: 2.5rem;
             }
+        }
+        
+        /* Mobile Specific Improvements */
+        @media (hover: none) {
+            .btn:hover {
+                transform: translateY(0);
+            }
+            
+            .ad-card:hover {
+                transform: none;
+                box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);
+            }
+            
+            .stat-card:hover {
+                transform: translateY(0);
+                box-shadow: var(--shadow);
+            }
+            
+            .nav-link:hover {
+                transform: none;
+            }
+        }
+        
+        /* Prevent text selection on mobile */
+        .no-select {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
     </style>
 </head>
@@ -1891,9 +1946,10 @@
         let isAdmin = false;
         let isViewingAd = false;
         let userSessionId = null;
-        let adWindow = null; // نافذة الإعلان
-        let adStartedTime = null; // وقت بدء الإعلان
-        let userReturned = false; // هل عاد المستخدم؟
+        let adWindow = null;
+        let adStartedTime = null;
+        let userReturned = false;
+        let notificationCounter = 0; // لمنع تكرار الإشعارات
 
         // DOM Elements
         const loginScreen = document.getElementById('loginScreen');
@@ -1929,34 +1985,28 @@
         });
 
         async function initApp() {
-            // Show loading
             loadingOverlay.style.display = 'flex';
             
-            // Initialize Firebase Auth persistence
             try {
                 await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
             } catch (error) {
                 console.error('Error setting persistence:', error);
             }
             
-            // Check for referral code in URL
             checkReferralCode();
-            
-            // Set up auth state listener
             auth.onAuthStateChanged(handleAuthStateChange);
-            
-            // Initialize event listeners
             initEventListeners();
             
-            // Generate session ID
             userSessionId = generateSessionId();
             
-            // Hide loading after 1.5 seconds max
             setTimeout(() => {
                 if (loadingOverlay.style.display !== 'none') {
                     loadingOverlay.style.display = 'none';
                 }
             }, 1500);
+            
+            // إضافة event listener لفحص عودة المستخدم كل ثانية
+            setInterval(checkUserReturn, 1000);
         }
 
         async function handleAuthStateChange(user) {
@@ -1971,17 +2021,17 @@
 
         async function handleUserLogin(user) {
             try {
-                showNotification('جاري تسجيل الدخول...', 'info');
+                // ✅ التعديل: إشعار واحد فقط عند التسجيل
+                if (notificationCounter === 0) {
+                    showNotification('جاري تسجيل الدخول...', 'info');
+                    notificationCounter++;
+                }
                 
-                // Get user IP
                 const userIp = await getUserIP();
-                
-                // Check if user exists
                 const userRef = db.collection('users').doc(user.uid);
                 const userDoc = await userRef.get();
                 
                 if (userDoc.exists) {
-                    // Existing user
                     userData = userDoc.data();
                     await userRef.update({
                         lastLogin: new Date().toISOString(),
@@ -1989,12 +2039,13 @@
                         sessionId: userSessionId,
                         loginCount: firebase.firestore.FieldValue.increment(1)
                     });
-                    showNotification('مرحباً بعودتك!', 'success');
+                    // ✅ إشعار واحد فقط
+                    if (notificationCounter === 1) {
+                        showNotification('مرحباً بعودتك!', 'success');
+                        notificationCounter++;
+                    }
                 } else {
-                    // New user
                     const referralCode = generateReferralCode();
-                    
-                    // Get referrer from URL if exists
                     let referredBy = null;
                     const refCode = checkReferralCode();
                     if (refCode) {
@@ -2004,22 +2055,21 @@
                         }
                     }
                     
-                    // ✅ التعديل: تغيير dailyAdsLimit من 10 إلى 50
                     userData = {
                         uid: user.uid,
                         email: user.email,
                         name: user.displayName || 'مستخدم',
-                        balance: 1000, // Give 1000 points as welcome bonus
+                        balance: 1000,
                         dailyEarnings: 0,
                         totalEarnings: 1000,
                         referralCode: referralCode,
                         referralsCount: 0,
                         referralEarnings: 0,
                         adsViewedToday: 0,
-                        dailyAdsLimit: 50, // ✅ تم التغيير من 10 إلى 50
+                        dailyAdsLimit: 50,
                         lastAdViewDate: null,
                         totalAdsViewed: 0,
-                        viewedAdsToday: [], // Array to track ads viewed today
+                        viewedAdsToday: [],
                         joinDate: new Date().toISOString(),
                         lastLogin: new Date().toISOString(),
                         ipAddress: userIp,
@@ -2028,27 +2078,31 @@
                         loginCount: 1,
                         sessionId: userSessionId,
                         status: 'active',
-                        referredBy: referredBy // Track who referred this user
+                        referredBy: referredBy
                     };
                     
                     await userRef.set(userData);
-                    showNotification('مرحباً بك في Advista! لقد حصلت على 1000 نقطة هدية ترحيبية!', 'success');
+                    // ✅ إشعار واحد فقط
+                    if (notificationCounter === 1) {
+                        showNotification('مرحباً بك في Advista! لقد حصلت على 1000 نقطة هدية ترحيبية!', 'success');
+                        notificationCounter++;
+                    }
                     
-                    // Update referrer's referral count if exists
                     if (referredBy) {
                         await db.collection('users').doc(referredBy).update({
                             referralsCount: firebase.firestore.FieldValue.increment(1),
-                            referralEarnings: firebase.firestore.FieldValue.increment(100), // 10% of welcome bonus
+                            referralEarnings: firebase.firestore.FieldValue.increment(100),
                             balance: firebase.firestore.FieldValue.increment(100)
                         });
-                        showNotification('تم تسجيلك من خلال دعوة صديق!', 'success');
+                        // ✅ إشعار واحد فقط
+                        if (notificationCounter === 2) {
+                            showNotification('تم تسجيلك من خلال دعوة صديق!', 'success');
+                            notificationCounter++;
+                        }
                     }
                 }
                 
-                // Load user data
                 await loadUserData();
-                
-                // Show main app
                 showMainApp();
                 
             } catch (error) {
@@ -2061,27 +2115,19 @@
         function showLoginScreen() {
             loginScreen.style.display = 'flex';
             appContainer.style.display = 'none';
+            notificationCounter = 0; // إعادة تعيين عداد الإشعارات
         }
 
         function showMainApp() {
             loginScreen.style.display = 'none';
             appContainer.style.display = 'block';
-            
-            // Initialize main app
             initMainApp();
         }
 
         async function initMainApp() {
-            // Update UI
             updateUserUI();
-            
-            // Load user stats
             await loadUserStats();
-            
-            // Show dashboard
             showSection('dashboard');
-            
-            // Load initial data
             await loadInitialData();
         }
 
@@ -2092,26 +2138,21 @@
             userEmail.textContent = userData.email;
             userAvatar.textContent = userData.name.charAt(0);
             
-            // Update dropdown
             document.getElementById('dropdownUserName').textContent = userData.name;
             document.getElementById('dropdownUserEmail').textContent = userData.email;
             
-            // Show admin nav if admin
             if (userData.isAdmin) {
                 adminNavItem.style.display = 'block';
                 isAdmin = true;
             }
             
-            // Update referral link
             updateReferralLink();
         }
 
         async function loadUserStats() {
             try {
-                // Get today's date
                 const today = new Date().toDateString();
                 
-                // Check if need to reset daily earnings and viewed ads
                 if (userData.lastAdViewDate) {
                     const lastAdDate = new Date(userData.lastAdViewDate).toDateString();
                     if (lastAdDate !== today) {
@@ -2127,7 +2168,6 @@
                     }
                 }
                 
-                // Update UI
                 updateStatsUI();
                 
             } catch (error) {
@@ -2145,7 +2185,6 @@
             adsViewedCount.textContent = userData.adsViewedToday || 0;
             dailyLimit.textContent = userData.dailyAdsLimit || 50;
             
-            // Calculate USD
             const balanceUSD = (userData.balance / 30000).toFixed(2);
             document.getElementById('balanceUSD').textContent = balanceUSD;
             document.getElementById('adsToday').textContent = userData.adsViewedToday || 0;
@@ -2156,25 +2195,21 @@
         }
 
         function initEventListeners() {
-            // Google Login
             googleLoginBtn.addEventListener('click', () => {
                 auth.signInWithPopup(authProvider);
             });
             
-            // Navigation
             document.querySelectorAll('.nav-link').forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
                     const section = this.getAttribute('data-section');
                     showSection(section);
                     
-                    // Update active nav
                     document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
                     this.classList.add('active');
                 });
             });
             
-            // Admin tabs
             document.querySelectorAll('.admin-tab').forEach(tab => {
                 tab.addEventListener('click', function() {
                     const tabName = this.getAttribute('data-tab');
@@ -2185,36 +2220,29 @@
                 });
             });
             
-            // Withdrawal points input
             withdrawPoints.addEventListener('input', updateWithdrawAmount);
-            
-            // Submit withdrawal
             submitWithdrawalBtn.addEventListener('click', submitWithdrawal);
-            
-            // Copy referral link
             copyReferralBtn.addEventListener('click', copyReferralLink);
-            
-            // Timer modal buttons
             cancelAdBtn.addEventListener('click', cancelAdView);
             
-            // Check for user return every 2 seconds
-            setInterval(checkUserReturn, 2000);
+            // ✅ تحسين تجربة اللمس على الهواتف
+            document.querySelectorAll('.btn, .nav-link, .ad-card').forEach(element => {
+                element.addEventListener('touchstart', function() {
+                    this.style.transform = 'scale(0.98)';
+                });
+                
+                element.addEventListener('touchend', function() {
+                    this.style.transform = '';
+                });
+            });
         }
 
         async function loadInitialData() {
-            // Load ads
             await loadAds();
-            
-            // Load recent activity
             await loadRecentActivity();
-            
-            // Load withdrawal history
             await loadWithdrawalHistory();
-            
-            // Load referral list
             await loadReferralList();
             
-            // Load admin data if admin
             if (isAdmin) {
                 await loadAdminData();
             }
@@ -2222,14 +2250,10 @@
 
         async function loadAds() {
             const adsGrid = document.getElementById('adsGrid');
-            
-            // Clear the grid
             adsGrid.innerHTML = '<div class="spinner" style="grid-column: 1 / -1; margin: 50px auto;"></div>';
             
             try {
                 const now = new Date();
-                
-                // جلب الإعلانات النشطة
                 const adsRef = db.collection('ads');
                 const snapshot = await adsRef.where('active', '==', true).get();
                 
@@ -2248,7 +2272,6 @@
                 snapshot.forEach(doc => {
                     const ad = { id: doc.id, ...doc.data() };
                     
-                    // التحقق من تاريخ الانتهاء
                     if (ad.expiryDate) {
                         const expiryDate = new Date(ad.expiryDate);
                         if (expiryDate > now) {
@@ -2259,9 +2282,7 @@
                     }
                 });
                 
-                // ترتيب الإعلانات حسب النقاط
                 adsArray.sort((a, b) => b.points - a.points);
-                
                 displayAds(adsArray);
                 
             } catch (error) {
@@ -2293,11 +2314,9 @@
             let html = '';
             
             adsArray.forEach(ad => {
-                // التحقق مما إذا كان المستخدم قد شاهد هذا الإعلان اليوم
                 const hasViewed = userData.viewedAdsToday && userData.viewedAdsToday.includes(ad.id);
                 const isDisabled = hasViewed || userData.adsViewedToday >= userData.dailyAdsLimit;
                 
-                // تحديد لون فئة الإعلان
                 let categoryColor = 'var(--primary)';
                 if (ad.category === 'تكنولوجيا') categoryColor = '#2196f3';
                 if (ad.category === 'صحة') categoryColor = '#4caf50';
@@ -2306,7 +2325,6 @@
                 if (ad.category === 'ربح') categoryColor = '#ff5722';
                 if (ad.category === 'الأطفال') categoryColor = '#ff4081';
                 
-                // استخدام صورة افتراضية إذا لم تكن الصورة موجودة
                 const imageUrl = ad.image && ad.image !== 'لا' ? ad.image : 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400';
                 
                 html += `
@@ -2356,20 +2374,17 @@
                 return;
             }
             
-            // التحقق من الحد اليومي
             if (userData.adsViewedToday >= userData.dailyAdsLimit) {
                 showNotification('لقد وصلت إلى الحد اليومي (50 إعلان)', 'warning');
                 return;
             }
             
-            // التحقق مما إذا كان المستخدم قد شاهد هذا الإعلان اليوم
             if (userData.viewedAdsToday && userData.viewedAdsToday.includes(adId)) {
                 showNotification('لقد شاهدت هذا الإعلان اليوم بالفعل', 'warning');
                 return;
             }
             
             try {
-                // جلب تفاصيل الإعلان
                 const adRef = db.collection('ads').doc(adId);
                 const adDoc = await adRef.get();
                 
@@ -2379,8 +2394,6 @@
                 }
                 
                 const ad = { id: adDoc.id, ...adDoc.data() };
-                
-                // استخدام القيم الافتراضية إذا كانت غير موجودة
                 ad.title = ad.title || 'إعلان';
                 ad.description = ad.description || 'شاهد هذا الإعلان لربح النقاط';
                 ad.points = ad.points || 50;
@@ -2393,39 +2406,47 @@
                 userReturned = false;
                 adStartedTime = Date.now();
                 
-                // تحديث النافذة المنبثقة
+                // ✅ التعديل: إضافة علامة على الإعلان الحالي
+                localStorage.setItem('currentAdId', adId);
+                localStorage.setItem('adStartedTime', adStartedTime.toString());
+                localStorage.setItem('adDuration', ad.duration.toString());
+                
                 currentAdTitle.textContent = ad.title;
                 currentAdDescription.textContent = ad.description;
                 adRewardPoints.textContent = ad.points;
                 
-                // بدء المؤقت
                 startTimer();
-                
-                // عرض النافذة المنبثقة
                 timerModal.classList.add('active');
                 
-                // فتح رابط الإعلان في نافذة جديدة
+                // ✅ التعديل: تحسين فتح الإعلان على الهواتف
                 if (ad.link) {
-                    adWindow = window.open(ad.link, '_blank');
+                    // فتح الإعلان في نافذة جديدة مع تحسين للهواتف
+                    const windowFeatures = 'width=500,height=700,scrollbars=yes,resizable=yes';
+                    adWindow = window.open(ad.link, '_blank', windowFeatures);
                     
-                    // إضافة مستمع للتحقق من إغلاق النافذة
                     if (adWindow) {
+                        // ✅ إضافة مستمع للتحقق من إغلاق النافذة
                         const checkWindowClosed = setInterval(() => {
                             if (adWindow.closed) {
                                 clearInterval(checkWindowClosed);
-                                // إذا تم إغلاق النافذة يدوياً
-                                if (isViewingAd) {
-                                    userReturned = true;
-                                    checkUserReturn();
-                                }
+                                userReturned = true;
+                                checkUserReturn();
                             }
                         }, 1000);
                     }
                 }
                 
-                // إضافة مستمعي الأحداث للرؤية
+                // ✅ إضافة مستمعي الأحداث للرؤية
                 document.addEventListener('visibilitychange', handleVisibilityChange);
                 window.addEventListener('beforeunload', handleBeforeUnload);
+                
+                // ✅ إضافة مستمع لفحص العودة إلى التطبيق (خاص بالهواتف)
+                window.addEventListener('focus', function() {
+                    if (isViewingAd && !userReturned) {
+                        userReturned = true;
+                        checkUserReturn();
+                    }
+                });
                 
             } catch (error) {
                 console.error('Error starting ad view:', error);
@@ -2433,22 +2454,20 @@
             }
         }
 
+        // ✅ التعديل: تحسين دالة checkUserReturn للهواتف
         function checkUserReturn() {
             if (!isViewingAd || !adStartedTime || !currentAd) return;
             
-            // التحقق من وقت بدء الإعلان
             const currentTime = Date.now();
-            const elapsedTime = Math.floor((currentTime - adStartedTime) / 1000); // الوقت المنقضي بالثواني
+            const elapsedTime = Math.floor((currentTime - adStartedTime) / 1000);
             
-            // ✅ التعديل: تحسين المنطق لحساب النقاط بشكل صحيح
-            if (userReturned) {
-                if (elapsedTime >= totalTimerSeconds) {
-                    // المستخدم عاد بعد انتهاء الوقت - منح النقاط
-                    finishAdView(true);
-                } else if (elapsedTime < totalTimerSeconds) {
-                    // المستخدم عاد قبل انتهاء الوقت - خصم النقاط
-                    finishAdView(false);
-                }
+            // ✅ التحقق إذا كان الوقت قد انتهى
+            if (elapsedTime >= totalTimerSeconds) {
+                // الوقت انتهى - منح النقاط
+                finishAdView(true);
+            } else if (elapsedTime < totalTimerSeconds && userReturned) {
+                // المستخدم عاد قبل انتهاء الوقت - خصم النقاط
+                finishAdView(false);
             }
         }
 
@@ -2463,13 +2482,13 @@
                 updateTimerCircle();
                 
                 if (timerSeconds <= 0) {
-                    // ✅ التعديل: عندما ينتهي الوقت، ننتظر عودة المستخدم
                     clearInterval(timerInterval);
                     timerDisplay.classList.add('timer-warning');
                     timerDisplay.textContent = 'انتهى';
-                    
-                    // عرض رسالة للمستخدم
                     currentAdDescription.textContent = 'انتهى وقت المشاهدة! يرجى العودة إلى الصفحة للحصول على النقاط.';
+                    
+                    // ✅ إضافة علامة أن الوقت انتهى
+                    localStorage.setItem('timerFinished', 'true');
                 } else if (timerSeconds <= 5) {
                     timerDisplay.classList.add('timer-warning');
                 }
@@ -2489,9 +2508,7 @@
 
         function handleVisibilityChange() {
             if (!document.hidden && isViewingAd) {
-                // المستخدم عاد إلى الصفحة
                 userReturned = true;
-                // تحقق فورًا من الوقت المنقضي
                 checkUserReturn();
             }
         }
@@ -2507,19 +2524,23 @@
             clearInterval(timerInterval);
             isViewingAd = false;
             
-            // إغلاق نافذة الإعلان إذا كانت مفتوحة
+            // ✅ إزالة البيانات من localStorage
+            localStorage.removeItem('currentAdId');
+            localStorage.removeItem('adStartedTime');
+            localStorage.removeItem('adDuration');
+            localStorage.removeItem('timerFinished');
+            
             if (adWindow && !adWindow.closed) {
                 adWindow.close();
             }
             
-            // Remove listeners
             document.removeEventListener('visibilitychange', handleVisibilityChange);
             window.removeEventListener('beforeunload', handleBeforeUnload);
+            window.removeEventListener('focus', arguments.callee);
             
-            // Hide modal
             timerModal.classList.remove('active');
             
-            // ✅ التعديل: إصلاح مشكلة حساب النقاط
+            // ✅ التعديل: تحسين حساب النقاط للهواتف
             if (success) {
                 try {
                     await rewardUser(currentAd.points);
@@ -2531,8 +2552,7 @@
                 }
             } else {
                 try {
-                    // ✅ التأكد من أن الخصم يحدث فقط إذا لم يكمل المشاهدة
-                    if (timerSeconds > 0) { // إذا كان الوقت لم ينته بعد
+                    if (timerSeconds > 0) {
                         await penalizeUser(5);
                         showNotification('تم خصم 5 نقاط بسبب ترك الإعلان قبل انتهاء الوقت', 'error');
                         await recordAdView(false);
@@ -2542,12 +2562,10 @@
                 }
             }
             
-            // Reset
             currentAd = null;
             adStartedTime = null;
             userReturned = false;
             
-            // تحديث البيانات
             try {
                 await loadUserData();
                 await loadAds();
@@ -2559,11 +2577,8 @@
         async function rewardUser(points) {
             try {
                 const userRef = db.collection('users').doc(currentUser.uid);
-                
-                // ✅ التعديل: استخدام batch write لضمان التحديث الكامل
                 const batch = db.batch();
                 
-                // تحديث بيانات المستخدم
                 batch.update(userRef, {
                     balance: firebase.firestore.FieldValue.increment(points),
                     dailyEarnings: firebase.firestore.FieldValue.increment(points),
@@ -2574,14 +2589,12 @@
                     viewedAdsToday: firebase.firestore.FieldValue.arrayUnion(currentAd.id)
                 });
                 
-                // تحديث الإعلان
                 const adRef = db.collection('ads').doc(currentAd.id);
                 batch.update(adRef, {
                     totalViews: firebase.firestore.FieldValue.increment(1),
                     lastViewed: new Date().toISOString()
                 });
                 
-                // مكافأة المدعو إذا كان هناك
                 if (userData.referredBy) {
                     const referralBonus = Math.floor(points * 0.1);
                     const referrerRef = db.collection('users').doc(userData.referredBy);
@@ -2591,10 +2604,7 @@
                     });
                 }
                 
-                // تنفيذ كل التحديثات معاً
                 await batch.commit();
-                
-                // تحديث بيانات المستخدم المحلية
                 await loadUserData();
                 
             } catch (error) {
@@ -2629,7 +2639,8 @@
                     completed: completed,
                     viewedAt: new Date().toISOString(),
                     sessionId: userSessionId,
-                    penalty: !completed ? 5 : 0
+                    penalty: !completed ? 5 : 0,
+                    deviceType: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? 'mobile' : 'desktop'
                 });
             } catch (error) {
                 console.error('Error recording ad view:', error);
@@ -2638,7 +2649,6 @@
 
         function cancelAdView() {
             if (confirm('هل أنت متأكد من إلغاء مشاهدة الإعلان؟ سيتم خصم 5 نقاط من رصيدك.')) {
-                // ✅ التأكد من إغلاق نافذة الإعلان أولاً
                 if (adWindow && !adWindow.closed) {
                     adWindow.close();
                 }
@@ -2688,7 +2698,6 @@
                     adminNotes: ''
                 });
                 
-                // Deduct points
                 const userRef = db.collection('users').doc(currentUser.uid);
                 await userRef.update({
                     balance: firebase.firestore.FieldValue.increment(-points)
@@ -2696,11 +2705,9 @@
                 
                 showNotification('تم تقديم طلب السحب بنجاح!', 'success');
                 
-                // Reset form
                 withdrawPoints.value = '';
                 vodafoneNumber.value = '';
                 
-                // Reload data
                 await loadUserData();
                 await loadWithdrawalHistory();
                 
@@ -2897,11 +2904,47 @@
             }
         }
 
+        // ✅ التعديل: إضافة دالة لفحص الإعلانات غير المكتملة عند تحميل الصفحة
+        async function checkUnfinishedAds() {
+            const adId = localStorage.getItem('currentAdId');
+            const adStartedTime = localStorage.getItem('adStartedTime');
+            const adDuration = localStorage.getItem('adDuration');
+            const timerFinished = localStorage.getItem('timerFinished');
+            
+            if (adId && adStartedTime && adDuration) {
+                const currentTime = Date.now();
+                const elapsedTime = Math.floor((currentTime - parseInt(adStartedTime)) / 1000);
+                
+                if (elapsedTime >= parseInt(adDuration) || timerFinished === 'true') {
+                    // الوقت انتهى - منح النقاط
+                    try {
+                        const adRef = db.collection('ads').doc(adId);
+                        const adDoc = await adRef.get();
+                        
+                        if (adDoc.exists) {
+                            const ad = { id: adDoc.id, ...adDoc.data() };
+                            currentAd = ad;
+                            await rewardUser(ad.points || 50);
+                            showNotification(`مبروك! لقد ربحت ${ad.points || 50} نقطة`, 'success');
+                            await recordAdView(true);
+                        }
+                    } catch (error) {
+                        console.error('Error rewarding user for unfinished ad:', error);
+                    }
+                }
+                
+                // مسح البيانات من localStorage
+                localStorage.removeItem('currentAdId');
+                localStorage.removeItem('adStartedTime');
+                localStorage.removeItem('adDuration');
+                localStorage.removeItem('timerFinished');
+            }
+        }
+
         async function loadAdminData() {
             if (!isAdmin) return;
             
             try {
-                // Load stats
                 const usersSnapshot = await db.collection('users').get();
                 const withdrawalsSnapshot = await db.collection('withdrawals')
                     .where('status', '==', 'pending')
@@ -2910,12 +2953,10 @@
                     .where('active', '==', true)
                     .get();
                 
-                // Update stats
                 document.getElementById('adminTotalUsers').textContent = formatNumber(usersSnapshot.size);
                 document.getElementById('adminPendingWithdrawals').textContent = formatNumber(withdrawalsSnapshot.size);
                 document.getElementById('adminActiveAds').textContent = formatNumber(adsSnapshot.size);
                 
-                // Calculate total points
                 let totalPoints = 0;
                 usersSnapshot.forEach(doc => {
                     const user = doc.data();
@@ -2923,7 +2964,6 @@
                 });
                 document.getElementById('adminTotalPoints').textContent = formatNumber(totalPoints);
                 
-                // Show withdrawals tab by default
                 await showAdminTab('withdrawals');
                 
             } catch (error) {
@@ -3045,7 +3085,6 @@
                 const withdrawal = withdrawalDoc.data();
                 
                 if (action === 'rejected') {
-                    // Return points to user
                     const userRef = db.collection('users').doc(withdrawal.userId);
                     await userRef.update({
                         balance: firebase.firestore.FieldValue.increment(withdrawal.points)
@@ -3152,7 +3191,6 @@
                 const expiry = document.getElementById('adExpiry').value;
                 const dailyLimit = parseInt(document.getElementById('adDailyLimit').value) || 0;
                 
-                // Validation
                 if (!title || !description || !link || !image || !points || !duration || !category || !expiry) {
                     showNotification('يرجى ملء جميع الحقول المطلوبة', 'error');
                     return;
@@ -3191,13 +3229,11 @@
                 
                 showNotification('تم إضافة الإعلان بنجاح وسيظهر للجميع', 'success');
                 
-                // Clear form
                 document.getElementById('adTitle').value = '';
                 document.getElementById('adDescription').value = '';
                 document.getElementById('adLink').value = '';
                 document.getElementById('adImage').value = '';
                 
-                // Reload ads
                 await loadAds();
                 
             } catch (error) {
@@ -3288,7 +3324,7 @@
                 
                 showNotification(`تم ${!currentStatus ? 'تفعيل' : 'تعطيل'} الإعلان`, 'success');
                 await loadAdminAds();
-                await loadAds(); // Refresh ads for all users
+                await loadAds();
                 
             } catch (error) {
                 console.error('Error toggling ad status:', error);
@@ -3305,7 +3341,7 @@
                 
                 showNotification('تم حذف الإعلان بنجاح من قاعدة البيانات', 'success');
                 await loadAdminAds();
-                await loadAds(); // Refresh ads for all users
+                await loadAds();
                 
             } catch (error) {
                 console.error('Error deleting ad:', error);
@@ -3424,15 +3460,12 @@
         }
 
         function showSection(section) {
-            // Hide all sections
             document.querySelectorAll('.content-section').forEach(sec => {
                 sec.style.display = 'none';
             });
             
-            // Show selected section
             document.getElementById(section + 'Section').style.display = 'block';
             
-            // Load section data
             switch(section) {
                 case 'dashboard':
                     loadRecentActivity();
@@ -3457,7 +3490,6 @@
 
         async function loadActivityHistory() {
             try {
-                // Get ad views
                 const adViewsRef = db.collection('adViews');
                 const adViewsSnapshot = await adViewsRef
                     .where('userId', '==', currentUser.uid)
@@ -3465,7 +3497,6 @@
                     .limit(50)
                     .get();
                 
-                // Get withdrawals
                 const withdrawalsRef = db.collection('withdrawals');
                 const withdrawalsSnapshot = await withdrawalsRef
                     .where('userId', '==', currentUser.uid)
@@ -3493,7 +3524,6 @@
                     });
                 });
                 
-                // Sort by date
                 activities.sort((a, b) => b.date - a.date);
                 
                 const container = document.getElementById('activityHistory');
@@ -3518,7 +3548,7 @@
                     if (filter !== 'all') {
                         if (filter === 'ads' && activity.type !== 'ad') return;
                         if (filter === 'withdrawals' && activity.type !== 'withdrawal') return;
-                        if (filter === 'referrals') return; // You might want to add referral activities
+                        if (filter === 'referrals') return;
                     }
                     
                     if (activity.type === 'ad') {
@@ -3669,7 +3699,6 @@
             
             container.appendChild(notification);
             
-            // Remove after 5 seconds
             setTimeout(() => {
                 notification.style.animation = 'slideInRight 0.5s ease reverse forwards';
                 setTimeout(() => notification.remove(), 500);
@@ -3760,6 +3789,13 @@
 
         // Handle filter change
         document.getElementById('historyFilter')?.addEventListener('change', loadActivityHistory);
+
+        // ✅ إضافة فحص الإعلانات غير المكتملة عند تحميل الصفحة
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                checkUnfinishedAds();
+            }, 2000);
+        });
 
         // Initialize
         initApp();
