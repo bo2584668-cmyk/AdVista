@@ -1949,7 +1949,7 @@
         let adWindow = null;
         let adStartedTime = null;
         let userReturned = false;
-        let notificationCounter = 0; // لمنع تكرار الإشعارات
+        let notificationCounter = 0;
 
         // DOM Elements
         const loginScreen = document.getElementById('loginScreen');
@@ -1979,6 +1979,11 @@
         const copyReferralBtn = document.getElementById('copyReferralBtn');
         const adminNavItem = document.getElementById('adminNavItem');
 
+        // دالة للكشف عن الجهاز
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+
         // Initialize Application
         document.addEventListener('DOMContentLoaded', function() {
             initApp();
@@ -2005,8 +2010,17 @@
                 }
             }, 1500);
             
-            // إضافة event listener لفحص عودة المستخدم كل ثانية
-            setInterval(checkUserReturn, 1000);
+            // فحص الإعلانات غير المكتملة عند تحميل الصفحة
+            setTimeout(() => {
+                checkUnfinishedAdsOnLoad();
+            }, 2000);
+            
+            // إضافة فحص النقاط المؤقتة
+            setTimeout(async () => {
+                if (currentUser) {
+                    await processPendingPoints();
+                }
+            }, 3000);
         }
 
         async function handleAuthStateChange(user) {
@@ -2021,7 +2035,6 @@
 
         async function handleUserLogin(user) {
             try {
-                // ✅ التعديل: إشعار واحد فقط عند التسجيل
                 if (notificationCounter === 0) {
                     showNotification('جاري تسجيل الدخول...', 'info');
                     notificationCounter++;
@@ -2039,7 +2052,6 @@
                         sessionId: userSessionId,
                         loginCount: firebase.firestore.FieldValue.increment(1)
                     });
-                    // ✅ إشعار واحد فقط
                     if (notificationCounter === 1) {
                         showNotification('مرحباً بعودتك!', 'success');
                         notificationCounter++;
@@ -2082,7 +2094,6 @@
                     };
                     
                     await userRef.set(userData);
-                    // ✅ إشعار واحد فقط
                     if (notificationCounter === 1) {
                         showNotification('مرحباً بك في Advista! لقد حصلت على 1000 نقطة هدية ترحيبية!', 'success');
                         notificationCounter++;
@@ -2094,7 +2105,6 @@
                             referralEarnings: firebase.firestore.FieldValue.increment(100),
                             balance: firebase.firestore.FieldValue.increment(100)
                         });
-                        // ✅ إشعار واحد فقط
                         if (notificationCounter === 2) {
                             showNotification('تم تسجيلك من خلال دعوة صديق!', 'success');
                             notificationCounter++;
@@ -2115,7 +2125,7 @@
         function showLoginScreen() {
             loginScreen.style.display = 'flex';
             appContainer.style.display = 'none';
-            notificationCounter = 0; // إعادة تعيين عداد الإشعارات
+            notificationCounter = 0;
         }
 
         function showMainApp() {
@@ -2225,7 +2235,7 @@
             copyReferralBtn.addEventListener('click', copyReferralLink);
             cancelAdBtn.addEventListener('click', cancelAdView);
             
-            // ✅ تحسين تجربة اللمس على الهواتف
+            // تحسين تجربة اللمس على الهواتف
             document.querySelectorAll('.btn, .nav-link, .ad-card').forEach(element => {
                 element.addEventListener('touchstart', function() {
                     this.style.transform = 'scale(0.98)';
@@ -2406,10 +2416,16 @@
                 userReturned = false;
                 adStartedTime = Date.now();
                 
-                // ✅ التعديل: إضافة علامة على الإعلان الحالي
-                localStorage.setItem('currentAdId', adId);
-                localStorage.setItem('adStartedTime', adStartedTime.toString());
-                localStorage.setItem('adDuration', ad.duration.toString());
+                // حفظ بيانات الإعلان في localStorage للتعامل مع مشاكل الهواتف
+                localStorage.setItem('currentAdData', JSON.stringify({
+                    adId: ad.id,
+                    adTitle: ad.title,
+                    adPoints: ad.points,
+                    adDuration: ad.duration,
+                    startedAt: adStartedTime,
+                    userId: currentUser.uid,
+                    sessionId: userSessionId
+                }));
                 
                 currentAdTitle.textContent = ad.title;
                 currentAdDescription.textContent = ad.description;
@@ -2418,35 +2434,43 @@
                 startTimer();
                 timerModal.classList.add('active');
                 
-                // ✅ التعديل: تحسين فتح الإعلان على الهواتف
+                // تحسين فتح الإعلان للهواتف
                 if (ad.link) {
-                    // فتح الإعلان في نافذة جديدة مع تحسين للهواتف
-                    const windowFeatures = 'width=500,height=700,scrollbars=yes,resizable=yes';
-                    adWindow = window.open(ad.link, '_blank', windowFeatures);
-                    
-                    if (adWindow) {
-                        // ✅ إضافة مستمع للتحقق من إغلاق النافذة
-                        const checkWindowClosed = setInterval(() => {
-                            if (adWindow.closed) {
-                                clearInterval(checkWindowClosed);
-                                userReturned = true;
-                                checkUserReturn();
+                    if (isMobileDevice()) {
+                        // للهواتف: فتح في نافذة جديدة بدون معارضة المتصفح
+                        adWindow = window.open(ad.link, '_blank', 'noopener,noreferrer');
+                        
+                        // بدلاً من الانتظار، نستخدم Page Visibility API
+                        document.addEventListener('visibilitychange', handleMobileVisibilityChange);
+                        
+                        // بدء مراقبة الوقت
+                        setTimeout(() => {
+                            if (isViewingAd) {
+                                finishAdView(true);
                             }
-                        }, 1000);
+                        }, ad.duration * 1000);
+                        
+                    } else {
+                        // للحواسيب: نفس الطريقة القديمة
+                        const windowFeatures = 'width=500,height=700,scrollbars=yes,resizable=yes';
+                        adWindow = window.open(ad.link, '_blank', windowFeatures);
+                        
+                        if (adWindow) {
+                            const checkWindowClosed = setInterval(() => {
+                                if (adWindow.closed) {
+                                    clearInterval(checkWindowClosed);
+                                    userReturned = true;
+                                    checkUserReturn();
+                                }
+                            }, 1000);
+                        }
                     }
                 }
                 
-                // ✅ إضافة مستمعي الأحداث للرؤية
+                // إضافة مستمعي الأحداث للهواتف
                 document.addEventListener('visibilitychange', handleVisibilityChange);
                 window.addEventListener('beforeunload', handleBeforeUnload);
-                
-                // ✅ إضافة مستمع لفحص العودة إلى التطبيق (خاص بالهواتف)
-                window.addEventListener('focus', function() {
-                    if (isViewingAd && !userReturned) {
-                        userReturned = true;
-                        checkUserReturn();
-                    }
-                });
+                window.addEventListener('pagehide', handlePageHide);
                 
             } catch (error) {
                 console.error('Error starting ad view:', error);
@@ -2454,14 +2478,54 @@
             }
         }
 
-        // ✅ التعديل: تحسين دالة checkUserReturn للهواتف
+        // دالة خاصة للهواتف
+        function handleMobileVisibilityChange() {
+            if (!document.hidden && isViewingAd) {
+                // المستخدم عاد إلى الصفحة
+                const adData = JSON.parse(localStorage.getItem('currentAdData') || '{}');
+                if (adData.adId && adData.startedAt) {
+                    const elapsed = Date.now() - adData.startedAt;
+                    const elapsedSeconds = Math.floor(elapsed / 1000);
+                    
+                    if (elapsedSeconds >= adData.adDuration) {
+                        // الوقت انتهى - منح النقاط
+                        finishAdView(true);
+                    } else {
+                        // لم يكمل الوقت - خصم النقاط
+                        finishAdView(false);
+                    }
+                }
+            }
+        }
+
+        // دالة للتعامل مع إخفاء الصفحة
+        function handlePageHide() {
+            if (isViewingAd) {
+                localStorage.setItem('adWasInterrupted', 'true');
+            }
+        }
+
+        function handleVisibilityChange() {
+            if (!document.hidden && isViewingAd) {
+                userReturned = true;
+                checkUserReturn();
+            }
+        }
+
+        function handleBeforeUnload(e) {
+            if (isViewingAd) {
+                e.preventDefault();
+                e.returnValue = 'إذا غادرت الآن سيتم خصم 5 نقاط من رصيدك. هل أنت متأكد؟';
+            }
+        }
+
         function checkUserReturn() {
             if (!isViewingAd || !adStartedTime || !currentAd) return;
             
             const currentTime = Date.now();
             const elapsedTime = Math.floor((currentTime - adStartedTime) / 1000);
             
-            // ✅ التحقق إذا كان الوقت قد انتهى
+            // التحقق إذا كان الوقت قد انتهى
             if (elapsedTime >= totalTimerSeconds) {
                 // الوقت انتهى - منح النقاط
                 finishAdView(true);
@@ -2487,7 +2551,7 @@
                     timerDisplay.textContent = 'انتهى';
                     currentAdDescription.textContent = 'انتهى وقت المشاهدة! يرجى العودة إلى الصفحة للحصول على النقاط.';
                     
-                    // ✅ إضافة علامة أن الوقت انتهى
+                    // إضافة علامة أن الوقت انتهى
                     localStorage.setItem('timerFinished', 'true');
                 } else if (timerSeconds <= 5) {
                     timerDisplay.classList.add('timer-warning');
@@ -2506,51 +2570,61 @@
             circle.style.strokeDashoffset = offset;
         }
 
-        function handleVisibilityChange() {
-            if (!document.hidden && isViewingAd) {
-                userReturned = true;
-                checkUserReturn();
-            }
-        }
-
-        function handleBeforeUnload(e) {
-            if (isViewingAd) {
-                e.preventDefault();
-                e.returnValue = 'إذا غادرت الآن سيتم خصم 5 نقاط من رصيدك. هل أنت متأكد؟';
-            }
-        }
-
         async function finishAdView(success) {
+            if (!isViewingAd) return; // لمنع التكرار
+            
             clearInterval(timerInterval);
             isViewingAd = false;
             
-            // ✅ إزالة البيانات من localStorage
-            localStorage.removeItem('currentAdId');
-            localStorage.removeItem('adStartedTime');
-            localStorage.removeItem('adDuration');
-            localStorage.removeItem('timerFinished');
-            
-            if (adWindow && !adWindow.closed) {
-                adWindow.close();
-            }
-            
+            // إزالة مستمعي الأحداث
             document.removeEventListener('visibilitychange', handleVisibilityChange);
+            document.removeEventListener('visibilitychange', handleMobileVisibilityChange);
             window.removeEventListener('beforeunload', handleBeforeUnload);
-            window.removeEventListener('focus', arguments.callee);
+            window.removeEventListener('pagehide', handlePageHide);
+            
+            // إغلاق نافذة الإعلان إذا كانت مفتوحة
+            if (adWindow && !adWindow.closed) {
+                try {
+                    adWindow.close();
+                } catch (e) {
+                    console.log('Cannot close ad window:', e);
+                }
+            }
             
             timerModal.classList.remove('active');
             
-            // ✅ التعديل: تحسين حساب النقاط للهواتف
-            if (success) {
+            // تحسين حساب النقاط للهواتف
+            if (success && currentAd) {
                 try {
+                    // التحقق من أن الإعلان لم يتم مشاهدته من قبل اليوم
+                    if (userData.viewedAdsToday && userData.viewedAdsToday.includes(currentAd.id)) {
+                        showNotification('لقد شاهدت هذا الإعلان بالفعل اليوم', 'warning');
+                        return;
+                    }
+                    
                     await rewardUser(currentAd.points);
                     showNotification(`مبروك! لقد ربحت ${currentAd.points} نقطة`, 'success');
                     await recordAdView(true);
+                    
+                    // تحديث واجهة المستخدم
+                    await loadUserData();
+                    await loadAds();
+                    
                 } catch (error) {
                     console.error('Error rewarding user:', error);
-                    showNotification('حدث خطأ في إضافة النقاط', 'error');
+                    
+                    // محاولة ثانية
+                    try {
+                        await rewardUser(currentAd.points);
+                    } catch (retryError) {
+                        console.error('Retry failed:', retryError);
+                        showNotification('حدث خطأ في إضافة النقاط، سيتم إضافتها تلقائياً خلال دقائق', 'error');
+                        
+                        // حفظ في localStorage لمحاولة لاحقة
+                        savePendingPoints(currentAd.points, currentAd.id);
+                    }
                 }
-            } else {
+            } else if (!success) {
                 try {
                     if (timerSeconds > 0) {
                         await penalizeUser(5);
@@ -2562,54 +2636,145 @@
                 }
             }
             
+            // تنظيف البيانات
+            localStorage.removeItem('currentAdData');
+            localStorage.removeItem('adWasInterrupted');
             currentAd = null;
             adStartedTime = null;
             userReturned = false;
+            adWindow = null;
             
-            try {
+            // تحديث البيانات
+            setTimeout(async () => {
                 await loadUserData();
                 await loadAds();
-            } catch (error) {
-                console.error('Error refreshing data:', error);
-            }
+            }, 1000);
         }
 
         async function rewardUser(points) {
             try {
                 const userRef = db.collection('users').doc(currentUser.uid);
-                const batch = db.batch();
+                const userDoc = await userRef.get();
+                const currentUserData = userDoc.data();
                 
-                batch.update(userRef, {
-                    balance: firebase.firestore.FieldValue.increment(points),
-                    dailyEarnings: firebase.firestore.FieldValue.increment(points),
-                    totalEarnings: firebase.firestore.FieldValue.increment(points),
-                    adsViewedToday: firebase.firestore.FieldValue.increment(1),
-                    totalAdsViewed: firebase.firestore.FieldValue.increment(1),
-                    lastAdViewDate: new Date().toISOString(),
-                    viewedAdsToday: firebase.firestore.FieldValue.arrayUnion(currentAd.id)
-                });
-                
-                const adRef = db.collection('ads').doc(currentAd.id);
-                batch.update(adRef, {
-                    totalViews: firebase.firestore.FieldValue.increment(1),
-                    lastViewed: new Date().toISOString()
-                });
-                
-                if (userData.referredBy) {
-                    const referralBonus = Math.floor(points * 0.1);
-                    const referrerRef = db.collection('users').doc(userData.referredBy);
-                    batch.update(referrerRef, {
-                        balance: firebase.firestore.FieldValue.increment(referralBonus),
-                        referralEarnings: firebase.firestore.FieldValue.increment(referralBonus)
-                    });
+                // التحقق المزدوج من عدم التكرار
+                if (currentUserData.viewedAdsToday && currentUserData.viewedAdsToday.includes(currentAd.id)) {
+                    console.log('Ad already viewed today, skipping reward');
+                    return;
                 }
                 
-                await batch.commit();
-                await loadUserData();
+                // استخدام transaction لمنع التكرار
+                await db.runTransaction(async (transaction) => {
+                    // قراءة البيانات الحالية
+                    const freshUserDoc = await transaction.get(userRef);
+                    const freshUserData = freshUserDoc.data();
+                    
+                    // التحقق مرة أخرى
+                    if (freshUserData.viewedAdsToday && freshUserData.viewedAdsToday.includes(currentAd.id)) {
+                        throw new Error('Ad already viewed');
+                    }
+                    
+                    // التحديث
+                    transaction.update(userRef, {
+                        balance: firebase.firestore.FieldValue.increment(points),
+                        dailyEarnings: firebase.firestore.FieldValue.increment(points),
+                        totalEarnings: firebase.firestore.FieldValue.increment(points),
+                        adsViewedToday: firebase.firestore.FieldValue.increment(1),
+                        totalAdsViewed: firebase.firestore.FieldValue.increment(1),
+                        lastAdViewDate: new Date().toISOString(),
+                        viewedAdsToday: firebase.firestore.FieldValue.arrayUnion(currentAd.id)
+                    });
+                    
+                    // تحديث الإعلان
+                    const adRef = db.collection('ads').doc(currentAd.id);
+                    transaction.update(adRef, {
+                        totalViews: firebase.firestore.FieldValue.increment(1),
+                        lastViewed: new Date().toISOString()
+                    });
+                    
+                    // مكافأة المُحيل إن وجد
+                    if (freshUserData.referredBy) {
+                        const referralBonus = Math.floor(points * 0.1);
+                        const referrerRef = db.collection('users').doc(freshUserData.referredBy);
+                        transaction.update(referrerRef, {
+                            balance: firebase.firestore.FieldValue.increment(referralBonus),
+                            referralEarnings: firebase.firestore.FieldValue.increment(referralBonus)
+                        });
+                    }
+                });
+                
+                console.log('Points added successfully:', points);
                 
             } catch (error) {
-                console.error('Error rewarding user:', error);
-                throw error;
+                console.error('Error in rewardUser transaction:', error);
+                
+                // محاولة بديلة بدون transaction
+                try {
+                    const userRef = db.collection('users').doc(currentUser.uid);
+                    await userRef.update({
+                        balance: firebase.firestore.FieldValue.increment(points),
+                        dailyEarnings: firebase.firestore.FieldValue.increment(points),
+                        totalEarnings: firebase.firestore.FieldValue.increment(points),
+                        adsViewedToday: firebase.firestore.FieldValue.increment(1),
+                        totalAdsViewed: firebase.firestore.FieldValue.increment(1),
+                        lastAdViewDate: new Date().toISOString(),
+                        viewedAdsToday: firebase.firestore.FieldValue.arrayUnion(currentAd.id)
+                    });
+                    
+                    console.log('Points added via fallback method');
+                } catch (fallbackError) {
+                    console.error('Fallback method also failed:', fallbackError);
+                    throw fallbackError;
+                }
+            }
+        }
+
+        async function savePendingPoints(points, adId) {
+            try {
+                const pendingRef = db.collection('pendingPoints').doc();
+                await pendingRef.set({
+                    userId: currentUser.uid,
+                    points: points,
+                    adId: adId,
+                    createdAt: new Date().toISOString(),
+                    processed: false
+                });
+                
+                // إشعار المستخدم
+                showNotification('سيتم إضافة النقاط خلال دقائق', 'info');
+                
+            } catch (error) {
+                console.error('Error saving pending points:', error);
+            }
+        }
+
+        // دالة لمعالجة النقاط المؤقتة عند الدخول
+        async function processPendingPoints() {
+            try {
+                const pendingRef = db.collection('pendingPoints');
+                const snapshot = await pendingRef
+                    .where('userId', '==', currentUser.uid)
+                    .where('processed', '==', false)
+                    .limit(10)
+                    .get();
+                
+                if (!snapshot.empty) {
+                    for (const doc of snapshot.docs) {
+                        const data = doc.data();
+                        
+                        // التحقق من عدم مشاهدة الإعلان من قبل
+                        if (!userData.viewedAdsToday.includes(data.adId)) {
+                            await rewardUser(data.points);
+                            await doc.ref.update({ processed: true });
+                        }
+                    }
+                    
+                    if (snapshot.size > 0) {
+                        showNotification(`تم إضافة ${snapshot.size * 50} نقطة مؤجلة`, 'success');
+                    }
+                }
+            } catch (error) {
+                console.error('Error processing pending points:', error);
             }
         }
 
@@ -2640,7 +2805,7 @@
                     viewedAt: new Date().toISOString(),
                     sessionId: userSessionId,
                     penalty: !completed ? 5 : 0,
-                    deviceType: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? 'mobile' : 'desktop'
+                    deviceType: isMobileDevice() ? 'mobile' : 'desktop'
                 });
             } catch (error) {
                 console.error('Error recording ad view:', error);
@@ -2653,6 +2818,41 @@
                     adWindow.close();
                 }
                 finishAdView(false);
+            }
+        }
+
+        async function checkUnfinishedAdsOnLoad() {
+            const adData = JSON.parse(localStorage.getItem('currentAdData') || '{}');
+            const wasInterrupted = localStorage.getItem('adWasInterrupted');
+            
+            if (adData.adId && wasInterrupted === 'true' && adData.userId === currentUser?.uid) {
+                const elapsed = Date.now() - adData.startedAt;
+                const elapsedSeconds = Math.floor(elapsed / 1000);
+                
+                if (elapsedSeconds >= adData.adDuration) {
+                    // الوقت انتهى - منح النقاط
+                    try {
+                        // تحميل بيانات الإعلان
+                        const adRef = db.collection('ads').doc(adData.adId);
+                        const adDoc = await adRef.get();
+                        
+                        if (adDoc.exists) {
+                            const ad = { id: adDoc.id, ...adDoc.data() };
+                            currentAd = ad;
+                            
+                            if (!userData.viewedAdsToday.includes(ad.id)) {
+                                await rewardUser(adData.adPoints);
+                                showNotification(`تمت إضافة ${adData.adPoints} نقطة للإعلان السابق`, 'success');
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Error processing unfinished ad:', error);
+                    }
+                }
+                
+                // تنظيف
+                localStorage.removeItem('currentAdData');
+                localStorage.removeItem('adWasInterrupted');
             }
         }
 
@@ -2901,43 +3101,6 @@
                 
             } catch (error) {
                 console.error('Error loading recent activity:', error);
-            }
-        }
-
-        // ✅ التعديل: إضافة دالة لفحص الإعلانات غير المكتملة عند تحميل الصفحة
-        async function checkUnfinishedAds() {
-            const adId = localStorage.getItem('currentAdId');
-            const adStartedTime = localStorage.getItem('adStartedTime');
-            const adDuration = localStorage.getItem('adDuration');
-            const timerFinished = localStorage.getItem('timerFinished');
-            
-            if (adId && adStartedTime && adDuration) {
-                const currentTime = Date.now();
-                const elapsedTime = Math.floor((currentTime - parseInt(adStartedTime)) / 1000);
-                
-                if (elapsedTime >= parseInt(adDuration) || timerFinished === 'true') {
-                    // الوقت انتهى - منح النقاط
-                    try {
-                        const adRef = db.collection('ads').doc(adId);
-                        const adDoc = await adRef.get();
-                        
-                        if (adDoc.exists) {
-                            const ad = { id: adDoc.id, ...adDoc.data() };
-                            currentAd = ad;
-                            await rewardUser(ad.points || 50);
-                            showNotification(`مبروك! لقد ربحت ${ad.points || 50} نقطة`, 'success');
-                            await recordAdView(true);
-                        }
-                    } catch (error) {
-                        console.error('Error rewarding user for unfinished ad:', error);
-                    }
-                }
-                
-                // مسح البيانات من localStorage
-                localStorage.removeItem('currentAdId');
-                localStorage.removeItem('adStartedTime');
-                localStorage.removeItem('adDuration');
-                localStorage.removeItem('timerFinished');
             }
         }
 
@@ -3789,13 +3952,6 @@
 
         // Handle filter change
         document.getElementById('historyFilter')?.addEventListener('change', loadActivityHistory);
-
-        // ✅ إضافة فحص الإعلانات غير المكتملة عند تحميل الصفحة
-        window.addEventListener('load', function() {
-            setTimeout(() => {
-                checkUnfinishedAds();
-            }, 2000);
-        });
 
         // Initialize
         initApp();
